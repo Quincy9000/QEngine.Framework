@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{05DBD8D9-7A22-4739-A8BC-78E4D356C70C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>QEngine</RootNamespace>
+    <AssemblyName>QEngine</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Code\Assets\QEffect.cs" />
+    <Compile Include="Code\Assets\QFont.cs" />
+    <Compile Include="Code\Assets\QMegaTexture.cs" />
+    <Compile Include="Code\Assets\QMusic.cs" />
+    <Compile Include="Code\Assets\QSound.cs" />
+    <Compile Include="Code\Assets\QTexture.cs" />
+    <Compile Include="Code\Demos\Physics\Block.cs" />
+    <Compile Include="Code\Demos\Physics\BlockCreator.cs" />
+    <Compile Include="Code\Demos\Physics\Floor.cs" />
+    <Compile Include="Code\Demos\Physics\PhysicsScene.cs" />
+    <Compile Include="Code\Demos\Physics\Wall.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\Platformer.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\Scripts\BiomeLevel.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\Scripts\Enemies\Bat.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\Scripts\Platform.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\Scripts\Player.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\Scripts\Assets.cs" />
+    <Compile Include="Code\Demos\QDemo.cs" />
+    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoCircle.cs" />
+    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoCreator.cs" />
+    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoObject2.cs" />
+    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoObject.cs" />
+    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoScene.cs" />
+    <Compile Include="Code\Demos\QSnake\Fruit.cs" />
+    <Compile Include="Code\Demos\QSnake\GameController.cs" />
+    <Compile Include="Code\Demos\QSnake\QSnakeScene.cs" />
+    <Compile Include="Code\Demos\QSnake\SnakeBody.cs" />
+    <Compile Include="Code\Demos\QSnake\Snakehead.cs" />
+    <Compile Include="Code\Interfaces\IQDestroy.cs" />
+    <Compile Include="Code\Interfaces\IQDrawGui.cs" />
+    <Compile Include="Code\Interfaces\IQDrawSprite.cs" />
+    <Compile Include="Code\Interfaces\IQLoad.cs" />
+    <Compile Include="Code\Interfaces\IQObject.cs" />
+    <Compile Include="Code\Interfaces\IQPhysics.cs" />
+    <Compile Include="Code\Interfaces\IQStart.cs" />
+    <Compile Include="Code\Interfaces\IQUnload.cs" />
+    <Compile Include="Code\Interfaces\IQUpdate.cs" />
+    <Compile Include="Code\Prefabs\QCharacterController.cs" />
+    <Compile Include="Code\Primitives\QColor.cs" />
+    <Compile Include="Code\Primitives\QLayer.cs" />
+    <Compile Include="Code\Primitives\QMat.cs" />
+    <Compile Include="Code\Primitives\QTime.cs" />
+    <Compile Include="Code\QAccum.cs" />
+    <Compile Include="Code\Animation\QAnimation.cs" />
+    <Compile Include="Code\Animation\QAnimator.cs" />
+    <Compile Include="Code\QAppConfig.cs" />
+    <Compile Include="Code\QApplication.cs" />
+    <Compile Include="Code\QBehavior.cs" />
+    <Compile Include="Code\QMapTools.cs" />
+    <Compile Include="Code\QRigiBody.cs" />
+    <Compile Include="Code\QCamera.cs" />
+    <Compile Include="Code\QConsole.cs" />
+    <Compile Include="Code\QContentManager.cs" />
+    <Compile Include="Code\Prefabs\QControls.cs" />
+    <Compile Include="Code\QCoroutine.cs" />
+    <Compile Include="Code\QDebug.cs" />
+    <Compile Include="Code\QEngine.cs" />
+    <Compile Include="Code\Primitives\QNums.cs" />
+    <Compile Include="Code\QExtentions.cs" />
+    <Compile Include="Code\QFrameCounter.cs" />
+    <Compile Include="Code\QGameObjectManager.cs" />
+    <Compile Include="Code\QGetContent.cs" />
+    <Compile Include="Code\QAddContent.cs" />
+    <Compile Include="Code\QLabel.cs" />
+    <Compile Include="Code\QPrefs.cs" />
+    <Compile Include="Code\QRandom.cs" />
+    <Compile Include="Code\QWorldManager.cs" />
+    <Compile Include="Code\Rendering\QGuiRenderer.cs" />
+    <Compile Include="Code\QObject.cs" />
+    <Compile Include="Code\Primitives\QRect.cs" />
+    <Compile Include="Code\Rendering\QImage.cs" />
+    <Compile Include="Code\Rendering\QRenderer.cs" />
+    <Compile Include="Code\QScene.cs" />
+    <Compile Include="Code\QSceneManager.cs" />
+    <Compile Include="Code\Rendering\QSprite.cs" />
+    <Compile Include="Code\Rendering\QSpriteRenderer.cs" />
+    <Compile Include="Code\QTransform.cs" />
+    <Compile Include="Code\Primitives\QVec.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\libopenal.1.dylib">
+      <Link>libopenal.1.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\libSDL2-2.0.0.dylib">
+      <Link>libSDL2-2.0.0.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\libopenal.so.1">
+      <Link>x64\libopenal.so.1</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\libSDL2-2.0.so.0">
+      <Link>x64\libSDL2-2.0.so.0</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x86\libopenal.so.1">
+      <Link>x86\libopenal.so.1</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x86\libSDL2-2.0.so.0">
+      <Link>x86\libSDL2-2.0.so.0</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MonoGame.Framework.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\SDL2.dll">
+      <Link>x64\SDL2.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\soft_oal.dll">
+      <Link>x64\soft_oal.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x86\SDL2.dll">
+      <Link>x86\SDL2.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x86\soft_oal.dll">
+      <Link>x86\soft_oal.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\VelcroPhysics-master\VelcroPhysics-master\VelcroPhysics\VelcroPhysics.MonoGame.csproj">
+      <Project>{a161076d-532f-4972-a212-09caa5ac6031}</Project>
+      <Name>VelcroPhysics.MonoGame</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
