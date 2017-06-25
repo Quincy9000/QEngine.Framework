@@ -5,33 +5,33 @@ namespace QEngine
 {
 	public class QSpriteRenderer : QRenderer
 	{
-		public QSpriteSortOrder Order
+		public QSortOrder Order
 		{
 			get
 			{
 				switch(sortMode)
 				{
 					case SpriteSortMode.Deferred:
-						return QSpriteSortOrder.DontCare;
+						return QSortOrder.DontCare;
 					case SpriteSortMode.FrontToBack:
-						return QSpriteSortOrder.StartAtOne;
+						return QSortOrder.StartAtOne;
 					case SpriteSortMode.BackToFront:
-						return QSpriteSortOrder.StartAtZero;
+						return QSortOrder.StartAtZero;
 					default:
-						return QSpriteSortOrder.DontCare;
+						return QSortOrder.DontCare;
 				}
 			}
 			set
 			{
 				switch(value)
 				{
-					case QSpriteSortOrder.DontCare:
+					case QSortOrder.DontCare:
 						sortMode = SpriteSortMode.Deferred;
 						break;
-					case QSpriteSortOrder.StartAtOne:
+					case QSortOrder.StartAtOne:
 						sortMode = SpriteSortMode.FrontToBack;
 						break;
-					case QSpriteSortOrder.StartAtZero:
+					case QSortOrder.StartAtZero:
 						sortMode = SpriteSortMode.BackToFront;
 						break;
 					default:
@@ -71,11 +71,11 @@ namespace QEngine
 			}
 		}
 
-		QFilteringState filterState;
+		protected QFilteringState filterState;
 
-		SpriteSortMode sortMode;
+		protected SpriteSortMode sortMode;
 
-		SamplerState samplerState = SamplerState.AnisotropicClamp;
+		protected SamplerState samplerState = SamplerState.AnisotropicClamp;
 
 		public QEffect Effect { get; set; } = null;
 

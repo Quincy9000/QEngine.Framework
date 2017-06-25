@@ -7,6 +7,7 @@ namespace QEngine.Demos
 		[STAThread]
 		static void Main(string[] args)
 		{
+			System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
 			new QApplication(new QAppConfig()
 			{
 				AssetDirectory = "Assets",
@@ -15,7 +16,6 @@ namespace QEngine.Demos
 				Fullscreen = false,
 				Vsync = false,
 				MouseVisible = true,
-				FixedTimeStep = false
 			}).Run(new Platformer());
 		}
 	}

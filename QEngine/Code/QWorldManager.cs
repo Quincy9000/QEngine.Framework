@@ -50,16 +50,16 @@ namespace QEngine
 			return body;
 		}
 
-		public float RayCastHitDistance(QVec a, QVec b)
+		public bool DidRaycastHit(QVec a, QVec b)
 		{
 			var aSim = a.ToSim();
 			var bSim = b.ToSim();
 			var fl = world.RayCast(aSim, aSim + bSim);
 			if(fl.Count > 0)
 			{
-				return QVec.Distance(a, ConvertUnits.ToDisplayUnits(fl[0].Body.Position));
+				return true;
 			}
-			return -1;
+			return false;
 		}
 
 		public QVec Gravity

@@ -2,7 +2,7 @@
 
 namespace QEngine
 {
-	public enum QSpriteSortOrder
+	public enum QSortOrder
 	{
 		/// <summary>
 		/// Starts from Zero, works way up to One

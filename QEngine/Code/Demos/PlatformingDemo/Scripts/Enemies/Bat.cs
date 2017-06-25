@@ -5,7 +5,7 @@ namespace QEngine.Demos
 {
 	public class BatSpawner : QBehavior, IQStart
 	{
-		public void OnStart(QGetContent content)
+		public void OnStart(QGetContent get)
 		{
 			Instantiate(new Bat(Id));
 		}
@@ -58,7 +58,7 @@ namespace QEngine.Demos
 			add.Texture(Assets.Bryan + "BryanStuff1");
 		}
 
-		public override void OnStart(QGetContent content)
+		public override void OnStart(QGetContent get)
 		{
 			Health = MaxHealth;
 

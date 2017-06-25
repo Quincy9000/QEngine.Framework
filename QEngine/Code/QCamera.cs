@@ -66,7 +66,7 @@ namespace QEngine
 			return Vector2.Transform(screenPos, Matrix.Invert(TransformMatrix));
 		}
 
-		public void OnStart(QGetContent getContent)
+		public void OnStart(QGetContent get)
 		{
 			Zoom = 100f;
 			UpdateMatrix();

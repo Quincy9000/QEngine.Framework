@@ -9,7 +9,7 @@
 			add.Circle("circle", 60, QColor.White);
 		}
 
-		public override void OnStart(QGetContent getContent)
+		public override void OnStart(QGetContent get)
 		{
 			int Color() => QRandom.Range(1, 255);
 			sprite = new QSprite(this, "circle");

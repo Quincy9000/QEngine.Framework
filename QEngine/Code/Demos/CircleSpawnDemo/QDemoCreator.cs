@@ -2,7 +2,7 @@
 {
 	class QDemoCreator : QCharacterController
 	{
-		public override void OnStart(QGetContent getContent)
+		public override void OnStart(QGetContent get)
 		{
 			Instantiate(new QDemoObject());
 		}

@@ -27,9 +27,9 @@
 			fps = new QFrameCounter();
 		}
 
-		public void OnStart(QGetContent getContent)
+		public void OnStart(QGetContent get)
 		{
-			font = getContent.Font("arial");
+			font = get.Font("arial");
 			Console.Label = new QLabel(font);
 		}
 

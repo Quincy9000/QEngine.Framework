@@ -11,7 +11,7 @@
 			add.Rectangle("fruit", 40, 40, QColor.Red);
 		}
 
-		public override void OnStart(QGetContent getContent)
+		public override void OnStart(QGetContent get)
 		{
 			sprite = new QSprite(this, "fruit");
 		}

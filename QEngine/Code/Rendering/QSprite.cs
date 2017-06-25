@@ -16,9 +16,15 @@
 
 		public bool IsVisible { get; set; } = true;
 
-		public float Width => Source.Width;
+		/// <summary>
+		/// returns the Source width * scaleX
+		/// </summary>
+		public float Width => Source.Width * script.Transform.Scale.X;
 
-		public float Height => Source.Height;
+		/// <summary>
+		/// Returns the source height * scaley
+		/// </summary>
+		public float Height => Source.Height * script.Transform.Scale.Y;
 
 		internal QMegaTexture Texture => script.Scene.MegaTexture;
 

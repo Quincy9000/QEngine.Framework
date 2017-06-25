@@ -38,7 +38,7 @@ namespace QEngine.Demos
 			add.Rectangle("snakeHead", 40, 40, QColor.White);
 		}
 
-		public override void OnStart(QGetContent getContent)
+		public override void OnStart(QGetContent get)
 		{
 			sprite = new QSprite(this, "snakeHead");
 			CurrentDir = SnakeDirection.Down;

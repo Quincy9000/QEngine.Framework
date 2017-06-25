@@ -1,6 +1,4 @@
-﻿using QEngine;
-
-namespace QEngine.Demos.PlatformingDemo.Scripts
+﻿namespace QEngine.Demos
 {
 	/// <summary>
 	/// Platform for the player to stand on
@@ -21,7 +19,7 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
 			Transform.Position = toPos;
 		}
 
-		public override void OnStart(QGetContent getContent)
+		public override void OnStart(QGetContent get)
 		{
 			int r()
 			{

@@ -64,6 +64,7 @@
     <Compile Include="Code\Demos\PlatformingDemo\Platformer.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Scripts\BiomeLevel.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Scripts\Enemies\Bat.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\Scripts\HealthBar.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Scripts\Platform.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Scripts\Player.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Scripts\Assets.cs" />

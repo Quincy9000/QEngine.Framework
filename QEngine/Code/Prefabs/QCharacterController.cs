@@ -4,7 +4,7 @@
 	{
 		public virtual void OnLoad(QAddContent add) { }
 
-		public virtual void OnStart(QGetContent getContent) { }
+		public virtual void OnStart(QGetContent get) { }
 
 		public virtual void OnUpdate(QTime time) { }
 

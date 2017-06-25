@@ -4,9 +4,88 @@ namespace QEngine
 {
 	public class QGuiRenderer : QRenderer
 	{
+		public QSortOrder Order
+		{
+			get
+			{
+				switch(sortMode)
+				{
+					case SpriteSortMode.Deferred:
+						return QSortOrder.DontCare;
+					case SpriteSortMode.FrontToBack:
+						return QSortOrder.StartAtOne;
+					case SpriteSortMode.BackToFront:
+						return QSortOrder.StartAtZero;
+					default:
+						return QSortOrder.DontCare;
+				}
+			}
+			set
+			{
+				switch(value)
+				{
+					case QSortOrder.DontCare:
+						sortMode = SpriteSortMode.Deferred;
+						break;
+					case QSortOrder.StartAtOne:
+						sortMode = SpriteSortMode.FrontToBack;
+						break;
+					case QSortOrder.StartAtZero:
+						sortMode = SpriteSortMode.BackToFront;
+						break;
+					default:
+						sortMode = SpriteSortMode.Deferred;
+						break;
+				}
+			}
+		}
+
+		public QFilteringState Filter
+		{
+			get => filterState;
+			set
+			{
+				switch(value)
+				{
+					case QFilteringState.Ansiotrophic:
+					{
+						samplerState = SamplerState.AnisotropicClamp;
+						break;
+					}
+					case QFilteringState.Linear:
+					{
+						samplerState = SamplerState.LinearClamp;
+						break;
+					}
+					case QFilteringState.Point:
+					{
+						samplerState = SamplerState.PointClamp;
+						break;
+					}
+					default:
+						samplerState = SamplerState.AnisotropicClamp;
+						break;
+				}
+				filterState = value;
+			}
+		}
+
+		protected QFilteringState filterState;
+
+		protected SpriteSortMode sortMode;
+
+		protected SamplerState samplerState = SamplerState.AnisotropicClamp;
+
+		public QEffect Effect { get; set; } = null;
+
+		public QMat Matrix { get; set; } = QMat.Identity;
+
 		internal override void Begin()
 		{
-			base.Begin();
+			if(Effect != null)
+				sb.Begin(sortMode, null, samplerState, null, null, Effect, Matrix);
+			else
+				sb.Begin(sortMode, null, samplerState, null, null, null, Matrix);
 		}
 
 		public void DrawImage(QImage i, QTransform t)
@@ -39,6 +118,10 @@ namespace QEngine
 			base.End();
 		}
 
-		internal QGuiRenderer(QEngine e) : base(e) { }
+		internal QGuiRenderer(QEngine e) : base(e)
+		{
+			Filter = QFilteringState.Point;
+			Order = QSortOrder.StartAtZero; 
+		}
 	}
 }

@@ -187,14 +187,14 @@ namespace QEngine
 			return CurrentMouseState.Position != PreviousMouseState.Position;
 		}
 
-		public void OnStart(QGetContent getContent)
+		public void OnStart(QGetContent get)
 		{
 			//YOu can cast directly if the enums are the exact same 
-//			ConvertKeys = new Dictionary<QKeys, Keys>();
-//			Keys[] k = Enum.GetValues(typeof(Keys)).OfType<Keys>().ToArray();
-//			QKeys[] q = Enum.GetValues(typeof(QKeys)).OfType<QKeys>().ToArray();
-//			for(int i = 0; i < q.Length; i++)
-//				ConvertKeys.Add(q[i], k[i]);
+			//			ConvertKeys = new Dictionary<QKeys, Keys>();
+			//			Keys[] k = Enum.GetValues(typeof(Keys)).OfType<Keys>().ToArray();
+			//			QKeys[] q = Enum.GetValues(typeof(QKeys)).OfType<QKeys>().ToArray();
+			//			for(int i = 0; i < q.Length; i++)
+			//				ConvertKeys.Add(q[i], k[i]);
 			Update();
 		}
 

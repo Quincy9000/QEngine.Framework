@@ -14,7 +14,7 @@
 			Transform.Position = toPos;
 		}
 
-		public override void OnStart(QGetContent getContent)
+		public override void OnStart(QGetContent get)
 		{
 			int r()
 			{

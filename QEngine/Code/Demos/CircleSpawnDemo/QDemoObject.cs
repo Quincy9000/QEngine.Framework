@@ -24,11 +24,11 @@ namespace QEngine.Demos
 			//add.Circle("penis", 100, QColor.DarkRed);
 		}
 
-		public override void OnStart(QGetContent getContent)
+		public override void OnStart(QGetContent get)
 		{
-			Square = getContent.Texture("penis");
-			font = getContent.Font("arial");
-			euro = getContent.Texture("asdf");
+			Square = get.Texture("penis");
+			font = get.Font("arial");
+			euro = get.Texture("asdf");
 
 			Arial = new QLabel(font);
 			sprite = new QSprite(this, "penis");

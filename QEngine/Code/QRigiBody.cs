@@ -136,14 +136,13 @@ namespace QEngine
 			{
 				if(dir.X > 0)
 					d = QCollisionDirection.Right;
-				d = QCollisionDirection.Left;
+				else
+					d = QCollisionDirection.Left;
 			}
+			else if(dir.Y > 0)
+				d = QCollisionDirection.Bottom;
 			else
-			{
-				if(dir.Y > 0)
-					d = QCollisionDirection.Bottom;
 				d = QCollisionDirection.Top;
-			}
 			return d;
 		}
 

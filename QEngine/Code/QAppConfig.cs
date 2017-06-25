@@ -14,7 +14,7 @@
 
 		public bool Vsync = true;
 
-		public bool FixedTimeStep = true;
+		public bool FixedTimeStep = false;
 
 		public string Title = "QGame";
 

@@ -4,7 +4,7 @@ namespace QEngine.Demos
 {
 	class BlockCreator : QCharacterController
 	{
-		public override void OnStart(QGetContent getContent)
+		public override void OnStart(QGetContent get)
 		{
 			//Coroutine.Start(ShowFPS());
 		}

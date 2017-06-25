@@ -9,10 +9,10 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
 			add.Texture(Assets.Bryan + "BiomeMap/biomeMapFront");
 		}
 
-		public void OnStart(QGetContent content)
+		public void OnStart(QGetContent get)
 		{
 			Stopwatch t = Stopwatch.StartNew();
-			QMapTools.SpawnObjects(content, "biomeMapFront", QVec.Zero, new QVec(64, 64), (c, v) =>
+			QMapTools.SpawnObjects(get, "biomeMapFront", QVec.Zero, new QVec(64, 64), (c, v) =>
 			{
 				if(c == new QColor(0, 150, 50)) //player
 				{
