@@ -1,7 +1,4 @@
-﻿using System;
-using QEngine.Demos.PlatformingDemo.Scripts;
-
-namespace QEngine.Demos
+﻿namespace QEngine.Demos
 {
 	public class Player : QCharacterController
 	{

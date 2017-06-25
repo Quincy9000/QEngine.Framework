@@ -94,6 +94,17 @@ namespace QEngine
 			world.Clear();
 		}
 
+		public void RemoveBody(QRigiBody body)
+		{
+			if(Bodies.Contains(body))
+				Bodies.Remove(body);
+			if(world.BodyList.Contains(body.body))
+			{
+				world.BodyList.Remove(body.body);
+				world.RemoveBody(body.body);
+			}
+		}
+
 		public const float DefaultGravity = 9.807f;
 
 		internal QWorldManager(float x = 0, float y = DefaultGravity)

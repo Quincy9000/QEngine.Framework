@@ -11,6 +11,12 @@ namespace QEngine
 		internal void OnDestroyEvent()
 		{
 			OnDestroy?.Invoke();
+			//			var body = World.Bodies.Find(r => Id == r.Id);
+			//			if(body != null)
+			//			{
+			//				World.Bodies.Remove(body);
+			//				World.world.RemoveBody(body.body);
+			//			}
 		}
 
 		/*Publics*/
@@ -55,17 +61,17 @@ namespace QEngine
 
 		public void Instantiate(QBehavior b, QVec v = default(QVec)) => Scene.Instantiate(b, v);
 
-		public QBehavior(string name)
-		{
-			Name = name;
-		}
-
 		internal void SetName()
 		{
-			if(string.IsNullOrEmpty(Name))
+			if (string.IsNullOrEmpty(Name))
 			{
 				Name = GetType().Name;
 			}
+		}
+
+		public QBehavior(string name)
+		{
+			Name = name;
 		}
 
 		public QBehavior()

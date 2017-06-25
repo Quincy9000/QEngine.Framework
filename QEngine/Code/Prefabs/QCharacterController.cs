@@ -18,6 +18,6 @@
 
 		public QCharacterController(string name) : base(name) { }
 
-		public QCharacterController() : base() { }
+		public QCharacterController() { }
 	}
 }

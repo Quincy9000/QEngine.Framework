@@ -164,21 +164,16 @@ namespace QEngine
 			AttachedScript = sc;
 			body = bo;
 			Transform = sc.Transform;
-			sc.OnDestroy += () =>
-			{
-				//TODO FIX THIS DUPE SHIT // FIXED I THINK
-				//MIGHT HAVE BEEN BUG IN VELCRO PHYSICS THAT I FIXED? BY CHECKING FOR NULL??
-				if(sc.World.world.BodyList.Contains(body))
-					sc.World.world.RemoveBody(body);
-				if(sc.World.Bodies.Contains(this))
-					sc.World.Bodies.Remove(this);
-			};
+			sc.OnDestroy += () => { sc.World.RemoveBody(this); };
 			body.OnCollision += (a, b, contact) =>
 			{
-				var script = b.Body.UserData as QBehavior;
-				var booby = script.World.Bodies.Find(r => r.Id == script.Id);
-				if(booby != null)
-					OnCollision?.Invoke(booby);
+				QBehavior script = b.Body.UserData as QBehavior;
+				if(script != null)
+				{
+					var booby = script.World.Bodies.Find(r => r.Id == script.Id);
+					if(booby != null)
+						OnCollision?.Invoke(booby);
+				}
 			};
 		}
 	}
