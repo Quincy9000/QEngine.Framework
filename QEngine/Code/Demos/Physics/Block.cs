@@ -25,8 +25,8 @@
 
 		public override void OnUpdate(QTime time)
 		{
-			if(QVec.Distance(Camera.Position, Transform.Position) > 500)
-				Scene.Destroy(this);
+			//if(QVec.Distance(Camera.Position, Transform.Position) > 500)
+				//Scene.AddToDestroyList(this);
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
@@ -36,7 +36,7 @@
 
 		public override void OnDestroy()
 		{
-			Console.WriteLine($"Block destroyed! {Id}");
+			//Console.WriteLine($"Block destroyed! {Id}");
 		}
 
 		public Block() : base("Block") { }

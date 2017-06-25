@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 
 namespace QEngine
 {
@@ -73,7 +71,7 @@ namespace QEngine
 			CreatorFlag = true;
 		}
 
-		public void Destroy(QBehavior script)
+		public void AddToDestroyList(QBehavior script)
 		{
 			if(!DestroyQueue.Contains(script))
 				DestroyQueue.Add(script);
@@ -81,7 +79,7 @@ namespace QEngine
 
 		/*Private Methods*/
 
-		void ActuallyDestroy(QBehavior script)
+		void Destroy(QBehavior script)
 		{
 			GameObjects.Remove(script);
 			DestroyQueue.Remove(script);
@@ -129,7 +127,7 @@ namespace QEngine
 		internal void ObjectDestroyer()
 		{
 			for(var i = 0; i < DestroyQueue.Count; i++)
-				ActuallyDestroy(DestroyQueue[i]);
+				Destroy(DestroyQueue[i]);
 		}
 
 		internal void OnLoad()
@@ -151,17 +149,16 @@ namespace QEngine
 			Load();
 		}
 
-		const float SimulationSteps = 1 / 60f;
-
 		internal void OnUpdate(QTime time)
 		{
 			ObjectCreator();
 			ObjectDestroyer();
 			Accumulator.Physics += time.Delta;
-			while(Accumulator.Physics >= SimulationSteps)
+			const float Simulation = 1 / 60f;
+			while(Accumulator.Physics >= Simulation)
 			{
-				World.Step(SimulationSteps);
-				Accumulator.Physics -= SimulationSteps;
+				World.Step(Simulation);
+				Accumulator.Physics -= Simulation;
 			}
 			QGameObjectManager.For(GameObjects.UpdateObjects, u => u.OnUpdate(time));
 			SpriteRenderer.Matrix = Camera.UpdateMatrix();
@@ -183,7 +180,7 @@ namespace QEngine
 
 		internal void OnUnload()
 		{
-			QGameObjectManager.For(GameObjects.Objects, d => Destroy(d.Script));
+			QGameObjectManager.For(GameObjects.Objects, d => AddToDestroyList(d.Script));
 			QGameObjectManager.For(GameObjects.UnloadObjects, u => u.OnUnload());
 			World.Clear();
 			QPrefs.Save().Wait();

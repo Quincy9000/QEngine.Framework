@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using VelcroPhysics.Dynamics;
 using VelcroPhysics.Factories;
 using VelcroPhysics.Utilities;
@@ -18,6 +19,13 @@ namespace QEngine
 			Bodies.Add(body);
 			return body;
 		}
+
+//		public QRigiBody CreateRoundedRect(QBehavior script, float w = 10, float h = 10, float density = 1, QVec pos = default(QVec), float rotation = 0, QBodyType bodyType = QBodyType.Dynamic)
+//		{
+//			var body = new QRigiBody(script, BodyFactory.CreateRoundedRectangle(world, w, h, w/3, h/3, 1000, density, pos, rotation, (BodyType)bodyType, script));
+//			Bodies.Add(body);
+//			return body;
+//		}
 
 		public QRigiBody CreateCircle(QBehavior script, float radius = 10, float density = 1, QVec pos = default(QVec), QBodyType bodyType = QBodyType.Dynamic)
 		{

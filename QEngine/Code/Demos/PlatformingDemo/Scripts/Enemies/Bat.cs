@@ -86,7 +86,7 @@ namespace QEngine.Demos
 		{
 			var s = Speed;
 			if(Health < 1)
-				Scene.Destroy(this);
+				Scene.AddToDestroyList(this);
 			damageAccum += time.Delta;
 			if(damageAccum > 0.5f)
 			{

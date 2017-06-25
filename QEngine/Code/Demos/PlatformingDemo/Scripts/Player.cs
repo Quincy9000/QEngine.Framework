@@ -53,8 +53,9 @@
 			LeftIdle = Frames[2];
 			RightIdle = Frames[0];
 
-			Body = World.CreateCapsule(this, (Sprite.Height * 4) / 3f - 15, (Sprite.Width * 4) / 3f - 5, 100, Transform.Position, Transform.Rotation);
+			Body = World.CreateCapsule(this, (Sprite.Height * 4) / 3f - 15, (Sprite.Width * 4) / 3f - 5, 50);
 			//Body = World.CreateRectangle(this, (Sprite.Width * 4) / 3f + 20, (Sprite.Height * 4) / 1.2f - 5, 100, Transform.Position, 0);
+			//Body = World.CreateRoundedRect(this);
 			Body.FixedRotation = true;
 			Body.Friction = 0.01f;
 
@@ -124,7 +125,7 @@
 				temp += QVec.Right;
 				Animator.Swap("Right");
 			}
-			var rayDis = World.RayCastHitDistance(Transform.Position, new QVec(0, 53));
+			var rayDis = World.RayCastHitDistance(Transform.Position, new QVec(0, 52));
 			if (rayDis > 0)
 			{
 				JumpGas = MaxJumpGas;

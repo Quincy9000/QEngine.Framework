@@ -65,7 +65,7 @@ namespace QEngine.Demos
 			for(int i = 0; i < Bodies.Count; i++)
 			{
 				if(Collision.Intersects(Bodies[i].Collision))
-					Scene.Destroy(this);
+					Scene.AddToDestroyList(this);
 				//Bodies[i + 1].LastPosition = Bodies[i].LastPosition;
 			}
 			if(Input.IsKeyDown(QKeys.W))
@@ -78,7 +78,7 @@ namespace QEngine.Demos
 				CurrentDir = SnakeDirection.Right;
 
 			if(!Camera.IsInCameraView(Transform.Position))
-				Scene.Destroy(this);
+				Scene.AddToDestroyList(this);
 		}
 
 		IEnumerator SnakeMove()
