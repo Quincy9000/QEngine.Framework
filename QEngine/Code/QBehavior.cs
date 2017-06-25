@@ -6,11 +6,11 @@ namespace QEngine
 	{
 		internal bool IsDestroyed { get; set; }
 
-		internal event Action OnDestory;
+		internal event Action OnDestroy;
 
 		internal void OnDestroyEvent()
 		{
-			OnDestory?.Invoke();
+			OnDestroy?.Invoke();
 		}
 
 		/*Publics*/

@@ -164,13 +164,14 @@ namespace QEngine
 			AttachedScript = sc;
 			body = bo;
 			Transform = sc.Transform;
-			sc.OnDestory += () =>
+			sc.OnDestroy += () =>
 			{
 				//TODO FIX THIS DUPE SHIT // FIXED I THINK
 				//MIGHT HAVE BEEN BUG IN VELCRO PHYSICS THAT I FIXED? BY CHECKING FOR NULL??
-				//if(sc.World.world.BodyList.Contains(body))
-				sc.World.world.RemoveBody(body);
-				sc.World.Bodies.Remove(this);
+				if(sc.World.world.BodyList.Contains(body))
+					sc.World.world.RemoveBody(body);
+				if(sc.World.Bodies.Contains(this))
+					sc.World.Bodies.Remove(this);
 			};
 			body.OnCollision += (a, b, contact) =>
 			{

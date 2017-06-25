@@ -183,9 +183,9 @@ namespace QEngine
 
 		internal void OnUnload()
 		{
-			World.Clear();
 			QGameObjectManager.For(GameObjects.Objects, d => Destroy(d.Script));
 			QGameObjectManager.For(GameObjects.UnloadObjects, u => u.OnUnload());
+			World.Clear();
 			QPrefs.Save().Wait();
 			Unload();
 			Content.Unload();
