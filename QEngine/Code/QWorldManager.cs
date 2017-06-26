@@ -20,7 +20,7 @@ namespace QEngine
 			return body;
 		}
 
-//		public QRigiBody CreateRoundedRect(QBehavior script, float w = 10, float h = 10, float density = 1, QVec pos = default(QVec), float rotation = 0, QBodyType bodyType = QBodyType.Dynamic)
+//		public QRigiBody CreateRoundedRect(QBehavior script, QTime w = 10, QTime h = 10, QTime density = 1, QVec pos = default(QVec), QTime rotation = 0, QBodyType bodyType = QBodyType.Dynamic)
 //		{
 //			var body = new QRigiBody(script, BodyFactory.CreateRoundedRectangle(world, w, h, w/3, h/3, 1000, density, pos, rotation, (BodyType)bodyType, script));
 //			Bodies.Add(body);
@@ -48,6 +48,28 @@ namespace QEngine
 			var body = new QRigiBody(script, BodyFactory.CreateCapsule(world, height.ToSim(), radius.ToSim(), density, pos.ToSim(), rotation, b, script));
 			Bodies.Add(body);
 			return body;
+		}
+
+		/// <summary>
+		/// returns true if it hits a body and it can 
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <param name="hit"></param>
+		/// <returns></returns>
+		public bool DidRaycastHit(QVec a, QVec b, out QRigiBody hit)
+		{
+			var aSim = a.ToSim();
+			var bSim = b.ToSim();
+			var fl = world.RayCast(aSim, aSim + bSim);
+			if(fl.Count > 0)
+			{
+				var bd = fl[0].Body.UserData as QBehavior;
+				hit = bd.World.Bodies.Find(r => r.Id == bd.Id);
+				return true;
+			}
+			hit = null;
+			return false;
 		}
 
 		public bool DidRaycastHit(QVec a, QVec b)

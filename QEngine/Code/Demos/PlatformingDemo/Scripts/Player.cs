@@ -99,7 +99,8 @@ namespace QEngine.Demos
 					{
 						if(other.AttachedScript is Bat b)
 						{
-							Body.ApplyForce(new QVec(-2, -1) * 4000);
+							Health--;
+							Body.ApplyForce(new QVec(-3, -2) * 4000);
 						}
 						break;
 					}
@@ -107,7 +108,8 @@ namespace QEngine.Demos
 					{
 						if(other.AttachedScript is Bat b)
 						{
-							Body.ApplyForce(new QVec(2, -1) * 4000);
+							Health--;
+							Body.ApplyForce(new QVec(3, -2) * 4000);
 						}
 						break;
 					}
@@ -129,9 +131,9 @@ namespace QEngine.Demos
 		//distance before you cant walk into wall anymore
 		const float WalkingIntoWallsDistance = 42;
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
-			var delta = time.Delta;
+			var delta = time;
 			QVec temp = QVec.Zero;
 			bool sprint = false;
 			bool right = true;
@@ -141,15 +143,21 @@ namespace QEngine.Demos
 				if(IsTouchingFloor)
 					JumpGas = MaxJumpGas;
 			}
-			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(WalkingIntoWallsDistance, 0))) //r
+			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(WalkingIntoWallsDistance, 0), out QRigiBody b)) //r
 			{
-				Sprite.Source = RightIdle;
-				right = false;
+				if(b.AttachedScript is Platform)
+				{
+					Sprite.Source = RightIdle;
+					right = false;
+				}
 			}
-			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(-WalkingIntoWallsDistance, 0))) //r
+			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(-WalkingIntoWallsDistance, 0), out QRigiBody bb)) //r
 			{
-				Sprite.Source = LeftIdle;
-				left = false;
+				if(bb.AttachedScript is Platform)
+				{
+					Sprite.Source = LeftIdle;
+					left = false;
+				}
 			}
 			if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.03f))
 				Instantiate(new Block(), Camera.ScreenToWorld(Input.MousePosition()));
@@ -191,7 +199,7 @@ namespace QEngine.Demos
 				Animator.Play(Sprite, delta);
 			}
 			if(Input.IsKeyReleased(QKeys.A))
-			{				
+			{
 				Sprite.Source = LeftIdle;
 				Body.LinearVelocity = new QVec(-0.1f, Body.LinearVelocity.Y);
 				//Body.LinearVelocity += QVec.Left * time.Delta * 400;
@@ -203,7 +211,7 @@ namespace QEngine.Demos
 				//Body.LinearVelocity += QVec.Right * time.Delta * 400;
 			}
 			QVec middle = QVec.Middle(Transform.Position, Camera.ScreenToWorld(Input.MousePosition()));
-			Camera.Lerp(middle, 9, time.Delta);
+			Camera.Lerp(middle, 9, time);
 			//Camera.Position = QVec.PixelMove(Transform.Position, 16);
 		}
 

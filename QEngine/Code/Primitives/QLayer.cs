@@ -1,7 +1,7 @@
 ﻿namespace QEngine
 {
 	/// <summary>
-	/// Keeps the layer of the sprite hidden but can use any value to make it easier to use, its just a float
+	/// Keeps the layer of the sprite hidden but can use any value to make it easier to use, its just a QTime
 	/// </summary>
 	public struct QLayer
 	{

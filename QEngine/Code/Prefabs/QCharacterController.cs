@@ -6,7 +6,7 @@
 
 		public virtual void OnStart(QGetContent get) { }
 
-		public virtual void OnUpdate(QTime time) { }
+		public virtual void OnUpdate(float delta) { }
 
 		public virtual void OnDrawSprite(QSpriteRenderer spriteRenderer) { }
 

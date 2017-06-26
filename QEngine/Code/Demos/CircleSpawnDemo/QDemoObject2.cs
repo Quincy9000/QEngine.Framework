@@ -2,7 +2,7 @@
 {
 	public class QDemoObject2 : QCharacterController
 	{
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			if(Input.IsKeyPressed(QKeys.R))
 				Scene.SpriteRenderer.ClearColor = QColor.Red;

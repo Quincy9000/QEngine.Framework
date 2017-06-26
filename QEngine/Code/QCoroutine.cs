@@ -27,7 +27,7 @@ namespace QEngine
 			routines.Clear();
 		}
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			for(var i = 0; i < routines.Count; i++)
 			{

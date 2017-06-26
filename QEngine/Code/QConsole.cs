@@ -91,11 +91,11 @@ namespace QEngine
 			_startFade = 0;
 		}
 
-		public void OnUpdate(QTime time)
+		public void OnUpdate(float time)
 		{
-			_startFade += time.Delta;
+			_startFade += time;
 			if(_startFade > FadeStart)
-				_fade -= time.Delta;
+				_fade -= time;
 		}
 
 		public void OnDrawGui(QGuiRenderer renderer)

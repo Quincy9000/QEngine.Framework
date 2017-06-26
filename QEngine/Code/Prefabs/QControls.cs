@@ -17,7 +17,7 @@ namespace QEngine
 		/// <returns></returns>
 		public bool IsKeyDown(QKeys key)
 		{
-			return CurrentKeyState.IsKeyDown((Keys)key) && PreviousKeyState.IsKeyDown((Keys)key);
+			return CurrentKeyState.IsKeyDown((Keys)key);
 		}
 
 		/// <summary>
@@ -28,16 +28,6 @@ namespace QEngine
 		public bool IsKeyPressed(QKeys key)
 		{
 			return CurrentKeyState.IsKeyDown((Keys)key) && PreviousKeyState.IsKeyUp((Keys)key);
-		}
-
-		/// <summary>
-		/// Returns true when the key is not pressed
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		public bool IsKeyUp(QKeys key)
-		{
-			return CurrentKeyState.IsKeyUp((Keys)key);
 		}
 
 		/// <summary>
@@ -207,7 +197,7 @@ namespace QEngine
 			CurrentMouseState = Mouse.GetState();
 		}
 
-		public void OnUpdate(QTime time)
+		public void OnUpdate(float time)
 		{
 			Update();
 		}

@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using OpenGL;
 
 namespace QEngine
 {
@@ -36,6 +41,8 @@ namespace QEngine
 		internal QWorldManager World { get; private set; }
 
 		internal QMegaTexture MegaTexture { get; private set; }
+
+		internal Stopwatch FrameTime { get; set; }
 
 		/*Privates*/
 
@@ -151,21 +158,22 @@ namespace QEngine
 
 		internal void OnUpdate(QTime time)
 		{
+			FrameTime = Stopwatch.StartNew();
 			ObjectCreator();
 			ObjectDestroyer();
 			Accumulator.Physics += time.Delta;
-			const float Simulation = 1 / 60f;
-			while(Accumulator.Physics >= Simulation)
+			const float simulation = 1 / 60f;
+			while(Accumulator.Physics >= simulation)
 			{
-				World.Step(Simulation);
-				Accumulator.Physics -= Simulation;
+				World.Step(simulation);
+				Accumulator.Physics -= simulation;
 			}
-			QGameObjectManager.For(GameObjects.UpdateObjects, u => u.OnUpdate(time));
-			SpriteRenderer.Matrix = Camera.UpdateMatrix();
+			QGameObjectManager.For(GameObjects.UpdateObjects, u => u.OnUpdate(time.Delta));
 		}
 
 		internal void OnDraw(QSpriteRenderer renderer)
 		{
+			SpriteRenderer.Matrix = Camera.UpdateMatrix();
 			renderer.Begin();
 			QGameObjectManager.For(GameObjects.SpriteObjects, s => s.OnDrawSprite(renderer));
 			renderer.End();
@@ -176,6 +184,7 @@ namespace QEngine
 			renderer.Begin();
 			QGameObjectManager.For(GameObjects.GuiObjects, g => g.OnDrawGui(renderer));
 			renderer.End();
+			Debug.FrameTime = (float)FrameTime.Elapsed.TotalMilliseconds;
 		}
 
 		internal void OnUnload()
@@ -183,9 +192,9 @@ namespace QEngine
 			QGameObjectManager.For(GameObjects.Objects, d => AddToDestroyList(d.Script));
 			QGameObjectManager.For(GameObjects.UnloadObjects, u => u.OnUnload());
 			World.Clear();
-			QPrefs.Save().Wait();
 			Unload();
 			Content.Unload();
+			QPrefs.Save().Wait();
 		}
 
 		/*ctors*/

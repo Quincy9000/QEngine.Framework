@@ -16,7 +16,7 @@
 			sprite = new QSprite(this, "body");
 		}
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			Collision = new QRect(Transform.Position - new QVec(sprite.Width / 2f - QVec.One.X * 4), new QVec(39));
 		}

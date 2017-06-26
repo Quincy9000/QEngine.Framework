@@ -16,6 +16,8 @@
 
 		public bool FixedTimeStep = false;
 
+		public float TimeStep = 1 / 60f;
+
 		public string Title = "QGame";
 
 		public string AssetDirectory = "Assets";

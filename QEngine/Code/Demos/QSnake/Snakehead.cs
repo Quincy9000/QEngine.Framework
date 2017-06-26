@@ -48,7 +48,7 @@ namespace QEngine.Demos
 			Scene.SpriteRenderer.ClearColor = QColor.Black;
 		}
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			Collision = new QRect(Transform.Position - new QVec(sprite.Width / 2f - 5), new QVec(Movement - 5));
 			if(Collision.Intersects(fruit.Collision))

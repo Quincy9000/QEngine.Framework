@@ -23,7 +23,7 @@
 			body = World.CreateCircle(this, 10, 100, Transform.Position);
 		}
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			//if(QVec.Distance(Camera.Position, Transform.Position) > 500)
 				//Scene.AddToDestroyList(this);

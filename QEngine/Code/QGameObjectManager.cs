@@ -86,7 +86,7 @@ namespace QEngine
 					des.OnDestroy();
 					script.IsDestroyed = true;
 					//invokes event
-					script.OnDestroyEvent();
+					script.DestroyEvent();
 				}
 				DestroyObjects.Remove(des);
 			}

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace QEngine
@@ -26,6 +27,7 @@ namespace QEngine
 				Window.Title = conf.Title;
 				Content.RootDirectory = conf.AssetDirectory;
 				IsFixedTimeStep = conf.FixedTimeStep;
+				TargetElapsedTime = TimeSpan.FromSeconds(conf.TimeStep);
 				DeviceManager.ApplyChanges();
 			}
 		}

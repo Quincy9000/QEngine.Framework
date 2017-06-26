@@ -82,12 +82,12 @@ namespace QEngine.Demos
 			body.LinearDamping = 10f;
 		}
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			var s = Speed;
 			if(Health < 1)
 				Scene.AddToDestroyList(this);
-			damageAccum += time.Delta;
+			damageAccum += time;
 			if(damageAccum > 0.5f)
 			{
 				CanTakeDamage = true;
@@ -109,8 +109,8 @@ namespace QEngine.Demos
 					Sprite.Effect = QSpriteEffects.FlipHorizontally;
 				else
 					Sprite.Effect = QSpriteEffects.None;
-				Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time.Delta * s;
-				Sprite.Source = BatFlap.Play(time.Delta);
+				Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time * s;
+				Sprite.Source = BatFlap.Play(time);
 			}
 			//only attacks from above
 			else if(distanceFromPlayer < 800 && player.Transform.Position.Y > Transform.Position.Y)
@@ -119,8 +119,8 @@ namespace QEngine.Demos
 					Sprite.Effect = QSpriteEffects.FlipHorizontally;
 				else
 					Sprite.Effect = QSpriteEffects.None;
-				Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time.Delta * s;
-				Sprite.Source = BatFlap.Play(time.Delta);
+				Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time * s;
+				Sprite.Source = BatFlap.Play(time);
 			}
 			else
 			{
@@ -131,8 +131,8 @@ namespace QEngine.Demos
 						Sprite.Effect = QSpriteEffects.FlipHorizontally;
 					else
 						Sprite.Effect = QSpriteEffects.None;
-					Transform.Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * time.Delta * Speed;
-					Sprite.Source = BatFlap.Play(time.Delta);
+					Transform.Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * time * Speed;
+					Sprite.Source = BatFlap.Play(time);
 				}
 				else if(distanceFromPlayer > 1000)
 				{

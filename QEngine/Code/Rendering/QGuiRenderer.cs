@@ -100,17 +100,20 @@ namespace QEngine
 
 		public void DrawString(QLabel label, QTransform pos)
 		{
-			sb.DrawString(label.Font, label.Text, pos.Position, label.Color, pos.Rotation, QVec.Zero, pos.Scale, SpriteEffects.None, label.Layer);
+			if(label.Visible)
+				sb.DrawString(label.Font, label.Text, pos.Position, label.Color, pos.Rotation, QVec.Zero, pos.Scale, SpriteEffects.None, label.Layer);
 		}
 
 		public void DrawString(QLabel label, QVec pos, QTransform t)
 		{
-			sb.DrawString(label.Font, label.Text, pos, label.Color, t.Rotation, QVec.Zero, t.Scale, SpriteEffects.None, label.Layer);
+			if(label.Visible)
+				sb.DrawString(label.Font, label.Text, pos, label.Color, t.Rotation, QVec.Zero, t.Scale, SpriteEffects.None, label.Layer);
 		}
 
 		public void DrawString(QLabel label, QVec pos, QTransform t, float fade)
 		{
-			sb.DrawString(label.Font, label.Text, pos, label.Color * fade, t.Rotation, QVec.Zero, t.Scale, SpriteEffects.None, label.Layer);
+			if(label.Visible)
+				sb.DrawString(label.Font, label.Text, pos, label.Color * fade, t.Rotation, QVec.Zero, t.Scale, SpriteEffects.None, label.Layer);
 		}
 
 		internal override void End()
@@ -121,7 +124,7 @@ namespace QEngine
 		internal QGuiRenderer(QEngine e) : base(e)
 		{
 			Filter = QFilteringState.Point;
-			Order = QSortOrder.StartAtZero; 
+			Order = QSortOrder.StartAtZero;
 		}
 	}
 }

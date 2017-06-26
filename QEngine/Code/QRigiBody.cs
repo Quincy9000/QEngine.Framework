@@ -163,7 +163,7 @@ namespace QEngine
 			AttachedScript = sc;
 			body = bo;
 			Transform = sc.Transform;
-			sc.OnDestroy += () => { sc.World.RemoveBody(this); };
+			sc.OnDestroyEvent += () => { sc.World.RemoveBody(this); };
 			body.OnCollision += (a, b, contact) =>
 			{
 				QBehavior script = b.Body.UserData as QBehavior;

@@ -131,7 +131,7 @@ namespace QEngine
 //		{
 //			if(_isDirty)
 //			{
-//				var f = (float)Math.Round(Zoom / 100f, 2, MidpointRounding.ToEven);
+//				var f = (QTime)Math.Round(Zoom / 100f, 2, MidpointRounding.ToEven);
 //				TransformMatrix = Matrix.CreateTranslation(-(int)Position.X, -(int)Position.Y, 0) *
 //				                  Matrix.CreateRotationZ(Rotation) *
 //				                  Matrix.CreateScale(f, f, 1) *

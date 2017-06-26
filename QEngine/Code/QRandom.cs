@@ -55,7 +55,7 @@ namespace QEngine
 		//		public static int maxExponential = 64;
 
 		/// <summary>
-		/// Inclusive float Random Range
+		/// Inclusive QTime Random Range
 		/// </summary>
 		/// <param name="min"></param>
 		/// <param name="max"></param>
@@ -65,7 +65,7 @@ namespace QEngine
 			return (float)(R.NextDouble() * (max - min)) + min;
 		}
 
-		//		public static float Range(float min, float max) => (float)((R.NextDouble() * max - min) * (Math.Pow(2.0, Range(minExponential, maxExponential))));
+		//		public static QTime Range(QTime min, QTime max) => (QTime)((R.NextDouble() * max - min) * (Math.Pow(2.0, Range(minExponential, maxExponential))));
 
 		/// <summary>
 		/// Returns a double between 0 and 1

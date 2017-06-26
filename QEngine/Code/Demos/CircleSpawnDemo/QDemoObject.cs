@@ -40,16 +40,16 @@ namespace QEngine.Demos
 			Coroutine.Start(Thing());
 		}
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			if(Input.IsKeyDown(QKeys.W))
-				Transform.Position += QVec.Up * speed * time.Delta;
+				Transform.Position += QVec.Up * speed * time;
 			if(Input.IsKeyDown(QKeys.A))
-				Transform.Position += QVec.Left * speed * time.Delta;
+				Transform.Position += QVec.Left * speed * time;
 			if(Input.IsKeyDown(QKeys.S))
-				Transform.Position += QVec.Down * speed * time.Delta;
+				Transform.Position += QVec.Down * speed * time;
 			if(Input.IsKeyDown(QKeys.D))
-				Transform.Position += QVec.Right * speed * time.Delta;
+				Transform.Position += QVec.Right * speed * time;
 			if(Input.IsKeyPressed(QKeys.Tab))
 				Scene.ResetScene();
 			if(Input.IsKeyDown(QKeys.Space) && Accumulator.CheckAccum("ball", 0.06f))
@@ -64,7 +64,7 @@ namespace QEngine.Demos
 				Console.WriteLine("backwardsMouseButton");
 			if(Input.IsMiddleMouseButtonDown())
 				Console.WriteLine("middleMouseButton");
-			Camera.Lerp(Transform.Position, 5, time.Delta);
+			Camera.Lerp(Transform.Position, 5, time);
 		}
 
 		IEnumerator Thing()

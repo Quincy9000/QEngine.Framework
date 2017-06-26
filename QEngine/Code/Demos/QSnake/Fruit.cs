@@ -23,7 +23,7 @@
 				QRandom.Range(Camera.Position.Y - Window.Height / 2f, Camera.Position.Y + Window.Height / 2f));
 		}
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			Collision = new QRect(Transform.Position - new QVec(sprite.Width / 2f), new QVec(40));
 		}

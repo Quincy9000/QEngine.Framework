@@ -29,6 +29,7 @@
 			sprite = new QSprite(this, "Floor");
 			sprite.Color = new QColor(r(), r(), r());
 			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, Transform.Position, Transform.Rotation, QBodyType.Static);
+			body.Friction = 0.2f;
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)

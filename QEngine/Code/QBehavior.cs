@@ -6,11 +6,11 @@ namespace QEngine
 	{
 		internal bool IsDestroyed { get; set; }
 
-		internal event Action OnDestroy;
+		internal event Action OnDestroyEvent;
 
-		internal void OnDestroyEvent()
+		internal void DestroyEvent()
 		{
-			OnDestroy?.Invoke();
+			OnDestroyEvent?.Invoke();
 			//			var body = World.Bodies.Find(r => Id == r.Id);
 			//			if(body != null)
 			//			{

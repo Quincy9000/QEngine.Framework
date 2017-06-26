@@ -3,11 +3,13 @@
 	/// <summary>
 	/// Debuger that displays fps
 	/// </summary>
-	public sealed class QDebug : QBehavior, IQLoad, IQStart, IQUpdate
+	public sealed class QDebug : QBehavior, IQLoad, IQStart, IQUpdate, IQDrawGui
 	{
 		public QFrameCounter fps { get; private set; }
 
 		QFont font;
+
+		QLabel label;
 
 		/// <summary>
 		/// Frames per second the screen updates
@@ -17,6 +19,8 @@
 		public float TotalFrames => fps.TotalFrames;
 
 		public float TotalSeconds => fps.TotalSeconds;
+
+		public float FrameTime { get; set; }
 
 		public bool IsDebugMode { get; private set; }
 
@@ -31,18 +35,37 @@
 		{
 			font = get.Font("arial");
 			Console.Label = new QLabel(font);
+			label = new QLabel(font);
 		}
 
-		public void OnUpdate(QTime time)
+		public void OnUpdate(float time)
 		{
-			if(Input.IsKeyPressed(QKeys.F12))
-				IsDebugMode = !IsDebugMode;
-			fps.Update(time.Delta);
 			if(IsDebugMode)
 			{
-				Console.WriteLine($"fps: {Fps}");
+				label.Visible = IsDebugMode;
+				label.Text = $"FrameDelay: {FrameTime}ms\nFPS: {Fps}\nTotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds";
+				Transform.Position = new QVec(Window.Left, Window.Bottom - label.Measure(label.Text).Y);
 			}
+			else
+				label.Visible = IsDebugMode;
+			if(Input.IsKeyPressed(QKeys.F12))
+				IsDebugMode = !IsDebugMode;
+			fps.Update(time);
 		}
+
+		public void OnDrawGui(QGuiRenderer renderer)
+		{
+			renderer.DrawString(label, Transform);
+		}
+
+		//		public void Update(float delta)
+		//		{
+		//			if(Input.IsKeyPressed(QKeys.F12))
+		//				IsDebugMode = !IsDebugMode;
+		//			fps.Update(delta);
+		//			if(IsDebugMode)
+		//				Console.WriteLine($"fps: {Fps}");
+		//		}
 
 		public QDebug() : base("QDebug") { }
 	}

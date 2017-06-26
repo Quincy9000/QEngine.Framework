@@ -16,7 +16,7 @@ namespace QEngine.Demos
 			Coroutine.Start(ShowFPS());
 		}
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			//if(Input.IsKeyDown(QKeys.Space))
 				//World.Gravity = new QVec(0, -10);

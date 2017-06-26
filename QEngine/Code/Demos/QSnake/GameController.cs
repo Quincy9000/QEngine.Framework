@@ -4,7 +4,7 @@
 	{
 		public GameController() : base("GameController") { }
 
-		public override void OnUpdate(QTime time)
+		public override void OnUpdate(float time)
 		{
 			if(Input.IsKeyPressed(QKeys.Escape))
 				ExitGame();

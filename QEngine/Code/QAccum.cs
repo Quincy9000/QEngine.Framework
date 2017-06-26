@@ -24,10 +24,10 @@ namespace QEngine
 
 		Dictionary<string, AccumTimer> Accumulators { get; } = new Dictionary<string, AccumTimer>();
 
-		public void OnUpdate(QTime time)
+		public void OnUpdate(float delta)
 		{
 			foreach(var a in Accumulators)
-				a.Value.accum += time.Delta;
+				a.Value.accum += delta;
 		}
 
 		public float Physics { get; set; } = 0;
