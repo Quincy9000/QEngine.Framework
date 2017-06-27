@@ -22,7 +22,7 @@ x64/
 x86/
 bld/
 QEngine/Assets/
-AssetsLMAo/
+*.mgcb
 [Bb]in/
 [Oo]bj/
 [Ll]og/
