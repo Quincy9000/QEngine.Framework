@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using QEngine.Demos.PlatformingDemo.Scripts.Enemies;
 
 namespace QEngine.Demos.PlatformingDemo.Scripts
 {
@@ -11,7 +12,6 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
 
 		public void OnStart(QGetContent get)
 		{
-			Stopwatch t = Stopwatch.StartNew();
 			QMapTools.SpawnObjects(get, "biomeMapFront", QVec.Zero, new QVec(64, 64), (c, v) =>
 			{
 				if(c == new QColor(0, 150, 50)) //player
@@ -31,8 +31,6 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
 					Instantiate(new Bat(v), v);
 				}
 			});
-			t.Stop();
-			Console.WriteLine(t.Elapsed.TotalSeconds);
 		}
 	}
 }

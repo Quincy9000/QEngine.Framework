@@ -1,4 +1,4 @@
-﻿namespace QEngine.Demos
+﻿namespace QEngine.Demos.QSnake
 {
 	public class QSnakeScene : QScene
 	{

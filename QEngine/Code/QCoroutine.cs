@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using QEngine.Prefabs;
 
 namespace QEngine
 {
@@ -27,7 +28,7 @@ namespace QEngine
 			routines.Clear();
 		}
 
-		public override void OnUpdate(float time)
+		public override void OnFixedUpdate(float time)
 		{
 			for(var i = 0; i < routines.Count; i++)
 			{

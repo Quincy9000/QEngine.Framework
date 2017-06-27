@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using QEngine.Prefabs;
 
-namespace QEngine.Demos
+namespace QEngine.Demos.QSnake
 {
 	public class Snakehead : QCharacterController
 	{
@@ -48,7 +49,7 @@ namespace QEngine.Demos
 			Scene.SpriteRenderer.ClearColor = QColor.Black;
 		}
 
-		public override void OnUpdate(float time)
+		public override void OnFixedUpdate(float time)
 		{
 			Collision = new QRect(Transform.Position - new QVec(sprite.Width / 2f - 5), new QVec(Movement - 5));
 			if(Collision.Intersects(fruit.Collision))
@@ -65,7 +66,7 @@ namespace QEngine.Demos
 			for(int i = 0; i < Bodies.Count; i++)
 			{
 				if(Collision.Intersects(Bodies[i].Collision))
-					Scene.AddToDestroyList(this);
+					Scene.Destroy(this);
 				//Bodies[i + 1].LastPosition = Bodies[i].LastPosition;
 			}
 			if(Input.IsKeyDown(QKeys.W))
@@ -78,7 +79,7 @@ namespace QEngine.Demos
 				CurrentDir = SnakeDirection.Right;
 
 			if(!Camera.IsInCameraView(Transform.Position))
-				Scene.AddToDestroyList(this);
+				Scene.Destroy(this);
 		}
 
 		IEnumerator SnakeMove()

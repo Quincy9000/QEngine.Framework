@@ -1,8 +1,10 @@
-﻿namespace QEngine.Demos
+﻿using QEngine.Prefabs;
+
+namespace QEngine.Demos.CircleSpawnDemo
 {
 	public class QDemoObject2 : QCharacterController
 	{
-		public override void OnUpdate(float time)
+		public override void OnFixedUpdate(float time)
 		{
 			if(Input.IsKeyPressed(QKeys.R))
 				Scene.SpriteRenderer.ClearColor = QColor.Red;

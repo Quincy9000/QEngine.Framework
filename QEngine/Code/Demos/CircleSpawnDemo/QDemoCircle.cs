@@ -1,4 +1,6 @@
-﻿namespace QEngine.Demos
+﻿using QEngine.Prefabs;
+
+namespace QEngine.Demos.CircleSpawnDemo
 {
 	public class QDemoCircle : QCharacterController
 	{

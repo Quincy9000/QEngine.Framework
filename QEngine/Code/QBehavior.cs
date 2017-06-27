@@ -8,15 +8,23 @@ namespace QEngine
 
 		internal event Action OnDestroyEvent;
 
+		internal event Action<QVec> OnMoveTransformEvent;
+
+		internal event Action<float> OnRotationEvent;
+
 		internal void DestroyEvent()
 		{
 			OnDestroyEvent?.Invoke();
-			//			var body = World.Bodies.Find(r => Id == r.Id);
-			//			if(body != null)
-			//			{
-			//				World.Bodies.Remove(body);
-			//				World.world.RemoveBody(body.body);
-			//			}
+		}
+
+		internal void MoveEvent(QVec v)
+		{
+			OnMoveTransformEvent?.Invoke(v);
+		}
+
+		internal void RotationEvent(float f)
+		{
+			OnRotationEvent?.Invoke(f);
 		}
 
 		/*Publics*/
@@ -69,12 +77,12 @@ namespace QEngine
 			}
 		}
 
-		public QBehavior(string name)
+		protected QBehavior(string name)
 		{
 			Name = name;
 		}
 
-		public QBehavior()
+		protected QBehavior()
 		{
 			
 		}

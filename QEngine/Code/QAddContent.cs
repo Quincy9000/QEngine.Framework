@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace QEngine
 {
@@ -81,7 +80,7 @@ namespace QEngine
 					}
 					else
 					{
-						//colorData[index] = Color.Transparent;
+						colorData[index] = QColor.Transparent;
 					}
 				}
 

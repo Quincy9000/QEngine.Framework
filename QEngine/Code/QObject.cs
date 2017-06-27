@@ -19,7 +19,7 @@ namespace QEngine
 			{
 				Id = x;
 			}
-			Transform = new QTransform();
+			Transform = new QTransform(this);
 		}
 
 		/*Statics*/

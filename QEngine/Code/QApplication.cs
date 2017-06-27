@@ -1,4 +1,5 @@
 ﻿using QEngine.Demos;
+using QEngine.Demos.CircleSpawnDemo;
 
 namespace QEngine
 {

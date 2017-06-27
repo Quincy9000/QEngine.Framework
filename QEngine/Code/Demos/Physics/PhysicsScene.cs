@@ -1,4 +1,4 @@
-﻿namespace QEngine.Demos
+﻿namespace QEngine.Demos.Physics
 {
 	class PhysicsScene : QScene
 	{

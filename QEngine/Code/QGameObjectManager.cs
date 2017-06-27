@@ -8,11 +8,21 @@ namespace QEngine
 		internal List<QObject> Objects { get; }
 
 		internal List<IQLoad> LoadObjects { get; set; }
+
 		internal List<IQStart> StartObjects { get; set; }
+
+		internal List<IQFixedUpdate> FixedUpdateObjects { get; set; }
+
 		internal List<IQUpdate> UpdateObjects { get; set; }
+
+		internal List<IQLateUpdate> LateUpdateObjects { get; set; }
+
 		internal List<IQDrawSprite> SpriteObjects { get; set; }
+
 		internal List<IQDrawGui> GuiObjects { get; set; }
+
 		internal List<IQDestroy> DestroyObjects { get; set; }
+
 		internal List<IQUnload> UnloadObjects { get; set; }
 
 		public static void For<T>(IList<T> list, Action<T> action) where T : IQObject
@@ -34,9 +44,17 @@ namespace QEngine
 			{
 				StartObjects.Add(s);
 			}
-			if(script is IQUpdate u)
+			if(script is IQFixedUpdate u)
 			{
-				UpdateObjects.Add(u);
+				FixedUpdateObjects.Add(u);
+			}
+			if(script is IQUpdate up)
+			{
+				UpdateObjects.Add(up);
+			}
+			if(script is IQLateUpdate late)
+			{
+				LateUpdateObjects.Add(late);
 			}
 			if(script is IQDrawSprite ds)
 			{
@@ -67,9 +85,17 @@ namespace QEngine
 			{
 				StartObjects.Remove(s);
 			}
-			if(script is IQUpdate u)
+			if(script is IQFixedUpdate u)
 			{
-				UpdateObjects.Remove(u);
+				FixedUpdateObjects.Remove(u);
+			}
+			if(script is IQUpdate up)
+			{
+				UpdateObjects.Remove(up);
+			}
+			if(script is IQLateUpdate late)
+			{
+				LateUpdateObjects.Remove(late);
 			}
 			if(script is IQDrawSprite ds)
 			{
@@ -108,8 +134,8 @@ namespace QEngine
 //						return (QObject)LoadObjects[i];
 //					case IQStart s:
 //						return (QObject)StartObjects[i];
-//					case IQUpdate u:
-//						return (QObject)UpdateObjects[i];
+//					case IQFixedUpdate u:
+//						return (QObject)FixedUpdateObjects[i];
 //					case IQDrawSprite ds:
 //						return (QObject)SpriteObjects[i];
 //					case IQDestroy d:
@@ -127,7 +153,9 @@ namespace QEngine
 			Objects = new List<QObject>();
 			LoadObjects = new List<IQLoad>();
 			StartObjects = new List<IQStart>();
+			FixedUpdateObjects = new List<IQFixedUpdate>();
 			UpdateObjects = new List<IQUpdate>();
+			LateUpdateObjects = new List<IQLateUpdate>();
 			SpriteObjects = new List<IQDrawSprite>();
 			GuiObjects = new List<IQDrawGui>();
 			DestroyObjects = new List<IQDestroy>();

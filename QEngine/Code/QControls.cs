@@ -2,7 +2,7 @@
 
 namespace QEngine
 {
-	public class QControls : QBehavior, IQStart, IQUpdate
+	public class QControls : QBehavior, IQStart, IQFixedUpdate
 	{
 		KeyboardState PreviousKeyState;
 		KeyboardState CurrentKeyState;
@@ -197,7 +197,7 @@ namespace QEngine
 			CurrentMouseState = Mouse.GetState();
 		}
 
-		public void OnUpdate(float time)
+		public void OnFixedUpdate(float time)
 		{
 			Update();
 		}

@@ -1,229 +1,267 @@
-﻿using System;
-using Microsoft.Win32.SafeHandles;
-using QEngine.Demos.PlatformingDemo.Scripts;
+﻿using QEngine.Demos.Physics;
+using QEngine.Demos.PlatformingDemo.Scripts.Enemies;
+using QEngine.Prefabs;
 
-namespace QEngine.Demos
+namespace QEngine.Demos.PlatformingDemo.Scripts
 {
-	public class Player : QCharacterController
-	{
-		QAnimator Animator;
+    public class Player : QCharacterController
+    {
+        enum QDirections
+        {
+            Left,
+            Right
+        }
 
-		QSprite Sprite;
+        enum PlayerStates
+        {
+            Jumping,
+            Attacking,
+            None
+        }
 
-		QRect LeftIdle, RightIdle;
+        const float PlayerSpeed = 5;
 
-		QRigiBody Body;
+        const float MaxPlayerVelocity = 7;
 
-		const float PlayerSpeed = 5;
+        const float MaxPlayerSprintVel = 8;
 
-		const float MaxPlayerVelocity = 7;
+        const float JumpSpeed = 80;
 
-		const float MaxPlayerSprintVel = 8;
+        const float MaxJumpGas = 0.12f;
 
-		const float JumpSpeed = 80;
+        const float MaxVel = 5;
 
-		const float MaxJumpGas = 0.12f;
+        //distance before you cant walk into wall anymore
+        const float WalkingIntoWallsDistance = 42;
 
-		const float MaxVel = 5;
+        int _health;
 
-		public int HealthMax = 3;
+        QAnimator Animator;
 
-		public int Health { get; private set; }
+        QRigiBody Body;
 
-		float JumpGas = MaxJumpGas;
+        public int HealthMax = 5;
 
-		bool IsTouchingFloor = true;
+        bool IsTouchingFloor = true;
 
-		enum QDirections
-		{
-			Left,
-			Right
-		}
+        bool CanMove = true;
 
-		enum PlayerStates
-		{
-			Jumping,
-			Attacking,
-			None
-		}
+        float JumpGas = MaxJumpGas;
 
-		QDirections PlayerDirection;
+        QRect LeftIdle, RightIdle;
 
-		PlayerStates PlayerState;
+        QDirections PlayerDirection;
 
-		public override void OnLoad(QAddContent add)
-		{
-			add.Texture(Assets.Bryan + "BryanSpriteSheet");
-			add.Texture(Assets.Bryan + "SwordAttack2");
-			//add.Rectangle("Block", 32, 32, QColor.White);
-		}
+        PlayerStates PlayerState;
 
-		public override void OnStart(QGetContent get)
-		{
-			Instantiate(new HealthBar());
+        QSprite Sprite;
 
-			Health = HealthMax;
+        public int Health
+        {
+            get => _health;
+            set
+            {
+                _health = value;
+                if(_health < 0)
+                    _health = 0;
+            }
+        }
 
-			Scene.SpriteRenderer.Filter = QFilteringState.Point;
-			World.Gravity = new QVec(0, 20);
-			var Frames = get.TextureSource("BryanSpriteSheet").Split(32, 32);
-			var AttackFrames = get.TextureSource("SwordAttack2").Split(32, 32);
-			Sprite = new QSprite(this, Frames[0]);
-			Transform.Scale = new QVec(4);
-			Transform.Rotation = 90;
-			LeftIdle = Frames[2];
-			RightIdle = Frames[0];
+        public override void OnLoad(QAddContent add)
+        {
+            add.Texture(Assets.Bryan + "BryanSpriteSheet");
+            add.Texture(Assets.Bryan + "SwordAttack2");
+        }
 
-			Body = World.CreateCapsule(this, Sprite.Height / 3f - 15, Sprite.Width / 3f - 5, 50);
-			//Body = World.CreateCapsule(this, Sprite.Height / 3f, Sprite.Width/3f, 50);
-			//Body = World.CreateRectangle(this, Sprite.Width, Sprite.Height, 1);
-			//Body = World.CreateRectangle(this, (Sprite.Width * 4) / 3f + 20, (Sprite.Height * 4) / 1.2f - 5, 100, Transform.Position, 0);
-			//Body = World.CreateRoundedRect(this);
-			Body.FixedRotation = true;
-			Body.Friction = 0.01f;
+        public override void OnStart(QGetContent get)
+        {
+            Instantiate(new HealthBar());
 
-			Body.OnCollision += other =>
-			{
-				switch(QRigiBody.Direction(Body, other))
-				{
-					case QCollisionDirection.Top:
-					{
-						//						if(other.AttachedScript is Platform p)
-						//						{
-						//							IsTouchingFloor = true;
-						//						}
-						IsTouchingFloor = true;
-						break;
-					}
-					case QCollisionDirection.Left:
-					{
-						if(other.AttachedScript is Bat b)
-						{
-							Health--;
-							Body.ApplyForce(new QVec(-3, -2) * 4000);
-						}
-						break;
-					}
-					case QCollisionDirection.Right:
-					{
-						if(other.AttachedScript is Bat b)
-						{
-							Health--;
-							Body.ApplyForce(new QVec(3, -2) * 4000);
-						}
-						break;
-					}
-				}
-			};
+            Health = HealthMax;
 
-			Camera.Position = Transform.Position;
+            Scene.SpriteRenderer.Filter = QFilteringState.Point;
+            World.Gravity = new QVec(0, 20);
+            var Frames = get.TextureSource("BryanSpriteSheet").Split(32, 32);
+            var AttackFrames = get.TextureSource("SwordAttack2").Split(32, 32);
+            Sprite = new QSprite(this, Frames[0]);
+            Transform.Scale = new QVec(4);
+            LeftIdle = Frames[2];
+            RightIdle = Frames[0];
 
-			Animator = new QAnimator();
-			Animator.AddAnimation("Right", new QAnimation(Frames, 0.1, 4, 8));
-			Animator.AddAnimation("Left", new QAnimation(Frames, 0.1, 12, 16));
-			Animator.AddAnimation("RightAttack", new QAnimation(AttackFrames, 0.1, 0, 6));
-			Animator.AddAnimation("LeftAttack", new QAnimation(AttackFrames, 0.1, 6, 12));
-			Animator.Swap("Right");
-			PlayerDirection = QDirections.Right;
-			PlayerState = PlayerStates.None;
-		}
+            Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 100);
+            //Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 3f, 10);
+            //Body = World.CreateRoundedRect(this, Sprite.Width /3f + 20, Sprite.Height / 1.2f, 10);
 
-		//distance before you cant walk into wall anymore
-		const float WalkingIntoWallsDistance = 42;
+            Body.FixedRotation = true;
+            Body.Friction = 0.1f;
+            //Body.Restitution = 1f;
 
-		public override void OnUpdate(float time)
-		{
-			var delta = time;
-			QVec temp = QVec.Zero;
-			bool sprint = false;
-			bool right = true;
-			bool left = true;
-			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Height / 3f - 15), new QVec(0, 25)))
-			{
-				if(IsTouchingFloor)
-					JumpGas = MaxJumpGas;
-			}
-			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(WalkingIntoWallsDistance, 0), out QRigiBody b)) //r
-			{
-				if(b.AttachedScript is Platform)
-				{
-					Sprite.Source = RightIdle;
-					right = false;
-				}
-			}
-			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(-WalkingIntoWallsDistance, 0), out QRigiBody bb)) //r
-			{
-				if(bb.AttachedScript is Platform)
-				{
-					Sprite.Source = LeftIdle;
-					left = false;
-				}
-			}
-			if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.03f))
-				Instantiate(new Block(), Camera.ScreenToWorld(Input.MousePosition()));
-			if(Input.IsMouseScrolledUp())
-				Camera.Zoom += Camera.Zoom * 0.1f;
-			if(Input.IsMouseScrolledDown())
-				Camera.Zoom -= Camera.Zoom * 0.1f;
-			if(Input.IsKeyPressed(QKeys.Escape))
-				Scene.ResetScene();
-			if(Input.IsKeyDown(QKeys.LeftShift) || Input.IsKeyDown(QKeys.RightShift))
-			{
-				sprint = true;
-			}
-			if(Input.IsKeyDown(QKeys.W) || Input.IsKeyDown(QKeys.Space))
-			{
-				if(JumpGas > 0)
-				{
-					Body.LinearVelocity += QVec.Up * JumpSpeed * delta;
-					JumpGas -= delta;
-					IsTouchingFloor = false;
-				}
-			}
-			if(Input.IsKeyDown(QKeys.A) && left)
-			{
-				temp += QVec.Left;
-				Animator.Swap("Left");
-			}
-			if(Input.IsKeyDown(QKeys.D) && right)
-			{
-				temp += QVec.Right;
-				Animator.Swap("Right");
-			}
-			if(temp != QVec.Zero)
-			{
-				if(!sprint && Body.LinearVelocity.X < MaxPlayerVelocity && Body.LinearVelocity.X > -MaxPlayerVelocity)
-					Body.LinearVelocity = new QVec(temp.Normalize().X * PlayerSpeed, Body.LinearVelocity.Y);
-				else
-					Body.LinearVelocity = new QVec(temp.Normalize().X * PlayerSpeed * 2, Body.LinearVelocity.Y);
-				Animator.Play(Sprite, delta);
-			}
-			if(Input.IsKeyReleased(QKeys.A))
-			{
-				Sprite.Source = LeftIdle;
-				Body.LinearVelocity = new QVec(-0.1f, Body.LinearVelocity.Y);
-				//Body.LinearVelocity += QVec.Left * time.Delta * 400;
-			}
-			if(Input.IsKeyReleased(QKeys.D))
-			{
-				Sprite.Source = RightIdle;
-				Body.LinearVelocity = new QVec(0.1f, Body.LinearVelocity.Y);
-				//Body.LinearVelocity += QVec.Right * time.Delta * 400;
-			}
-			QVec middle = QVec.Middle(Transform.Position, Camera.ScreenToWorld(Input.MousePosition()));
-			Camera.Lerp(middle, 9, time);
-			//Camera.Position = QVec.PixelMove(Transform.Position, 16);
-		}
+            Body.OnCollision += other =>
+            {
+                switch(QRigiBody.Direction(Body, other))
+                {
+                    case QCollisionDirection.Top:
+                    {
+                        if(other.IsStatic || other.Mass > 1)
+                        {
+                            IsTouchingFloor = true;
+                            CanMove = true;
+                        }
+                        break;
+                    }
+                    case QCollisionDirection.Left:
+                    {
+                        if(other.AttachedScript is Bat b)
+                        {
+                            if(Accumulator.CheckAccum("CanDamage", 0.5f))
+                            {
+                                Body.body.ResetDynamics();
+                                Health--;
+                                Body.ApplyForce(new QVec(-3, -5) * 4000);
+                                CanMove = false;
+                            }
+                        }
+                        break;
+                    }
+                    case QCollisionDirection.Right:
+                    {
+                        if(other.AttachedScript is Bat b)
+                        {
+                            if(Accumulator.CheckAccum("CanDamage", 0.5f))
+                            {
+                                Body.body.ResetDynamics();
+                                Health--;
+                                Body.ApplyForce(new QVec(3, -5) * 4000);
+                                CanMove = false;
+                            }
+                        }
+                        break;
+                    }
+                }
+            };
 
-		void LimitVel()
-		{
-			var lim = Body.LinearVelocity;
-			Body.LinearVelocity = new QVec(lim.X > MaxVel ? MaxVel : lim.X, lim.Y > MaxVel ? MaxVel : lim.Y);
-		}
+            Camera.Position = Transform.Position;
 
-		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
-		{
-			spriteRenderer.Draw(Sprite, Transform);
-		}
-	}
+            Animator = new QAnimator();
+            Animator.AddAnimation("Right", new QAnimation(Frames, 0.1, 4, 8));
+            Animator.AddAnimation("Left", new QAnimation(Frames, 0.1, 12, 16));
+            Animator.AddAnimation("RightAttack", new QAnimation(AttackFrames, 0.1, 0, 6));
+            Animator.AddAnimation("LeftAttack", new QAnimation(AttackFrames, 0.1, 6, 12));
+            Animator.Swap("Right");
+            PlayerDirection = QDirections.Right;
+            PlayerState = PlayerStates.None;
+        }
+
+        public override void OnFixedUpdate(float time)
+        {
+            if(Health == 0)
+                Scene.ResetScene();
+            var delta = time;
+            var temp = QVec.Zero;
+            var sprint = false;
+            var right = true;
+            var left = true;
+            if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Height / 3f - 15), new QVec(0, 25)))
+            {
+                if(IsTouchingFloor)
+                    JumpGas = MaxJumpGas;
+            }
+            if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(WalkingIntoWallsDistance, 0), out QRigiBody b))
+            {
+                if(b.AttachedScript is Platform)
+                {
+                    Transform.Position += QVec.Left * 2;
+                    Sprite.Source = RightIdle;
+                    right = false;
+                }
+            }
+            if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(-WalkingIntoWallsDistance, 0), out QRigiBody bb))
+            {
+                if(bb.AttachedScript is Platform)
+                {
+                    Transform.Position += QVec.Right * 2;
+                    Sprite.Source = LeftIdle;
+                    left = false;
+                }
+            }
+            if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.03f))
+            {
+                int i = QRandom.Range(0, 1);
+                switch(i)
+                {
+                    case 0:
+                        Instantiate(new Block(), Camera.ScreenToWorld(Input.MousePosition()));
+                        break;
+                    case 1:
+                        Instantiate(new Ball(), Camera.ScreenToWorld(Input.MousePosition()));
+                        break;
+                }
+            }
+            if(Input.IsMouseScrolledUp())
+                Camera.Zoom += Camera.Zoom * 0.1f;
+            if(Input.IsMouseScrolledDown())
+                Camera.Zoom -= Camera.Zoom * 0.1f;
+            if(Input.IsKeyPressed(QKeys.Escape))
+                Scene.ResetScene();
+            if(CanMove)
+            {
+                if(Input.IsKeyDown(QKeys.LeftShift) || Input.IsKeyDown(QKeys.RightShift))
+                    sprint = true;
+                if(Input.IsKeyDown(QKeys.W) || Input.IsKeyDown(QKeys.Space))
+                {
+                    if(JumpGas > 0)
+                    {
+                        Body.LinearVelocity += QVec.Up * JumpSpeed * delta;
+                        JumpGas -= delta;
+                        IsTouchingFloor = false;
+                    }
+                }
+                if(Input.IsKeyDown(QKeys.A) && left)
+                {
+                    temp += QVec.Left;
+                    Animator.Swap("Left");
+                }
+                if(Input.IsKeyDown(QKeys.D) && right)
+                {
+                    temp += QVec.Right;
+                    Animator.Swap("Right");
+                }
+                if(temp != QVec.Zero)
+                {
+                    if(!sprint && Body.LinearVelocity.X < MaxPlayerVelocity && Body.LinearVelocity.X > -MaxPlayerVelocity)
+                        Body.LinearVelocity = new QVec(temp.X * PlayerSpeed, Body.LinearVelocity.Y);
+                    else
+                        Body.LinearVelocity = new QVec(temp.X * PlayerSpeed * 2, Body.LinearVelocity.Y);
+//                    Transform.Position += temp.Normalize() * PlayerSpeed * delta;
+                    Animator.Play(Sprite, delta);
+                }
+                if(Input.IsKeyReleased(QKeys.A))
+                {
+                    Sprite.Source = LeftIdle;
+                    Body.LinearVelocity = new QVec(-0.1f, Body.LinearVelocity.Y);
+                    //Body.LinearVelocity += QVec.Left * time.Delta * 400;
+                }
+                if(Input.IsKeyReleased(QKeys.D))
+                {
+                    Sprite.Source = RightIdle;
+                    Body.LinearVelocity = new QVec(0.1f, Body.LinearVelocity.Y);
+                    //Body.LinearVelocity += QVec.Right * time.Delta * 400;
+                }
+            }
+        }
+
+        public override void OnLateUpdate(float delta)
+        {
+            var middle = QVec.Middle(Transform.Position, Camera.ScreenToWorld(Input.MousePosition()));
+            Camera.Lerp(middle, 11, delta);
+        }
+
+        void LimitVel()
+        {
+            var lim = Body.LinearVelocity;
+            Body.LinearVelocity = new QVec(lim.X > MaxVel ? MaxVel : lim.X, lim.Y > MaxVel ? MaxVel : lim.Y);
+        }
+
+        public override void OnDrawSprite(QSpriteRenderer spriteRenderer) { spriteRenderer.Draw(Sprite, Transform); }
+    }
 }

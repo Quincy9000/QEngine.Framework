@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using QEngine.Demos.PlatformingDemo;
 
 namespace QEngine.Demos
 {
@@ -7,7 +9,7 @@ namespace QEngine.Demos
 		[STAThread]
 		static void Main(string[] args)
 		{
-			System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
+			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
 			new QApplication(new QAppConfig()
 			{
 				AssetDirectory = "Assets",

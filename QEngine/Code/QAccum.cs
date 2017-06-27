@@ -5,7 +5,7 @@ namespace QEngine
 	/// <summary>
 	/// Limit Execution over a period of time using CheckAccum
 	/// </summary>
-	public class QAccum : QBehavior, IQUpdate
+	public class QAccum : QBehavior, IQFixedUpdate
 	{
 		class AccumTimer
 		{
@@ -24,13 +24,11 @@ namespace QEngine
 
 		Dictionary<string, AccumTimer> Accumulators { get; } = new Dictionary<string, AccumTimer>();
 
-		public void OnUpdate(float delta)
+		public void OnFixedUpdate(float delta)
 		{
 			foreach(var a in Accumulators)
 				a.Value.accum += delta;
 		}
-
-		public float Physics { get; set; } = 0;
 
 		/// <summary>
 		/// Returns true only after the amount of time you choose has gone by
@@ -43,7 +41,7 @@ namespace QEngine
 			if(!Accumulators.TryGetValue(name, out AccumTimer t))
 			{
 				Accumulators.Add(name, new AccumTimer(time));
-				return false;
+				return true; //return true if first time so that there is no delay 
 			}
 			if(t.accum > t.ExecuteTime)
 			{
@@ -52,7 +50,5 @@ namespace QEngine
 			}
 			return false;
 		}
-
-		internal QAccum() : base("QAccum") { }
 	}
 }

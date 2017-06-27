@@ -1,4 +1,6 @@
-﻿namespace QEngine.Demos
+﻿using QEngine.Prefabs;
+
+namespace QEngine.Demos.QSnake
 {
 	public class Fruit : QCharacterController
 	{
@@ -23,7 +25,7 @@
 				QRandom.Range(Camera.Position.Y - Window.Height / 2f, Camera.Position.Y + Window.Height / 2f));
 		}
 
-		public override void OnUpdate(float time)
+		public override void OnFixedUpdate(float time)
 		{
 			Collision = new QRect(Transform.Position - new QVec(sprite.Width / 2f), new QVec(40));
 		}

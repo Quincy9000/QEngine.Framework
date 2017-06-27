@@ -1,6 +1,7 @@
 ﻿using System.Collections;
+using QEngine.Prefabs;
 
-namespace QEngine.Demos
+namespace QEngine.Demos.CircleSpawnDemo
 {
 	public class QDemoObject : QCharacterController
 	{
@@ -40,7 +41,7 @@ namespace QEngine.Demos
 			Coroutine.Start(Thing());
 		}
 
-		public override void OnUpdate(float time)
+		public override void OnFixedUpdate(float time)
 		{
 			if(Input.IsKeyDown(QKeys.W))
 				Transform.Position += QVec.Up * speed * time;

@@ -1,10 +1,12 @@
-﻿namespace QEngine.Demos
+﻿using QEngine.Prefabs;
+
+namespace QEngine.Demos.QSnake
 {
 	class GameController : QCharacterController
 	{
 		public GameController() : base("GameController") { }
 
-		public override void OnUpdate(float time)
+		public override void OnFixedUpdate(float time)
 		{
 			if(Input.IsKeyPressed(QKeys.Escape))
 				ExitGame();

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-using System.Threading.Tasks;
-using OpenGL;
+using Microsoft.Xna.Framework;
+using QEngine.Debug;
+using QPhysics.Utilities;
 
 namespace QEngine
 {
@@ -44,11 +46,13 @@ namespace QEngine
 
 		internal Stopwatch FrameTime { get; set; }
 
+		internal QDebugView DebugView { get; set; }
+
 		/*Privates*/
 
-		List<QObject> ObjectQueue { get; set; }
+		List<QObject> CreatorQueue { get; set; }
 
-		List<QBehavior> DestroyQueue { get; set; }
+		Queue<QBehavior> DestroyQueue { get; set; }
 
 		bool CreatorFlag = false;
 
@@ -74,22 +78,29 @@ namespace QEngine
 			script.Parent.Script = script;
 			script.Transform.Reset();
 			script.Transform.Position = pos;
-			ObjectQueue.Add(script.Parent);
+			CreatorQueue.Add(script.Parent);
 			CreatorFlag = true;
 		}
 
-		public void AddToDestroyList(QBehavior script)
+		/// <summary>
+		/// Destroys script
+		/// </summary>
+		/// <param name="script"></param>
+		public void Destroy(QBehavior script)
 		{
 			if(!DestroyQueue.Contains(script))
-				DestroyQueue.Add(script);
+				DestroyQueue.Enqueue(script);
 		}
 
 		/*Private Methods*/
 
-		void Destroy(QBehavior script)
+		/// <summary>
+		/// frees up qobject and removes it from all arrays, sounds cool
+		/// </summary>
+		/// <param name="script"></param>
+		void Obliterate(QBehavior script)
 		{
 			GameObjects.Remove(script);
-			DestroyQueue.Remove(script);
 			QObject.DeleteObject(script.Parent);
 		}
 
@@ -109,11 +120,11 @@ namespace QEngine
 			while(CreatorFlag)
 			{
 				//Add all the queue to the main array
-				QGameObjectManager.For(ObjectQueue, o => GameObjects.Add(o.Script));
+				QGameObjectManager.For(CreatorQueue, o => GameObjects.Add(o.Script));
 				//Then make temp array to store the queue
-				var temp = ObjectQueue.ToArray();
+				var temp = CreatorQueue.ToArray();
 				//reset the queue for objects that might get added from the OnStart() from the queued objects
-				ObjectQueue = new List<QObject>();
+				CreatorQueue = new List<QObject>();
 				//Set the flag to false again, Instantiate makes it flip, means we need to load more objects
 				CreatorFlag = false;
 				QGameObjectManager.For(temp, o =>
@@ -131,17 +142,22 @@ namespace QEngine
 			}
 		}
 
+		/// <summary>
+		/// Removes all the items from the destroy queue
+		/// </summary>
 		internal void ObjectDestroyer()
 		{
-			for(var i = 0; i < DestroyQueue.Count; i++)
-				Destroy(DestroyQueue[i]);
+/*			for(var i = 0; i < DestroyQueue.Count; i++)
+				Obliterate(DestroyQueue[i]);*/
+			while(DestroyQueue.Count > 0)
+				Obliterate(DestroyQueue.Dequeue());
 		}
 
 		internal void OnLoad()
 		{
 			QPrefs.Load().Wait();
-			DestroyQueue = new List<QBehavior>();
-			ObjectQueue = new List<QObject>();
+			CreatorQueue = new List<QObject>();
+			DestroyQueue = new Queue<QBehavior>();
 			SpriteRenderer = new QSpriteRenderer(Engine);
 			GuiRenderer = new QGuiRenderer(Engine);
 			GameObjects = new QGameObjectManager();
@@ -153,6 +169,8 @@ namespace QEngine
 			Instantiate(Console = new QConsole(40, 10));
 			Instantiate(Coroutine = new QCoroutine());
 			Instantiate(Accumulator = new QAccum());
+			DebugView = new QDebugView(World.world);
+			DebugView.LoadContent(Engine.GraphicsDevice, Engine.Content);
 			Load();
 		}
 
@@ -161,22 +179,23 @@ namespace QEngine
 			FrameTime = Stopwatch.StartNew();
 			ObjectCreator();
 			ObjectDestroyer();
-			Accumulator.Physics += time.Delta;
-			const float simulation = 1 / 60f;
-			while(Accumulator.Physics >= simulation)
-			{
-				World.Step(simulation);
-				Accumulator.Physics -= simulation;
-			}
-			QGameObjectManager.For(GameObjects.UpdateObjects, u => u.OnUpdate(time.Delta));
+			World.TryStep(time, GameObjects);
+			SpriteRenderer.Matrix = Camera.UpdateMatrix();
 		}
 
 		internal void OnDraw(QSpriteRenderer renderer)
 		{
-			SpriteRenderer.Matrix = Camera.UpdateMatrix();
 			renderer.Begin();
 			QGameObjectManager.For(GameObjects.SpriteObjects, s => s.OnDrawSprite(renderer));
 			renderer.End();
+			//normally ends here
+			if(Debug.DebugLevel < 2) return;
+			var c = Camera;
+
+			float ToSim(double v) => ConvertUnits.ToSimUnits(v);
+
+			Matrix a = Matrix.CreateOrthographicOffCenter(ToSim(c.Bounds.Left), ToSim(c.Bounds.Right), ToSim(c.Bounds.Bottom), ToSim(c.Bounds.Top), -1, 1);
+			DebugView.RenderDebugData(ref a);
 		}
 
 		internal void OnGui(QGuiRenderer renderer)
@@ -184,12 +203,12 @@ namespace QEngine
 			renderer.Begin();
 			QGameObjectManager.For(GameObjects.GuiObjects, g => g.OnDrawGui(renderer));
 			renderer.End();
-			Debug.FrameTime = (float)FrameTime.Elapsed.TotalMilliseconds;
+			Debug.Lag = (float)FrameTime.Elapsed.TotalMilliseconds;
 		}
 
 		internal void OnUnload()
 		{
-			QGameObjectManager.For(GameObjects.Objects, d => AddToDestroyList(d.Script));
+			QGameObjectManager.For(GameObjects.Objects, d => Destroy(d.Script));
 			QGameObjectManager.For(GameObjects.UnloadObjects, u => u.OnUnload());
 			World.Clear();
 			Unload();
@@ -199,7 +218,7 @@ namespace QEngine
 
 		/*ctors*/
 
-		public QScene(string name)
+		protected QScene(string name)
 		{
 			Name = name;
 		}

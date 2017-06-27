@@ -2,55 +2,91 @@
 
 namespace QEngine
 {
-	public class QTransform
-	{
-		public QVec Position { get; set; } = QVec.Zero;
+    public class QTransform
+    {
+        QObject parent;
+        
+        QVec pos;
 
-		public QVec Scale { get; set; } = QVec.One;
+        QVec scale;
 
-		float rotation = 0;
+        public QVec Position
+        {
+            get
+            {
+                return pos;
+            }
+            set
+            {
+                pos = value;
+                parent.Script.MoveEvent(pos);
+            }
+        }
 
-		public float Rotation
-		{
-			get { return rotation; }
-			set { rotation = MathHelper.ToRadians(value); }
-		}
+        public QVec Scale
+        {
+            get
+            {
+                return scale;
+            }
+            set
+            {
+                scale = value;
+            }
+        }
 
-		public static QVec RotateAboutOrigin(QVec point, QVec origin, float rotation)
-		{
-			return QVec.Transform(point - origin, Matrix.CreateRotationZ(rotation)) + origin;
-		}
+        float rotation = 0;
 
-		public void Reset()
-		{
-			Position = QVec.Zero;
-			Scale = QVec.One;
-			Rotation = 0;
-		}
+        public float Rotation
+        {
+            get
+            {
+                return rotation;
+            }
+            set
+            {
+                rotation = value;
+                parent.Script.RotationEvent(rotation);
+            }
+        }
 
-		public override int GetHashCode()
-		{
-			return Position.GetHashCode() + Scale.GetHashCode() + rotation.GetHashCode();
-		}
+        public static QVec RotateAboutOrigin(QVec point, QVec origin, float rotation)
+        {
+            return QVec.Transform(point - origin, Matrix.CreateRotationZ(rotation)) + origin;
+        }
 
-		public static bool operator ==(QTransform t, QTransform t2)
-		{
-			return t.Position == t2.Position && t.Scale == t2.Scale && t.Rotation == t2.Rotation;
-		}
+        public void Reset()
+        {
+            Position = QVec.Zero;
+            Scale = QVec.One;
+            Rotation = 0;
+        }
 
-		public static bool operator !=(QTransform t, QTransform t2)
-		{
-			return t.Position != t2.Position || t.Scale != t2.Scale || t.Rotation != t2.Rotation;
-		}
+        public override int GetHashCode()
+        {
+            return Position.GetHashCode() + Scale.GetHashCode() + rotation.GetHashCode();
+        }
 
-		public override bool Equals(object obj)
-		{
-			if(!(obj is QTransform t)) return false;
-			return this == t;
-		}
+        public static bool operator ==(QTransform t, QTransform t2)
+        {
+            return t.Position == t2.Position && t.Scale == t2.Scale && t.Rotation == t2.Rotation;
+        }
 
-		internal QTransform(QObject parent) { }
+        public static bool operator !=(QTransform t, QTransform t2)
+        {
+            return t.Position != t2.Position || t.Scale != t2.Scale || t.Rotation != t2.Rotation;
+        }
 
-		internal QTransform() { }
-	}
+        public override bool Equals(object obj)
+        {
+            if(!(obj is QTransform t))
+                return false;
+            return this == t;
+        }
+
+        internal QTransform(QObject parent)
+        {
+            this.parent = parent;
+        }
+    }
 }

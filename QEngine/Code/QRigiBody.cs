@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Runtime.Remoting.Messaging;
-using VelcroPhysics.Collision.ContactSystem;
-using VelcroPhysics.Dynamics;
-using VelcroPhysics.Utilities;
+using QPhysics.Dynamics;
 
 namespace QEngine
 {
@@ -12,18 +9,31 @@ namespace QEngine
 
 		public QBehavior AttachedScript { get; }
 
-		internal QTransform Transform;
-
 		internal Guid Id => AttachedScript.Id;
 
 		internal QVec Position
 		{
-			get => ((QVec)body.Position).ToPixel();
+			get => ((QVec)body.Position).ToDis();
 			set
 			{
 				Awake = true;
 				body.Position = value.ToSim();
 			}
+		}
+
+		internal void MoveBody(ref QVec v)
+		{
+			body.SetTransform(v.ToSim(), Rotation);
+		}
+
+		internal void RotateBody(ref float f)
+		{
+			body.SetTransform(Position.ToSim(), f);
+		}
+
+		internal QTransform Transform
+		{
+			get => AttachedScript.Transform;
 		}
 
 		public delegate void Collision(QRigiBody other);
@@ -128,6 +138,8 @@ namespace QEngine
 			set => body.IsSensor = value;
 		}
 
+		public bool IsStatic => body.IsStatic;
+
 		public static QCollisionDirection Direction(QRigiBody b, QRigiBody b2)
 		{
 			QVec dir = (b.Transform.Position - b2.Transform.Position).Normalize();
@@ -139,10 +151,13 @@ namespace QEngine
 				else
 					d = QCollisionDirection.Left;
 			}
-			else if(dir.Y > 0)
-				d = QCollisionDirection.Bottom;
 			else
-				d = QCollisionDirection.Top;
+			{
+				if(dir.Y > 0)
+					d = QCollisionDirection.Bottom;
+				else
+					d = QCollisionDirection.Top;
+			}
 			return d;
 		}
 
@@ -162,8 +177,19 @@ namespace QEngine
 		{
 			AttachedScript = sc;
 			body = bo;
-			Transform = sc.Transform;
-			sc.OnDestroyEvent += () => { sc.World.RemoveBody(this); };
+
+			sc.OnDestroyEvent += () =>
+			{
+				sc.World.RemoveBody(this);
+			};
+//            sc.OnMoveTransformEvent += v =>
+//            {
+//                MoveBody(ref v);
+//            };
+//            sc.OnRotationEvent += r =>
+//            {
+//                RotateBody(ref r);
+//            };
 			body.OnCollision += (a, b, contact) =>
 			{
 				QBehavior script = b.Body.UserData as QBehavior;

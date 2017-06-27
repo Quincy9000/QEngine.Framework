@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +57,9 @@
     <Compile Include="Code\Assets\QMusic.cs" />
     <Compile Include="Code\Assets\QSound.cs" />
     <Compile Include="Code\Assets\QTexture.cs" />
+    <Compile Include="Code\Debug\QDebugView.cs" />
+    <Compile Include="Code\Debug\QPrimitiveBatch.cs" />
+    <Compile Include="Code\Demos\Physics\Ball.cs" />
     <Compile Include="Code\Demos\Physics\Block.cs" />
     <Compile Include="Code\Demos\Physics\BlockCreator.cs" />
     <Compile Include="Code\Demos\Physics\Floor.cs" />
@@ -82,11 +86,13 @@
     <Compile Include="Code\Interfaces\IQDestroy.cs" />
     <Compile Include="Code\Interfaces\IQDrawGui.cs" />
     <Compile Include="Code\Interfaces\IQDrawSprite.cs" />
+    <Compile Include="Code\Interfaces\IQLateUpdate.cs" />
     <Compile Include="Code\Interfaces\IQLoad.cs" />
     <Compile Include="Code\Interfaces\IQObject.cs" />
     <Compile Include="Code\Interfaces\IQPhysics.cs" />
     <Compile Include="Code\Interfaces\IQStart.cs" />
     <Compile Include="Code\Interfaces\IQUnload.cs" />
+    <Compile Include="Code\Interfaces\IQFixedUpdate.cs" />
     <Compile Include="Code\Interfaces\IQUpdate.cs" />
     <Compile Include="Code\Prefabs\QCharacterController.cs" />
     <Compile Include="Code\Primitives\QColor.cs" />
@@ -99,12 +105,12 @@
     <Compile Include="Code\QAppConfig.cs" />
     <Compile Include="Code\QApplication.cs" />
     <Compile Include="Code\QBehavior.cs" />
+    <Compile Include="Code\QControls.cs" />
     <Compile Include="Code\QMapTools.cs" />
     <Compile Include="Code\QRigiBody.cs" />
     <Compile Include="Code\QCamera.cs" />
     <Compile Include="Code\QConsole.cs" />
     <Compile Include="Code\QContentManager.cs" />
-    <Compile Include="Code\Prefabs\QControls.cs" />
     <Compile Include="Code\QCoroutine.cs" />
     <Compile Include="Code\QDebug.cs" />
     <Compile Include="Code\QEngine.cs" />
@@ -181,11 +187,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\VelcroPhysics-master\VelcroPhysics-master\VelcroPhysics\VelcroPhysics.MonoGame.csproj">
-      <Project>{a161076d-532f-4972-a212-09caa5ac6031}</Project>
-      <Name>VelcroPhysics.MonoGame</Name>
+    <ProjectReference Include="..\QPhysics\QPhysics\QPhysics.csproj">
+      <Project>{bc6e158a-8e34-4983-8114-8bf08c39fd21}</Project>
+      <Name>QPhysics</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace QEngine.Demos
+﻿using QEngine.Prefabs;
+
+namespace QEngine.Demos.PlatformingDemo.Scripts
 {
 	/// <summary>
 	/// Platform for the player to stand on
@@ -15,7 +17,7 @@
 
 		public override void OnLoad(QAddContent add)
 		{
-			add.Rectangle("Floor", (int)toSize.X, (int)toSize.Y, QColor.White);
+			add.Rectangle(Name, (int)toSize.X, (int)toSize.Y, QColor.White);
 			Transform.Position = toPos;
 		}
 
@@ -26,10 +28,11 @@
 				return QRandom.Range(1, 255);
 			}
 
-			sprite = new QSprite(this, "Floor");
+			sprite = new QSprite(this, Name);
 			sprite.Color = new QColor(r(), r(), r());
-			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, Transform.Position, Transform.Rotation, QBodyType.Static);
+			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
 			body.Friction = 0.2f;
+			body.IsIgnoreCcd = false;
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)

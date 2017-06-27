@@ -1,6 +1,7 @@
 ﻿using System.Collections;
+using QEngine.Prefabs;
 
-namespace QEngine.Demos
+namespace QEngine.Demos.Physics
 {
 	class BlockCreator : QCharacterController
 	{
@@ -16,7 +17,7 @@ namespace QEngine.Demos
 			Coroutine.Start(ShowFPS());
 		}
 
-		public override void OnUpdate(float time)
+		public override void OnFixedUpdate(float time)
 		{
 			//if(Input.IsKeyDown(QKeys.Space))
 				//World.Gravity = new QVec(0, -10);

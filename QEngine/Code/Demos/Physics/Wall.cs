@@ -1,4 +1,6 @@
-﻿namespace QEngine.Demos
+﻿using QEngine.Prefabs;
+
+namespace QEngine.Demos.Physics
 {
 	class Wall : QCharacterController
 	{
@@ -20,7 +22,7 @@
 			}
 			sprite = new QSprite(this, "Wall");
 			sprite.Color = new QColor(r(), r(), r());
-			World.CreateRectangle(this, sprite.Width, sprite.Height, 1, Transform.Position, Transform.Rotation, QBodyType.Static);
+			World.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)

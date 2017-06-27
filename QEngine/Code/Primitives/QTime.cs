@@ -4,13 +4,13 @@ namespace QEngine
 {
 	public struct QTime
 	{
-		readonly GameTime time;
+		float delta { get; }
 
-		readonly float delta;
-
-		public float Delta => delta > 1/4f ? 1/4f : delta;
+		public float Delta => delta > 1 / 4f ? 1 / 4f : delta;
 
 		public float Fps => 1 / Delta;
+
+		public bool IsLagging { get; }
 
 		public static implicit operator QTime(GameTime gt)
 		{
@@ -20,13 +20,7 @@ namespace QEngine
 		public QTime(GameTime gt)
 		{
 			delta = (float)gt.ElapsedGameTime.TotalSeconds;
-			time = gt;
-		}
-
-		public QTime(float f)
-		{
-			delta = f;
-			time = null;
+			IsLagging = gt.IsRunningSlowly;
 		}
 	}
 }
