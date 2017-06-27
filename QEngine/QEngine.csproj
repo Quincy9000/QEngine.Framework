@@ -187,7 +187,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QPhysics\QPhysics\QPhysics.csproj">
+    <ProjectReference Include="..\QPhysics\QPhysics.csproj">
       <Project>{bc6e158a-8e34-4983-8114-8bf08c39fd21}</Project>
       <Name>QPhysics</Name>
     </ProjectReference>

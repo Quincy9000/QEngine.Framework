@@ -7,9 +7,9 @@ namespace QEngine
 	{
 		internal Body body;
 
-		public QBehavior AttachedScript { get; }
+		public QBehavior Script { get; }
 
-		internal Guid Id => AttachedScript.Id;
+		internal Guid Id => Script.Id;
 
 		internal QVec Position
 		{
@@ -29,11 +29,6 @@ namespace QEngine
 		internal void RotateBody(ref float f)
 		{
 			body.SetTransform(Position.ToSim(), f);
-		}
-
-		internal QTransform Transform
-		{
-			get => AttachedScript.Transform;
 		}
 
 		public delegate void Collision(QRigiBody other);
@@ -142,7 +137,7 @@ namespace QEngine
 
 		public static QCollisionDirection Direction(QRigiBody b, QRigiBody b2)
 		{
-			QVec dir = (b.Transform.Position - b2.Transform.Position).Normalize();
+			QVec dir = (b.Script.Position - b2.Script.Position).Normalize();
 			QCollisionDirection d;
 			if(Math.Abs(dir.X) > Math.Abs(dir.Y))
 			{
@@ -175,21 +170,12 @@ namespace QEngine
 
 		internal QRigiBody(QBehavior sc, Body bo)
 		{
-			AttachedScript = sc;
+			Script = sc;
 			body = bo;
-
 			sc.OnDestroyEvent += () =>
 			{
 				sc.World.RemoveBody(this);
 			};
-//            sc.OnMoveTransformEvent += v =>
-//            {
-//                MoveBody(ref v);
-//            };
-//            sc.OnRotationEvent += r =>
-//            {
-//                RotateBody(ref r);
-//            };
 			body.OnCollision += (a, b, contact) =>
 			{
 				QBehavior script = b.Body.UserData as QBehavior;

@@ -40,6 +40,8 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
 
         QRigiBody Body;
 
+        QMusic spaceJam;
+
         public int HealthMax = 5;
 
         bool IsTouchingFloor = true;
@@ -71,6 +73,7 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
         {
             add.Texture(Assets.Bryan + "BryanSpriteSheet");
             add.Texture(Assets.Bryan + "SwordAttack2");
+            add.Music("Audio/areYouReadyForThis");
         }
 
         public override void OnStart(QGetContent get)
@@ -87,14 +90,16 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
             Transform.Scale = new QVec(4);
             LeftIdle = Frames[2];
             RightIdle = Frames[0];
+            spaceJam = get.Music("areYouReadyForThis");
+            spaceJam.Play();
 
             Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 100);
             //Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 3f, 10);
             //Body = World.CreateRoundedRect(this, Sprite.Width /3f + 20, Sprite.Height / 1.2f, 10);
 
-            Body.FixedRotation = true;
+            //Body.FixedRotation = true;
             Body.Friction = 0.1f;
-            //Body.Restitution = 1f;
+            Body.Restitution = 1f;
 
             Body.OnCollision += other =>
             {
@@ -154,6 +159,7 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
 
         public override void OnFixedUpdate(float time)
         {
+//            Body.Rotation += time * 20;
             if(Health == 0)
                 Scene.ResetScene();
             var delta = time;

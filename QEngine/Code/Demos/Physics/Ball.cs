@@ -21,7 +21,7 @@ namespace QEngine.Demos.Physics
                 Color = new QColor(R(), R(), R())
             };
             body = World.CreateCircle(this, 10, 100);
-            body.Restitution = 0.1f;
+            body.Restitution = 1f;
         }
 
         public override void OnDrawSprite(QSpriteRenderer spriteRenderer)

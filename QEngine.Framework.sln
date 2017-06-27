@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QEngine", "QEngine\QEngine.csproj", "{05DBD8D9-7A22-4739-A8BC-78E4D356C70C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPhysics", "QPhysics\QPhysics\QPhysics.csproj", "{BC6E158A-8E34-4983-8114-8BF08C39FD21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPhysics", "QPhysics\QPhysics.csproj", "{BC6E158A-8E34-4983-8114-8BF08C39FD21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -25,7 +25,13 @@ namespace QEngine
 
 		internal List<IQUnload> UnloadObjects { get; set; }
 
-		public static void For<T>(IList<T> list, Action<T> action) where T : IQObject
+		/// <summary>
+		/// Easier for loop method, nothing special, less typing and uses for loop internally
+		/// </summary>
+		/// <param name="list"></param>
+		/// <param name="action"></param>
+		/// <typeparam name="T"></typeparam>
+		public static void For<T>(IList<T> list, Action<T> action)
 		{
 			for(int i = 0; i < list.Count; i++)
 			{

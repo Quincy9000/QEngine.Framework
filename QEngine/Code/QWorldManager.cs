@@ -16,6 +16,7 @@ namespace QEngine
 		{
 			var b = (BodyType)bodyType;
 			var body = new QRigiBody(script, BodyFactory.CreateRectangle(world, w.ToSim(), h.ToSim(), density, script.Transform.Position.ToSim(), script.Transform.Rotation, b, script));
+			script.Transform.body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -25,6 +26,7 @@ namespace QEngine
 			var d = 4f;
 			var bf = BodyFactory.CreateRoundedRectangle(world, w.ToSim(), h.ToSim(), w.ToSim() / d, h.ToSim() / d, 10, density, script.Transform.Position.ToSim(), script.Transform.Rotation, (BodyType)bodyType, script);
 			var body = new QRigiBody(script, bf);
+			script.Transform.body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -33,6 +35,7 @@ namespace QEngine
 		{
 			var b = (BodyType)bodyType;
 			var body = new QRigiBody(script, BodyFactory.CreateCircle(world, radius.ToSim(), density, script.Transform.Position.ToSim(), b, script));
+			script.Transform.body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -40,6 +43,7 @@ namespace QEngine
 		public QRigiBody CreateEdge(QBehavior script, QVec start, QVec end)
 		{
 			var body = new QRigiBody(script, BodyFactory.CreateEdge(world, start.ToSim(), end.ToSim(), script));
+			script.Transform.body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -48,6 +52,7 @@ namespace QEngine
 		{
 			var b = (BodyType)bodyType;
 			var body = new QRigiBody(script, BodyFactory.CreateCapsule(world, height.ToSim(), radius.ToSim(), density, script.Transform.Position.ToSim(), script.Transform.Rotation, b, script));
+			script.Transform.body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -113,13 +118,6 @@ namespace QEngine
 		{
 			bool step = false;
 			var delta = t.Delta;
-//This code was never proper it seemed to work and update objects but wasnt needed
-//            for(int i = 0; i < Bodies.Count; i++)
-//            {
-//                Bodies[i].Position = Bodies[i].Transform.Position;
-//                Bodies[i].Rotation = Bodies[i].Transform.Rotation;
-//            }
-			//TODO FIX THIS GOD DAMN TRANSFORM MOVEMENT
 			PhysicsAccum += delta;
 			while(PhysicsAccum >= simulation)
 			{
@@ -134,14 +132,17 @@ namespace QEngine
 				ClearForces();
 			/*Interpolation*/
 			double alpha = PhysicsAccum / simulation;
-			for(int i = 0; i < Bodies.Count; i++)
+			QGameObjectManager.For(Bodies, body =>
 			{
-				Bodies[i].Transform.Position = Bodies[i].Position * (float)alpha + Bodies[i].Transform.Position * (1.0f - (float)alpha);
-				Bodies[i].Transform.Rotation = Bodies[i].Rotation * (float)alpha + Bodies[i].Transform.Rotation * (1.0f - (float)alpha);
-			}
+				body.Transform.Position = body.Position * (float)alpha + body.Transform.Position * (1.0f - (float)alpha);
+				body.Transform.Rotation = body.Rotation * (float)alpha + body.Transform.Rotation * (1.0f - (float)alpha);
+			});
 			return step;
 		}
 
+		/// <summary>
+		/// Clears the forces after a physics sub step, using this only once after all substeps have been completed
+		/// </summary>
 		internal void ClearForces()
 		{
 			if(!Settings.AutoClearForces)
@@ -159,6 +160,8 @@ namespace QEngine
 				Bodies.Remove(body);
 			if(world.BodyList.Contains(body.body))
 			{
+				/*Was removing them manually but I think process changes is a better way to remove a body
+				annoy AF*/
 				//world.BodyList.Remove(body.body);
 				world.RemoveBody(body.body);
 			}
@@ -184,3 +187,13 @@ namespace QEngine
 		}
 	}
 }
+
+/*This issue has been fixed, you have to use the right position for it to work smoothly*/
+
+//This code was never proper it seemed to work and update objects but wasnt needed
+//            for(int i = 0; i < Bodies.Count; i++)
+//            {
+//                Bodies[i].Position = Bodies[i].Transform.Position;
+//                Bodies[i].Rotation = Bodies[i].Transform.Rotation;
+//            }
+//TODO FIX THIS GOD DAMN TRANSFORM MOVEMENT

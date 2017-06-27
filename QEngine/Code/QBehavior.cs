@@ -4,30 +4,7 @@ namespace QEngine
 {
 	public abstract class QBehavior
 	{
-		internal bool IsDestroyed { get; set; }
-
-		internal event Action OnDestroyEvent;
-
-		internal event Action<QVec> OnMoveTransformEvent;
-
-		internal event Action<float> OnRotationEvent;
-
-		internal void DestroyEvent()
-		{
-			OnDestroyEvent?.Invoke();
-		}
-
-		internal void MoveEvent(QVec v)
-		{
-			OnMoveTransformEvent?.Invoke(v);
-		}
-
-		internal void RotationEvent(float f)
-		{
-			OnRotationEvent?.Invoke(f);
-		}
-
-		/*Publics*/
+		/*Public*/
 
 		public Guid Id => Parent.Id;
 
@@ -57,6 +34,26 @@ namespace QEngine
 
 		public QWorldManager World => Scene.World;
 
+		/*Transforms*/
+
+		public QVec Position
+		{
+			get => Transform.Position;
+			set => Transform.Position = value;
+		}
+
+		public QVec Scale
+		{
+			get => Transform.Scale;
+			set => Transform.Scale = value;
+		}
+
+		public float Rotation
+		{
+			get => Transform.Rotation;
+			set => Transform.Rotation = value;
+		}
+
 		public T GetComponent<T>(string name) where T : QBehavior
 		{
 			return (T)(Scene.GameObjects.Objects.Find(u => u.Script.Name == name).Script);
@@ -68,23 +65,33 @@ namespace QEngine
 		}
 
 		public void Instantiate(QBehavior b, QVec v = default(QVec)) => Scene.Instantiate(b, v);
+		
+		/*Internals*/
+		
+		internal bool IsDestroyed { get; set; }
+
+		internal event Action OnDestroyEvent;
+
+		internal void DestroyEvent()
+		{
+			OnDestroyEvent?.Invoke();
+		}
 
 		internal void SetName()
 		{
-			if (string.IsNullOrEmpty(Name))
+			if(string.IsNullOrEmpty(Name))
 			{
 				Name = GetType().Name;
 			}
 		}
+		
+		/*Protected*/
 
 		protected QBehavior(string name)
 		{
 			Name = name;
 		}
 
-		protected QBehavior()
-		{
-			
-		}
+		protected QBehavior() { }
 	}
 }
