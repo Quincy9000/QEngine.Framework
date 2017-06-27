@@ -134,8 +134,8 @@ namespace QEngine
 			double alpha = PhysicsAccum / simulation;
 			QGameObjectManager.For(Bodies, body =>
 			{
-				body.Transform.Position = body.Position * (float)alpha + body.Transform.Position * (1.0f - (float)alpha);
-				body.Transform.Rotation = body.Rotation * (float)alpha + body.Transform.Rotation * (1.0f - (float)alpha);
+				body.Script.Position = body.Position * (float)alpha + body.Script.Position * (1.0f - (float)alpha);
+				body.Script.Rotation = body.Rotation * (float)alpha + body.Script.Rotation * (1.0f - (float)alpha);
 			});
 			return step;
 		}

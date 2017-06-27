@@ -91,7 +91,7 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
             LeftIdle = Frames[2];
             RightIdle = Frames[0];
             spaceJam = get.Music("areYouReadyForThis");
-            spaceJam.Play();
+            //spaceJam.Play();
 
             Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 100);
             //Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 3f, 10);
@@ -116,7 +116,7 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
                     }
                     case QCollisionDirection.Left:
                     {
-                        if(other.AttachedScript is Bat b)
+                        if(other.Script is Bat b)
                         {
                             if(Accumulator.CheckAccum("CanDamage", 0.5f))
                             {
@@ -130,7 +130,7 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
                     }
                     case QCollisionDirection.Right:
                     {
-                        if(other.AttachedScript is Bat b)
+                        if(other.Script is Bat b)
                         {
                             if(Accumulator.CheckAccum("CanDamage", 0.5f))
                             {
@@ -174,7 +174,7 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
             }
             if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(WalkingIntoWallsDistance, 0), out QRigiBody b))
             {
-                if(b.AttachedScript is Platform)
+                if(b.Script is Platform)
                 {
                     Transform.Position += QVec.Left * 2;
                     Sprite.Source = RightIdle;
@@ -183,7 +183,7 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
             }
             if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(-WalkingIntoWallsDistance, 0), out QRigiBody bb))
             {
-                if(bb.AttachedScript is Platform)
+                if(bb.Script is Platform)
                 {
                     Transform.Position += QVec.Right * 2;
                     Sprite.Source = LeftIdle;
