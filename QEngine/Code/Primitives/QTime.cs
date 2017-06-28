@@ -6,11 +6,25 @@ namespace QEngine
 	{
 		float delta { get; }
 
-		public float Delta => delta > 1 / 4f ? 1 / 4f : delta;
+		public float Delta
+		{
+			get
+			{
+				if(delta > 1 / 4f)
+				{
+					IsLagging = true;
+					return 1 / 4f;
+				}
+				else
+				{
+					return delta;
+				}
+			}
+		}
 
 		public float Fps => 1 / Delta;
 
-		public bool IsLagging { get; }
+		public bool IsLagging { get; private set; }
 
 		public static implicit operator QTime(GameTime gt)
 		{
@@ -20,7 +34,7 @@ namespace QEngine
 		public QTime(GameTime gt)
 		{
 			delta = (float)gt.ElapsedGameTime.TotalSeconds;
-			IsLagging = gt.IsRunningSlowly;
+			IsLagging = false;
 		}
 	}
 }

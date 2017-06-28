@@ -108,7 +108,7 @@ namespace QEngine
 
 		float PhysicsAccum { get; set; } = 0;
 
-		const float simulation = 1 / 60f;
+		const float Simulation = 1 / 60f;
 
 		/// <summary>
 		/// Moves all the bodies to the most recent transform, then simulates and then moves the transforms to the correct position where the body was moved, simulation time
@@ -118,6 +118,9 @@ namespace QEngine
 		{
 			bool step = false;
 			var delta = t.Delta;
+			var simulation = Simulation;
+			if(t.IsLagging)
+				simulation = Simulation * 2;
 			PhysicsAccum += delta;
 			while(PhysicsAccum >= simulation)
 			{
