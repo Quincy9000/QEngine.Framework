@@ -2,31 +2,31 @@
 
 namespace QEngine.Demos.Physics
 {
-    class Ball : QCharacterController
-    {
-        QSprite sprite;
+	class Ball : QCharacterController
+	{
+		QRigiBody body;
 
-        QRigiBody body;
+		QColor c;
 
-        public override void OnLoad(QAddContent add)
-        {
-            add.Circle(Name, 22, QColor.White);
-        }
+		float radius;
 
-        public override void OnStart(QGetContent get)
-        {
-            int R() => QRandom.Range(1, 255);
-            sprite = new QSprite(this, Name)
-            {
-                Color = new QColor(R(), R(), R())
-            };
-            body = World.CreateCircle(this, 10, 100);
-            body.Restitution = 1f;
-        }
+		public Ball(float diameter)
+		{
+			radius = diameter / 2f;
+		}
 
-        public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
-        {
-            spriteRenderer.Draw(sprite, Transform);
-        }
-    }
+		public override void OnStart(QGetContent get)
+		{
+			int R() => QRandom.Range(100, 255);
+			body = World.CreateCircle(this, radius, 20);
+			c = new QColor(R(), R(), R());
+			//body.Restitution = 1f;
+		}
+
+		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
+		{
+			//spriteRenderer.Draw(sprite, Transform);
+			spriteRenderer.DrawCircle(Transform, radius, c);
+		}
+	}
 }

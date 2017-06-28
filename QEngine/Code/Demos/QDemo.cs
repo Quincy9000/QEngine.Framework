@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using QEngine.Demos.Physics;
 using QEngine.Demos.PlatformingDemo;
 
 namespace QEngine.Demos
@@ -18,7 +19,7 @@ namespace QEngine.Demos
 				Fullscreen = false,
 				Vsync = false,
 				MouseVisible = true,
-			}).Run(new Platformer());
+			}).Run(new PhysicsScene());
 		}
 	}
 }

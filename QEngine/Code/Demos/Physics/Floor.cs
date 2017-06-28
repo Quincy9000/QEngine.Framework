@@ -12,7 +12,7 @@ namespace QEngine.Demos.Physics
 
 		public override void OnLoad(QAddContent add)
 		{
-			add.Rectangle("Floor", Window.Width, 40, QColor.White);
+			add.Rectangle(Name, Window.Width, 40, QColor.White);
 			Transform.Position = toPos;
 		}
 
@@ -22,7 +22,7 @@ namespace QEngine.Demos.Physics
 			{
 				return QRandom.Range(1, 255);
 			}
-			sprite = new QSprite(this, "Floor");
+			sprite = new QSprite(this, Name);
 			sprite.Color = new QColor(r(), r(), r());
 			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
 		}

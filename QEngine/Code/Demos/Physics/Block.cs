@@ -4,29 +4,32 @@ namespace QEngine.Demos.Physics
 {
     class Block : QCharacterController
     {
-        QSprite sprite;
-
         QRigiBody body;
 
-        public override void OnLoad(QAddContent add)
+        public float Width { get; }
+
+        public float Height { get; }
+        
+        public QColor Color { get; private set; }
+
+        public Block(float w, float h)
         {
-            add.Rectangle(Name, 22, 22, QColor.YellowGreen);
+            Width = w;
+            Height = h;
         }
 
         public override void OnStart(QGetContent get)
         {
             int R() => QRandom.Range(1, 255);
-            sprite = new QSprite(this, Name)
-            {
-                Color = new QColor(R(), R(), R())
-            };
-            body = World.CreateRectangle(this, 22, 22, 10);
-            body.Restitution = 1f;
+            body = World.CreateRectangle(this, Width, Height, 10);
+            //body.FixedRotation = true;
+            Color = new QColor(R(), R(), R());
+            //body.Restitution = 1f;
         }
 
         public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
         {
-            spriteRenderer.Draw(sprite, Transform);
+            spriteRenderer.DrawRect(Transform, Width, Height, Color);
         }
     }
 }

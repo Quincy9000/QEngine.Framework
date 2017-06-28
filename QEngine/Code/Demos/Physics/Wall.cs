@@ -10,7 +10,7 @@ namespace QEngine.Demos.Physics
 
 		public override void OnLoad(QAddContent add)
 		{
-			add.Rectangle("Wall", 40, Window.Height, QColor.White);
+			add.Rectangle(Name, 40, Window.Height, QColor.White);
 			Transform.Position = toPos;
 		}
 

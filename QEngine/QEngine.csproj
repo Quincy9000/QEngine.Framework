@@ -128,6 +128,7 @@
     <Compile Include="Code\QObject.cs" />
     <Compile Include="Code\Primitives\QRect.cs" />
     <Compile Include="Code\Rendering\QImage.cs" />
+    <Compile Include="Code\Rendering\QPrimitives.cs" />
     <Compile Include="Code\Rendering\QRenderer.cs" />
     <Compile Include="Code\QScene.cs" />
     <Compile Include="Code\QSceneManager.cs" />

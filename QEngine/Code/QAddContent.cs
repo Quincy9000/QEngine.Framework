@@ -48,7 +48,7 @@ namespace QEngine
 
 		public void Rectangle(string n, int w, int h, QColor color)
 		{
-			var t = new Texture2D(cm.Engine.GraphicsDevice, w, h);
+			var t = new Texture2D(cm.Engine.GraphicsDevice, w, h, false, SurfaceFormat.Color, w * h);
 			var c = new QColor[w * h];
 			for(var i = 0; i < c.Length; i++)
 				c[i] = color;
@@ -61,26 +61,55 @@ namespace QEngine
 
 		public void Circle(string n, int diameter, QColor color)
 		{
-			Texture2D CreateCircleTexture(GraphicsDevice gd, int r, QColor c)
+//			Texture2D CreateCircleTexture(GraphicsDevice gd, int r, QColor c)
+//			{
+//				var texture = new Texture2D(gd, diameter, diameter);
+//				var colorData = new QColor[diameter * diameter];
+//
+//				var diam = diameter / 2f;
+//				var diamsq = diam * diam;
+//
+//				for(var x = 0; x < diameter; x++)
+//				for(var y = 0; y < diameter; y++)
+//				{
+//					var index = x * diameter + y;
+//					var pos = new QVec(x - diam, y - diam);
+//					if(pos.LengthSquared() <= diamsq)
+//					{
+//						colorData[index] = color;
+//					}
+//					else
+//					{
+//						colorData[index] = QColor.Transparent;
+//					}
+//				}
+//
+//				texture.SetData(colorData);
+//				return texture;
+//			}
+
+			Texture2D createCircleText(GraphicsDevice g, int r, QColor c)
 			{
-				var texture = new Texture2D(gd, diameter, diameter);
-				var colorData = new QColor[diameter * diameter];
+				Texture2D texture = new Texture2D(g, r, r);
+				QColor[] colorData = new QColor[r * r];
 
-				var diam = diameter / 2f;
-				var diamsq = diam * diam;
+				float diam = r / 2f;
+				float diamsq = diam * diam;
 
-				for(var x = 0; x < diameter; x++)
-				for(var y = 0; y < diameter; y++)
+				for(int x = 0; x < r; x++)
 				{
-					var index = x * diameter + y;
-					var pos = new QVec(x - diam, y - diam);
-					if(pos.LengthSquared() <= diamsq)
+					for(int y = 0; y < r; y++)
 					{
-						colorData[index] = color;
-					}
-					else
-					{
-						colorData[index] = QColor.Transparent;
+						int index = x * r + y;
+						QVec pos = new QVec(x - diam, y - diam);
+						if(pos.LengthSquared() <= diamsq)
+						{
+							colorData[index] = c;
+						}
+						else
+						{
+							colorData[index] = QColor.Transparent;
+						}
 					}
 				}
 
@@ -88,7 +117,7 @@ namespace QEngine
 				return texture;
 			}
 
-			var t = CreateCircleTexture(cm.Engine.GraphicsDevice, diameter, color);
+			var t = createCircleText(cm.Engine.GraphicsDevice, diameter, color);
 			cm.AddCustomTexture(n, t);
 		}
 

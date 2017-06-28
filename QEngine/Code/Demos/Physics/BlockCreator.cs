@@ -5,11 +5,6 @@ namespace QEngine.Demos.Physics
 {
 	class BlockCreator : QCharacterController
 	{
-		public override void OnStart(QGetContent get)
-		{
-			//Coroutine.Start(ShowFPS());
-		}
-
 		IEnumerator ShowFPS()
 		{
 			Console.WriteLine($"FPS: {Debug.Fps}");
@@ -19,12 +14,21 @@ namespace QEngine.Demos.Physics
 
 		public override void OnFixedUpdate(float time)
 		{
-			//if(Input.IsKeyDown(QKeys.Space))
-				//World.Gravity = new QVec(0, -10);
-			//else
-				//World.Gravity = new QVec(0, QWorldManager.DefaultGravity);
+			if(Input.IsKeyDown(QKeys.Space))
+				World.Gravity = new QVec(0, -10);
+			else
+				World.Gravity = new QVec(0, QWorldManager.DefaultGravity);
 			if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.03f))
-				Instantiate(new Block(), Camera.ScreenToWorld(Input.MousePosition()));
+			{
+				var tt = 40;
+				int i = QRandom.Range(0, 1);
+				if(i == 0)
+					Instantiate(new Block(tt, tt), Camera.ScreenToWorld(Input.MousePosition()));
+				else
+				{
+					Instantiate(new Ball(tt), Camera.ScreenToWorld(Input.MousePosition()));
+				}
+			}
 			if(Input.IsMouseScrolledUp())
 				Camera.Zoom += Camera.Zoom * 0.1f;
 			if(Input.IsMouseScrolledDown())

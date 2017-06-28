@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.Diagnostics;
+using System.Globalization;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using OpenGL;
 
 namespace QEngine
 {
@@ -8,11 +12,38 @@ namespace QEngine
 
 		internal GraphicsDevice gd => sb.GraphicsDevice;
 
+		internal Effect basicEffect;
+
 		public QColor ClearColor { get; set; } = QColor.White;
 
 		internal virtual void Begin()
 		{
 			sb.Begin();
+		}
+
+		/// <summary>
+		/// Draws filled in circle
+		/// </summary>
+		/// <param name="t"></param>
+		/// <param name="radius"></param>
+		/// <param name="c"></param>
+		public void DrawCircle(QTransform t, float radius, QColor c)
+		{
+			sb.DrawCircle(t.Position, radius, 20, c, radius);
+		}
+
+		/// <summary>
+		/// Assumes that the rectangle origin is in the middle
+		/// </summary>
+		/// <param name="t"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="color"></param>
+		public virtual void DrawRect(QTransform t, float width, float height, QColor color)
+		{
+			var v = t.Position;
+			//sb.DrawRectangle(v - new QVec(width, height)/2f, new QVec(width, height), color);
+			sb.FillRectangle(t.Position.X, t.Position.Y, width, height, color, t.Rotation);
 		}
 
 		internal virtual void Draw(QTexture t, QVec pos, QColor c)
@@ -38,6 +69,7 @@ namespace QEngine
 		internal QRenderer(QEngine e)
 		{
 			sb = e.SpriteBatch;
+			basicEffect = new BasicEffect(sb.GraphicsDevice);
 		}
 	}
 }

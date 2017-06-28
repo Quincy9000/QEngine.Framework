@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using Microsoft.Xna.Framework;
 using QEngine.Debug;
 using QPhysics.Utilities;
@@ -56,6 +53,8 @@ namespace QEngine
 
 		bool CreatorFlag = false;
 
+		/*Public Methods*/
+
 		public void ResetScene()
 		{
 			Engine.Manager.ResetScene();
@@ -67,8 +66,6 @@ namespace QEngine
 		}
 
 		public QRect Window => Engine.GraphicsDevice.Viewport.Bounds;
-
-		/*Public Methods*/
 
 		public void Instantiate(QBehavior script, QVec pos = default(QVec))
 		{
@@ -160,8 +157,8 @@ namespace QEngine
 			DestroyQueue = new Queue<QBehavior>();
 			SpriteRenderer = new QSpriteRenderer(Engine);
 			GuiRenderer = new QGuiRenderer(Engine);
-			GameObjects = new QGameObjectManager();
 			Content = new QContentManager(Engine);
+			GameObjects = new QGameObjectManager();
 			World = new QWorldManager();
 			Instantiate(Input = new QControls());
 			Instantiate(Debug = new QDebug());
@@ -191,9 +188,7 @@ namespace QEngine
 			//normally ends here
 			if(Debug.DebugLevel < 2) return;
 			var c = Camera;
-
 			float ToSim(double v) => ConvertUnits.ToSimUnits(v);
-
 			Matrix a = Matrix.CreateOrthographicOffCenter(ToSim(c.Bounds.Left), ToSim(c.Bounds.Right), ToSim(c.Bounds.Bottom), ToSim(c.Bounds.Top), -1, 1);
 			DebugView.RenderDebugData(ref a);
 		}
