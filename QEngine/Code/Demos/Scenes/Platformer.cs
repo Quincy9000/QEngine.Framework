@@ -1,9 +1,15 @@
-﻿using QEngine.Demos.PlatformingDemo.Scripts;
+﻿using System.Collections.Generic;
+using QEngine.Demos.PlatformingDemo;
 
-namespace QEngine.Demos.PlatformingDemo
+namespace QEngine.Demos.Scenes
 {
 	public class Platformer : QScene
 	{
+		protected override void BehaviorScriptLoader(List<IQLoad> scripts)
+		{
+			
+		}
+
 		protected override void Load()
 		{
 			Instantiate(new BiomeLevel());

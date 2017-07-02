@@ -12,6 +12,17 @@ namespace QEngine
 
 		internal QRigiBody body;
 
+		internal QRigiBody Body
+		{
+			get => body;
+			set
+			{
+				body = value;
+				body.Position = pos;
+				body.Rotation = rotation;
+			}
+		}
+
 		public QVec Position
 		{
 			get => body?.Position ?? pos;
@@ -47,6 +58,14 @@ namespace QEngine
 			Position = QVec.Zero;
 			Scale = QVec.One;
 			Rotation = 0;
+		}
+
+		public void Reset(QVec pos, QVec scale, float rotation)
+		{
+			body = null;
+			Position = pos;
+			Scale = scale;
+			Rotation = rotation;
 		}
 
 		public override int GetHashCode()

@@ -13,12 +13,12 @@ namespace QEngine.Demos.CircleSpawnDemo
 
 		public override void OnStart(QGetContent get)
 		{
-			int Color() => QRandom.Range(1, 255);
+			int Color() => QRandom.Number(1, 255);
 			sprite = new QSprite(this, "circle");
 			sprite.Color = new QColor(Color(), Color(), Color());
 			Transform.Position = new QVec(
-				QRandom.Range(Camera.Position.X - Window.Width/2f, Camera.Position.X  + Window.Width/2f), 
-				QRandom.Range(Camera.Position.Y - Window.Height/2f, Camera.Position.Y + Window.Height/2f));
+				QRandom.Number(Camera.Position.X - Window.Width/2f, Camera.Position.X  + Window.Width/2f), 
+				QRandom.Number(Camera.Position.Y - Window.Height/2f, Camera.Position.Y + Window.Height/2f));
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)

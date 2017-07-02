@@ -5,29 +5,19 @@ namespace QEngine.Demos.Physics
 {
 	class BlockCreator : QCharacterController
 	{
-		IEnumerator ShowFPS()
+		public override void OnUpdate(float time)
 		{
-			Console.WriteLine($"FPS: {Debug.Fps}");
-			yield return QCoroutine.WaitForSeconds(0.3f);
-			Coroutine.Start(ShowFPS());
-		}
-
-		public override void OnFixedUpdate(float time)
-		{
-			if(Input.IsKeyDown(QKeys.Space))
-				World.Gravity = new QVec(0, -10);
-			else
-				World.Gravity = new QVec(0, QWorldManager.DefaultGravity);
+//			if(Input.IsKeyHeld(QKeys.Space))
+//				World.Gravity = new QVec(0, -10);
+//			else
+//				World.Gravity = new QVec(0, QWorldManager.DefaultGravity);
 			if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.03f))
 			{
-				var tt = 40;
-				int i = QRandom.Range(0, 1);
-				if(i == 0)
-					Instantiate(new Block(tt, tt), Camera.ScreenToWorld(Input.MousePosition()));
+				var size = 40;
+				if(QRandom.Number(0, 1) == 0)
+					Instantiate(new Block(size, size), Camera.ScreenToWorld(Input.MousePosition()));
 				else
-				{
-					Instantiate(new Ball(tt), Camera.ScreenToWorld(Input.MousePosition()));
-				}
+					Instantiate(new Ball(size), Camera.ScreenToWorld(Input.MousePosition()));
 			}
 			if(Input.IsMouseScrolledUp())
 				Camera.Zoom += Camera.Zoom * 0.1f;
@@ -36,7 +26,5 @@ namespace QEngine.Demos.Physics
 			if(Input.IsKeyPressed(QKeys.Escape))
 				Scene.ResetScene();
 		}
-
-		public BlockCreator() : base("BlockCreator") { }
 	}
 }

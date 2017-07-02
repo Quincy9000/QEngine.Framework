@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
+using System.Security;
 using Microsoft.Xna.Framework;
 using QEngine.Debug;
+using QPhysics.Dynamics;
+using QPhysics.Tools.Cutting;
 using QPhysics.Utilities;
 
 namespace QEngine
@@ -55,11 +60,18 @@ namespace QEngine
 
 		/*Public Methods*/
 
+		/// <summary>
+		/// Reloads the current scene
+		/// </summary>
 		public void ResetScene()
 		{
 			Engine.Manager.ResetScene();
 		}
 
+		/// <summary>
+		/// Changes to a scene that exists
+		/// </summary>
+		/// <param name="s"></param>
 		public void ChangeScene(string s)
 		{
 			Engine.Manager.ChangeScene(s);
@@ -67,14 +79,13 @@ namespace QEngine
 
 		public QRect Window => Engine.GraphicsDevice.Viewport.Bounds;
 
-		public void Instantiate(QBehavior script, QVec pos = default(QVec))
+		public void Instantiate(QBehavior script, QVec pos = default(QVec), float rotation = 0)
 		{
-			script.SetName();
 			script.Parent = QObject.NewObject();
 			script.Parent.Scene = this;
 			script.Parent.Script = script;
-			script.Transform.Reset();
-			script.Transform.Position = pos;
+			script.Transform.Reset(pos, QVec.One, rotation);
+			script.SetName();
 			CreatorQueue.Add(script.Parent);
 			CreatorFlag = true;
 		}
@@ -103,8 +114,21 @@ namespace QEngine
 
 		/*Protected Virtuals*/
 
+		/// <summary>
+		/// Load all your scripts here, and the scene will call all loads and compile the texture
+		/// before it is instantiated so that there is not loading textures during gameplay,
+		/// but totally optional
+		/// </summary>
+		protected virtual void BehaviorScriptLoader(List<IQLoad> scripts) { }
+
+		/// <summary>
+		/// Instantiate all your objects here
+		/// </summary>
 		protected virtual void Load() { }
 
+		/// <summary>
+		/// Do some stuff here before unloading the scene like saving etc..
+		/// </summary>
 		protected virtual void Unload() { }
 
 		/*Internal Methods*/
@@ -150,6 +174,9 @@ namespace QEngine
 				Obliterate(DestroyQueue.Dequeue());
 		}
 
+		/// <summary>
+		/// When the scene starts it creates all the needed objects that are required by default
+		/// </summary>
 		internal void OnLoad()
 		{
 			QPrefs.Load().Wait();
@@ -160,39 +187,74 @@ namespace QEngine
 			Content = new QContentManager(Engine);
 			GameObjects = new QGameObjectManager();
 			World = new QWorldManager();
+			List<IQLoad> Loaders = new List<IQLoad>();
+			//Use this method to load textures before the scene starts to compile all of them
+			//so that the megatexture only has to be created once per scene so that there
+			//is no delay when objects spawn, but totally optional if you have a better system
+			BehaviorScriptLoader(Loaders);
+			foreach(var loader in Loaders)
+			{
+				((QBehavior)(loader)).SetName();
+				((QBehavior)(loader)).Parent = QObject.NewObject();
+				loader.OnLoad(new QAddContent(Content));
+				QObject.DeleteObject(((QBehavior)(loader)).Parent);
+			}
 			Instantiate(Input = new QControls());
 			Instantiate(Debug = new QDebug());
 			Instantiate(Camera = new QCamera());
-			Instantiate(Console = new QConsole(40, 10));
+			Instantiate(Console = new QConsole());
 			Instantiate(Coroutine = new QCoroutine());
 			Instantiate(Accumulator = new QAccum());
+			CheckQueue();
 			DebugView = new QDebugView(World.world);
 			DebugView.LoadContent(Engine.GraphicsDevice, Engine.Content);
 			Load();
 		}
 
+		/// <summary>
+		/// Checks for objects that have been added to Queue 
+		/// and removes ones from that are in the remove queue
+		/// </summary>
+		void CheckQueue()
+		{
+			ObjectCreator();
+			ObjectDestroyer();
+		}
+
+		/// <summary>
+		/// uses variable time step for updates, and timestep for physics engine with interpolation
+		/// </summary>
+		/// <param name="time"></param>
 		internal void OnUpdate(QTime time)
 		{
 			FrameTime = Stopwatch.StartNew();
-			ObjectCreator();
-			ObjectDestroyer();
 			World.TryStep(time, GameObjects);
+			CheckQueue();
 			SpriteRenderer.Matrix = Camera.UpdateMatrix();
 		}
 
+		/// <summary>
+		/// Renders all thge objects, and debug information
+		/// </summary>
+		/// <param name="renderer"></param>
 		internal void OnDraw(QSpriteRenderer renderer)
 		{
 			renderer.Begin();
 			QGameObjectManager.For(GameObjects.SpriteObjects, s => s.OnDrawSprite(renderer));
 			renderer.End();
-			//normally ends here
+			//normally ends here, debug renders here, laggy af
 			if(Debug.DebugLevel < 2) return;
-			var c = Camera;
+			var c = Camera.Bounds;
 			float ToSim(double v) => ConvertUnits.ToSimUnits(v);
-			Matrix a = Matrix.CreateOrthographicOffCenter(ToSim(c.Bounds.Left), ToSim(c.Bounds.Right), ToSim(c.Bounds.Bottom), ToSim(c.Bounds.Top), -1, 1);
+			Matrix a = Matrix.CreateOrthographicOffCenter(ToSim(c.Left), ToSim(c.Right),
+				ToSim(c.Bottom), ToSim(c.Top), 0, 1);
 			DebugView.RenderDebugData(ref a);
 		}
 
+		/// <summary>
+		/// Use this after OnDraw to draw things that must be on top but do not interact with the draw objects
+		/// </summary>
+		/// <param name="renderer"></param>
 		internal void OnGui(QGuiRenderer renderer)
 		{
 			renderer.Begin();
@@ -201,6 +263,9 @@ namespace QEngine
 			Debug.Lag = (float)FrameTime.Elapsed.TotalMilliseconds;
 		}
 
+		/// <summary>
+		/// Unloads everything that was used in the scene
+		/// </summary>
 		internal void OnUnload()
 		{
 			QGameObjectManager.For(GameObjects.Objects, d => Destroy(d.Script));

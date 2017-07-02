@@ -1,4 +1,6 @@
-﻿namespace QEngine.Demos.CircleSpawnDemo
+﻿using QEngine.Demos.CircleSpawnDemo;
+
+namespace QEngine.Demos.Scenes
 {
 	public class QDemoScene : QScene
 	{

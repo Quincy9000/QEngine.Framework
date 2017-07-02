@@ -11,23 +11,19 @@ namespace QEngine
 	{
 		#region Private Members
 
-		static readonly Dictionary<String, List<Vector2>> circleCache = new Dictionary<string, List<Vector2>>();
-
+		private static readonly Dictionary<String, List<Vector2>> circleCache = new Dictionary<string, List<Vector2>>();
 		//private static readonly Dictionary<String, List<Vector2>> arcCache = new Dictionary<string, List<Vector2>>();
-		static Texture2D pixel;
+		private static Texture2D pixel;
 
 		#endregion
 
 
 		#region Private Methods
 
-		static void CreateThePixel(SpriteBatch spriteBatch)
+		private static void CreateThePixel(SpriteBatch spriteBatch)
 		{
 			pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-			pixel.SetData(new[]
-			{
-				Color.White
-			});
+			pixel.SetData(new[]{ Color.White });
 		}
 
 
@@ -39,12 +35,12 @@ namespace QEngine
 		/// <param name="points">The points to connect with lines</param>
 		/// <param name="color">The color to use</param>
 		/// <param name="thickness">The thickness of the lines</param>
-		static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, List<Vector2> points, Color color, float thickness)
+		private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, List<Vector2> points, Color color, float thickness)
 		{
-			if(points.Count < 2)
+			if (points.Count < 2)
 				return;
 
-			for(int i = 1; i < points.Count; i++)
+			for (int i = 1; i < points.Count; i++)
 			{
 				DrawLine(spriteBatch, points[i - 1] + position, points[i] + position, color, thickness);
 			}
@@ -57,11 +53,11 @@ namespace QEngine
 		/// <param name="radius">The radius of the circle</param>
 		/// <param name="sides">The number of sides to generate</param>
 		/// <returns>A list of vectors that, if connected, will create a circle</returns>
-		static List<Vector2> CreateCircle(double radius, int sides)
+		private static List<Vector2> CreateCircle(double radius, int sides)
 		{
 			// Look for a cached version of this circle
 			String circleKey = radius + "x" + sides;
-			if(circleCache.ContainsKey(circleKey))
+			if (circleCache.ContainsKey(circleKey))
 			{
 				return circleCache[circleKey];
 			}
@@ -71,7 +67,7 @@ namespace QEngine
 			const double max = 2.0 * Math.PI;
 			double step = max / sides;
 
-			for(double theta = 0.0; theta < max; theta += step)
+			for (double theta = 0.0; theta < max; theta += step)
 			{
 				vectors.Add(new Vector2((float)(radius * Math.Cos(theta)), (float)(radius * Math.Sin(theta))));
 			}
@@ -94,7 +90,7 @@ namespace QEngine
 		/// <param name="startingAngle">The starting angle of arc, 0 being to the east, increasing as you go clockwise</param>
 		/// <param name="radians">The radians to draw, clockwise from the starting angle</param>
 		/// <returns>A list of vectors that, if connected, will create an arc</returns>
-		static List<Vector2> CreateArc(float radius, int sides, float startingAngle, float radians)
+		private static List<Vector2> CreateArc(float radius, int sides, float startingAngle, float radians)
 		{
 			List<Vector2> points = new List<Vector2>();
 			points.AddRange(CreateCircle(radius, sides));
@@ -105,7 +101,7 @@ namespace QEngine
 			double anglePerSide = MathHelper.TwoPi / sides;
 
 			// "Rotate" to the starting point
-			while((curAngle + (anglePerSide / 2.0)) < startingAngle)
+			while ((curAngle + (anglePerSide / 2.0)) < startingAngle)
 			{
 				curAngle += anglePerSide;
 
@@ -137,7 +133,7 @@ namespace QEngine
 		/// <param name="color">The color to draw the rectangle in</param>
 		public static void FillRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{
-			if(pixel == null)
+			if (pixel == null)
 			{
 				CreateThePixel(spriteBatch);
 			}
@@ -156,7 +152,7 @@ namespace QEngine
 		/// <param name="angle">The angle in radians to draw the rectangle at</param>
 		public static void FillRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float angle)
 		{
-			if(pixel == null)
+			if (pixel == null)
 			{
 				CreateThePixel(spriteBatch);
 			}
@@ -188,21 +184,21 @@ namespace QEngine
 		/// <param name="color">The color to draw the rectangle in</param>
 		public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float angle)
 		{
-			if(pixel == null)
+			if (pixel == null)
 			{
 				CreateThePixel(spriteBatch);
 			}
 
 			// stretch the pixel between the two vectors
 			spriteBatch.Draw(pixel,
-				location - size/2f,
-				null,
-				color,
-				angle,
-				location,
-				size,
-				SpriteEffects.None,
-				0);
+			                 location,
+			                 null,
+			                 color,
+			                 angle,
+			                 Vector2.Zero,
+			                 size,
+			                 SpriteEffects.None,
+			                 0);
 		}
 
 
@@ -262,6 +258,7 @@ namespace QEngine
 		/// <param name="thickness">The thickness of the lines</param>
 		public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness)
 		{
+
 			// TODO: Handle rotations
 			// TODO: Figure out the pattern for the offsets required and then handle it in the line instead of here
 
@@ -392,21 +389,21 @@ namespace QEngine
 		/// <param name="thickness">The thickness of the line</param>
 		public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness)
 		{
-			if(pixel == null)
+			if (pixel == null)
 			{
 				CreateThePixel(spriteBatch);
 			}
 
 			// stretch the pixel between the two vectors
 			spriteBatch.Draw(pixel,
-				point,
-				null,
-				color,
-				angle,
-				Vector2.Zero,
-				new Vector2(length, thickness),
-				SpriteEffects.None,
-				0);
+			                 point,
+			                 null,
+			                 color,
+			                 angle,
+			                 Vector2.Zero,
+			                 new Vector2(length, thickness),
+			                 SpriteEffects.None,
+			                 0);
 		}
 
 		#endregion
@@ -422,7 +419,7 @@ namespace QEngine
 
 		public static void PutPixel(this SpriteBatch spriteBatch, Vector2 position, Color color)
 		{
-			if(pixel == null)
+			if (pixel == null)
 			{
 				CreateThePixel(spriteBatch);
 			}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,13 +12,17 @@ namespace QEngine
 		internal QSceneManager Manager { get; }
 
 		internal SpriteBatch SpriteBatch;
+		
+		internal QAppConfig Configuration { get; }
 
 		internal QEngine(QAppConfig conf = null)
 		{
+			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
 			DeviceManager = new GraphicsDeviceManager(this);
 			Manager = new QSceneManager();
 			if(conf != null)
 			{
+				Configuration = conf;
 				DeviceManager.PreferMultiSampling = conf.Multisampling;
 				DeviceManager.PreferredBackBufferHeight = conf.Height;
 				DeviceManager.PreferredBackBufferWidth = conf.Width;

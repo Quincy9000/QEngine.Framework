@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using QEngine.Demos.Physics;
-using QEngine.Demos.PlatformingDemo;
+using QEngine.Demos.Scenes;
 
 namespace QEngine.Demos
 {
@@ -10,8 +11,7 @@ namespace QEngine.Demos
 		[STAThread]
 		static void Main(string[] args)
 		{
-			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
-			new QApplication(new QAppConfig()
+			new QApplication(new QAppConfig(Assembly.GetCallingAssembly())
 			{
 				AssetDirectory = "Assets",
 				Width = 1280,
@@ -19,7 +19,7 @@ namespace QEngine.Demos
 				Fullscreen = false,
 				Vsync = false,
 				MouseVisible = true,
-			}).Run(new PhysicsScene());
+			}).Run(new Platformer());
 		}
 	}
 }

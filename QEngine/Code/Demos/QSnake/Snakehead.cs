@@ -69,11 +69,11 @@ namespace QEngine.Demos.QSnake
 					Scene.Destroy(this);
 				//Bodies[i + 1].LastPosition = Bodies[i].LastPosition;
 			}
-			if(Input.IsKeyDown(QKeys.W))
+			if(Input.IsKeyHeld(QKeys.W))
 				CurrentDir = SnakeDirection.Up;
-			if(Input.IsKeyDown(QKeys.S))
+			if(Input.IsKeyHeld(QKeys.S))
 				CurrentDir = SnakeDirection.Down;
-			if(Input.IsKeyDown(QKeys.A))
+			if(Input.IsKeyHeld(QKeys.A))
 				CurrentDir = SnakeDirection.Left;
 			if(Input.IsKeyPressed(QKeys.D))
 				CurrentDir = SnakeDirection.Right;

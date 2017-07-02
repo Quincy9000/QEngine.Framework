@@ -5,7 +5,7 @@ using System.Linq;
 namespace QEngine
 {
 	/// <summary>
-	/// Counts the frames and calculates fps
+	/// Counts the frames and calculates Fps
 	/// </summary>
 	public class QFrameCounter
 	{

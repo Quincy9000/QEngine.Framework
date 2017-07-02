@@ -5,7 +5,7 @@ namespace QEngine
 	/// <summary>
 	/// Limit Execution over a period of time using CheckAccum
 	/// </summary>
-	public class QAccum : QBehavior, IQFixedUpdate
+	public class QAccum : QBehavior, IQUpdate
 	{
 		class AccumTimer
 		{
@@ -24,7 +24,7 @@ namespace QEngine
 
 		Dictionary<string, AccumTimer> Accumulators { get; } = new Dictionary<string, AccumTimer>();
 
-		public void OnFixedUpdate(float delta)
+		public void OnUpdate(float delta)
 		{
 			foreach(var a in Accumulators)
 				a.Value.accum += delta;

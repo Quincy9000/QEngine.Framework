@@ -21,8 +21,8 @@ namespace QEngine.Demos.QSnake
 		public void NewLocation()
 		{
 			Transform.Position = new QVec(
-				QRandom.Range(Camera.Position.X - Window.Width / 2f, Camera.Position.X + Window.Width / 2f),
-				QRandom.Range(Camera.Position.Y - Window.Height / 2f, Camera.Position.Y + Window.Height / 2f));
+				QRandom.Number(Camera.Position.X - Window.Width / 2f, Camera.Position.X + Window.Width / 2f),
+				QRandom.Number(Camera.Position.Y - Window.Height / 2f, Camera.Position.Y + Window.Height / 2f));
 		}
 
 		public override void OnFixedUpdate(float time)

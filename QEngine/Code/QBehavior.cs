@@ -65,9 +65,9 @@ namespace QEngine
 		}
 
 		public void Instantiate(QBehavior b, QVec v = default(QVec)) => Scene.Instantiate(b, v);
-		
+
 		/*Internals*/
-		
+
 		internal bool IsDestroyed { get; set; }
 
 		internal event Action OnDestroyEvent;
@@ -82,9 +82,10 @@ namespace QEngine
 			if(string.IsNullOrEmpty(Name))
 			{
 				Name = GetType().Name;
+				//Parent?.Scene?.Console?.WriteLine(Name);
 			}
 		}
-		
+
 		/*Protected*/
 
 		protected QBehavior(string name)

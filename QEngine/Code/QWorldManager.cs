@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using OpenGL;
 using QPhysics;
 using QPhysics.Dynamics;
 using QPhysics.Factories;
@@ -12,11 +13,23 @@ namespace QEngine
 
 		internal List<QRigiBody> Bodies { get; set; } = new List<QRigiBody>();
 
+		/// <summary>
+		/// Gets called when two rigibodies are about to collide
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		public delegate void NearCollision(QRigiBody a, QRigiBody b);
+
+		/// <summary>
+		/// General collision event that isnt tied to specific objects, must check yourself
+		/// </summary>
+		public event NearCollision OnCollision;
+
 		public QRigiBody CreateRectangle(QBehavior script, float w = 10, float h = 10, float density = 1, QBodyType bodyType = QBodyType.Dynamic)
 		{
 			var b = (BodyType)bodyType;
 			var body = new QRigiBody(script, BodyFactory.CreateRectangle(world, w.ToSim(), h.ToSim(), density, script.Transform.Position.ToSim(), script.Transform.Rotation, b, script));
-			script.Transform.body = body;
+			script.Transform.Body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -24,9 +37,8 @@ namespace QEngine
 		public QRigiBody CreateRoundedRect(QBehavior script, float w = 10, float h = 10, float density = 1, QBodyType bodyType = QBodyType.Dynamic)
 		{
 			var d = 4f;
-			var bf = BodyFactory.CreateRoundedRectangle(world, w.ToSim(), h.ToSim(), w.ToSim() / d, h.ToSim() / d, 10, density, script.Transform.Position.ToSim(), script.Transform.Rotation, (BodyType)bodyType, script);
-			var body = new QRigiBody(script, bf);
-			script.Transform.body = body;
+			var body = new QRigiBody(script, BodyFactory.CreateRoundedRectangle(world, w.ToSim(), h.ToSim(), w.ToSim() / d, h.ToSim() / d, 10, density, script.Transform.Position.ToSim(), script.Transform.Rotation, (BodyType)bodyType, script));
+			script.Transform.Body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -35,7 +47,7 @@ namespace QEngine
 		{
 			var b = (BodyType)bodyType;
 			var body = new QRigiBody(script, BodyFactory.CreateCircle(world, radius.ToSim(), density, script.Transform.Position.ToSim(), b, script));
-			script.Transform.body = body;
+			script.Transform.Body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -43,7 +55,7 @@ namespace QEngine
 		public QRigiBody CreateEdge(QBehavior script, QVec start, QVec end)
 		{
 			var body = new QRigiBody(script, BodyFactory.CreateEdge(world, start.ToSim(), end.ToSim(), script));
-			script.Transform.body = body;
+			script.Transform.Body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -52,7 +64,7 @@ namespace QEngine
 		{
 			var b = (BodyType)bodyType;
 			var body = new QRigiBody(script, BodyFactory.CreateCapsule(world, height.ToSim(), radius.ToSim(), density, script.Transform.Position.ToSim(), script.Transform.Rotation, b, script));
-			script.Transform.body = body;
+			script.Transform.Body = body;
 			Bodies.Add(body);
 			return body;
 		}
@@ -101,9 +113,9 @@ namespace QEngine
 		/// Will try to update physics if its been a certain amount of time
 		/// </summary>
 		/// <param name="time"></param>
-		internal bool TryStep(QTime time, QGameObjectManager m)
+		internal void TryStep(QTime time, QGameObjectManager m)
 		{
-			return step(time, m);
+			Step(time, m);
 		}
 
 		float PhysicsAccum { get; set; } = 0;
@@ -111,10 +123,13 @@ namespace QEngine
 		const float Simulation = 1 / 60f;
 
 		/// <summary>
-		/// Moves all the bodies to the most recent transform, then simulates and then moves the transforms to the correct position where the body was moved, simulation time
+		/// Moves all the bodies to the most recent transform 
+		/// then simulates and then moves the transforms to the correct position 
+		/// where the body was moved, simulation time
 		/// </summary>
-		/// <param name="time"></param>
-		bool step(QTime t, QGameObjectManager m)
+		/// <param name="t"></param>
+		/// <param name="m"></param>
+		bool Step(QTime t, QGameObjectManager m)
 		{
 			bool step = false;
 			var delta = t.Delta;
@@ -124,9 +139,9 @@ namespace QEngine
 			PhysicsAccum += delta;
 			while(PhysicsAccum >= simulation)
 			{
+				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(simulation));
 				world.Step(simulation);
 				PhysicsAccum -= simulation;
-				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(simulation));
 				step = true;
 			}
 			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(delta));
@@ -137,8 +152,10 @@ namespace QEngine
 			double alpha = PhysicsAccum / simulation;
 			QGameObjectManager.For(Bodies, body =>
 			{
-				body.Script.Position = body.Position * (float)alpha + body.Script.Position * (1.0f - (float)alpha);
-				body.Script.Rotation = body.Rotation * (float)alpha + body.Script.Rotation * (1.0f - (float)alpha);
+				body.Script.Position = body.Position * (float)alpha +
+				                       body.Script.Position * (1.0f - (float)alpha);
+				body.Script.Rotation = body.Rotation * (float)alpha +
+				                       body.Script.Rotation * (1.0f - (float)alpha);
 			});
 			return step;
 		}
@@ -175,8 +192,28 @@ namespace QEngine
 
 		void ctor(float x, float y)
 		{
+//			body.OnCollision += (a, b, contact) =>
+//			{
+//				QBehavior script = b.Body.UserData as QBehavior;
+//				if(script != null)
+//				{
+//					var booby = script.World.Bodies.Find(r => r.Id == script.Id);
+//					if(booby != null)
+//						OnCollision?.Invoke(booby);
+//				}
+//			};
 			world = new World(new QVec(x, y));
 			world.Clear();
+			world.ContactManager.OnBroadphaseCollision += (ref FixtureProxy a, ref FixtureProxy b) =>
+			{
+				//Finds the bodies if they have parent, and then passes them to the collision event
+				QBehavior qa = a.Fixture.Body.UserData as QBehavior;
+				QBehavior qb = b.Fixture.Body.UserData as QBehavior;
+				QRigiBody bodya = qa.World.Bodies.Find(r => r.Id == qa.Id);
+				QRigiBody bodyb = qb.World.Bodies.Find(r => r.Id == qb.Id);
+				if(bodya != null && bodyb != null)
+					OnCollision?.Invoke(bodya, bodyb);
+			};
 		}
 
 		internal QWorldManager(float x = 0, float y = DefaultGravity)

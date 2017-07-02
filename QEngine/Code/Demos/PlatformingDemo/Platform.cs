@@ -1,6 +1,6 @@
 ﻿using QEngine.Prefabs;
 
-namespace QEngine.Demos.PlatformingDemo.Scripts
+namespace QEngine.Demos.PlatformingDemo
 {
 	/// <summary>
 	/// Platform for the player to stand on
@@ -11,38 +11,34 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
 
 		QRigiBody body;
 
-		QVec toPos;
-
 		QVec toSize;
+
+		public static bool CheckDistance = true;
 
 		public override void OnLoad(QAddContent add)
 		{
 			add.Rectangle(Name, (int)toSize.X, (int)toSize.Y, QColor.White);
-			Transform.Position = toPos;
 		}
 
 		public override void OnStart(QGetContent get)
 		{
-			int r()
-			{
-				return QRandom.Range(1, 255);
-			}
+			int R() => QRandom.Number(1, 255);
 
 			sprite = new QSprite(this, Name);
-			sprite.Color = new QColor(r(), r(), r());
+			sprite.Color = new QColor(R(), R(), R());
 			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
 			body.Friction = 0.2f;
-			body.IsIgnoreCcd = false;
+			body.IsCCD = false;
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
 		{
-			spriteRenderer.Draw(sprite, Transform);
+			if(CheckDistance || QVec.Distance(Position, Camera.Position) < 1000)
+				spriteRenderer.Draw(sprite, Transform);
 		}
 
-		public Platform(QVec p, QVec s) : base("Floor")
+		public Platform(QVec s)
 		{
-			toPos = p;
 			toSize = s;
 		}
 	}

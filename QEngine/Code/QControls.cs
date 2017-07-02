@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using System;
+using Microsoft.Xna.Framework.Input;
 
 namespace QEngine
 {
-	public class QControls : QBehavior, IQStart, IQFixedUpdate
+	public class QControls : QBehavior, IQStart, IQUpdate
 	{
 		KeyboardState PreviousKeyState;
 		KeyboardState CurrentKeyState;
@@ -15,9 +16,23 @@ namespace QEngine
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		public bool IsKeyDown(QKeys key)
+		public bool IsKeyHeld(QKeys key)
 		{
 			return CurrentKeyState.IsKeyDown((Keys)key);
+		}
+
+		/// <summary>
+		/// Checks if the key is down, so aka rapid fire
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public bool IsKeyHeld(string key)
+		{
+			if(Enum.TryParse(key, true, out QKeys k))
+			{
+				return IsKeyHeld(k);
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -29,6 +44,20 @@ namespace QEngine
 		{
 			return CurrentKeyState.IsKeyDown((Keys)key) && PreviousKeyState.IsKeyUp((Keys)key);
 		}
+		
+		/// <summary>
+		/// If the key was pressed and last state was not pressed
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public bool IsKeyPressed(string key)
+		{
+			if(Enum.TryParse(key, true, out QKeys k))
+			{
+				return IsKeyPressed(k);
+			}
+			return false;
+		}
 
 		/// <summary>
 		/// Only returns true if they key was released, not when its up
@@ -38,6 +67,20 @@ namespace QEngine
 		public bool IsKeyReleased(QKeys key)
 		{
 			return CurrentKeyState.IsKeyUp((Keys)key) && PreviousKeyState.IsKeyDown((Keys)key);
+		}
+		
+		/// <summary>
+		/// Only returns true if they key was released, not when its up
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public bool IsKeyReleased(string key)
+		{
+			if(Enum.TryParse(key, true, out QKeys k))
+			{
+				return IsKeyReleased(k);
+			}
+			return false;
 		}
 
 		public bool IsAnyKeyDown()
@@ -179,29 +222,30 @@ namespace QEngine
 
 		public void OnStart(QGetContent get)
 		{
-			//YOu can cast directly if the enums are the exact same 
-			//			ConvertKeys = new Dictionary<QKeys, Keys>();
-			//			Keys[] k = Enum.GetValues(typeof(Keys)).OfType<Keys>().ToArray();
-			//			QKeys[] q = Enum.GetValues(typeof(QKeys)).OfType<QKeys>().ToArray();
-			//			for(int i = 0; i < q.Length; i++)
-			//				ConvertKeys.Add(q[i], k[i]);
-			Update();
+			GetControls();
 		}
 
-		void Update()
+		void Flush()
 		{
 			PreviousKeyState = CurrentKeyState;
 			PreviousMouseState = CurrentMouseState;
+		}
 
+		void GetControls()
+		{
 			CurrentKeyState = Keyboard.GetState();
 			CurrentMouseState = Mouse.GetState();
 		}
 
-		public void OnFixedUpdate(float time)
+		void Update()
+		{
+			Flush();
+			GetControls();
+		}
+
+		public void OnUpdate(float time)
 		{
 			Update();
 		}
-
-		internal QControls() : base("QControls") { }
 	}
 }

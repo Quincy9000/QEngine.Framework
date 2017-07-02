@@ -1,53 +1,59 @@
 ﻿namespace QEngine
 {
     /// <summary>
-    /// Debuger that displays fps
+    /// Debuger that displays Fps
     /// </summary>
-    public sealed class QDebug : QBehavior, IQLoad, IQStart, IQFixedUpdate, IQUpdate, IQDrawGui
+    public sealed class QDebug : QBehavior, IQLoad, IQStart, IQLateUpdate, IQDrawGui
     {
-        public QFrameCounter fps { get; private set; }
+        public QFrameCounter Fps { get; private set; }
 
-        QFont font;
+        public QFont Font { get; private set; }
 
-        QLabel label;
+        public QLabel Label { get; private set; }
 
-        /// <summary>
-        /// Frames per second the screen updates
-        /// </summary>
-        public float Fps => fps.CurrentFramesPerSecond;
+        public float FramesPerSecond => Fps.CurrentFramesPerSecond;
 
-        public float TotalFrames => fps.TotalFrames;
+        public float TotalFrames => Fps.TotalFrames;
 
-        public float TotalSeconds => fps.TotalSeconds;
+        public float TotalSeconds => Fps.TotalSeconds;
 
-        public float Lag { get; set; }
+        public float Lag { get; internal set; }
 
         public int DebugLevel { get; set; }
+
+        public void AppendText(string msg)
+        {
+            Label.Text += msg + "\n";
+        }
 
         public void OnLoad(QAddContent add)
         {
             add.Font("Fonts/arial");
             DebugLevel = 0;
-            fps = new QFrameCounter();
+            Fps = new QFrameCounter();
         }
 
         public void OnStart(QGetContent get)
         {
-            font = get.Font("arial");
-            Console.Label = new QLabel(font);
-            label = new QLabel(font);
+            Font = get.Font("arial");
+            Console.Label = new QLabel(Font);
+            Label = new QLabel(Font);
         }
-
-        public void OnFixedUpdate(float time)
+        
+        public void OnLateUpdate(float delta)
         {
-            if(DebugLevel > 0)
+            Fps.Update(delta);
+            if(Accumulator.CheckAccum("Debugger", 1 / 10f))
             {
-                label.Visible = true;
-                label.Text = $"FrameDelay: {Lag}ms\nFPS: {Fps}\nTotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds";
-                Transform.Position = new QVec(Window.Left, Window.Bottom - label.Measure(label.Text).Y);
+                if(DebugLevel > 0)
+                {
+                    Label.Visible = true;
+                    AppendText($"FrameDelay: {Lag}ms\nFPS: {FramesPerSecond}\nTotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds");
+                    Transform.Position = new QVec(Window.Left, Window.Bottom - Label.Measure(Label.Text).Y);
+                }
+                else
+                    Label.Visible = false;
             }
-            else
-                label.Visible = false;
             if(Input.IsKeyPressed(QKeys.F12))
             {
                 DebugLevel++;
@@ -58,16 +64,8 @@
 
         public void OnDrawGui(QGuiRenderer renderer)
         {
-            renderer.DrawString(label, Transform);
-        }
-
-        public void OnUpdate(float delta)
-        {
-            fps.Update(delta);
-        }
-
-        public QDebug() : base("QDebug")
-        {
+            renderer.DrawString(Label, Transform);
+            Label.Text = "";
         }
     }
 }

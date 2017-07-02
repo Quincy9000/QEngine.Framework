@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using QEngine.Demos.PlatformingDemo.Scripts.Enemies;
-
-namespace QEngine.Demos.PlatformingDemo.Scripts
+﻿namespace QEngine.Demos.PlatformingDemo
 {
 	public class BiomeLevel : QBehavior, IQLoad, IQStart
 	{
@@ -20,15 +17,15 @@ namespace QEngine.Demos.PlatformingDemo.Scripts
 				}
 				else if(c == new QColor(75, 60, 45)) //ground
 				{
-					Instantiate(new Platform(v, new QVec(64, 64)));
+					Instantiate(new Platform(new QVec(64, 64)), v);
 				}
 				else if(c == new QColor(35, 30, 20)) //walls
 				{
-					Instantiate(new Platform(v, new QVec(64, 64)));
+					Instantiate(new Platform(new QVec(64, 64)), v);
 				}
 				else if(c == new QColor(255, 0, 0))//bats
 				{
-					Instantiate(new Bat(v), v);
+					Instantiate(new Bat(), v);
 				}
 			});
 		}

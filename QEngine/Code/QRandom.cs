@@ -31,18 +31,23 @@ namespace QEngine
 			int total = 0;
 			for(int i = 0; i < dice; i++)
 			{
-				total += Range(1, sides);
+				total += Number(1, sides);
 			}
 			return total;
 		}
 
+		public static QColor Color()
+		{
+			return new QColor(Number(1,255), Number(1, 255), Number(1,255));
+		}
+
 		/// <summary>
-		/// Inclusive Random Range
+		/// Inclusive Random Number
 		/// </summary>
 		/// <param name="min"></param>
 		/// <param name="max"></param>
 		/// <returns></returns>
-		public static int Range(int min, int max) => R.Next(min, max);
+		public static int Number(int min, int max) => R.Next(min, max);
 
 		//		/// <summary>
 		//		/// Modify the min range for random floats
@@ -55,17 +60,17 @@ namespace QEngine
 		//		public static int maxExponential = 64;
 
 		/// <summary>
-		/// Inclusive QTime Random Range
+		/// Inclusive QTime Random Number
 		/// </summary>
 		/// <param name="min"></param>
 		/// <param name="max"></param>
 		/// <returns></returns>
-		public static float Range(float min, float max)
+		public static float Number(float min, float max)
 		{
 			return (float)(R.NextDouble() * (max - min)) + min;
 		}
 
-		//		public static QTime Range(QTime min, QTime max) => (QTime)((R.NextDouble() * max - min) * (Math.Pow(2.0, Range(minExponential, maxExponential))));
+		//		public static QTime Number(QTime min, QTime max) => (QTime)((R.NextDouble() * max - min) * (Math.Pow(2.0, Number(minExponential, maxExponential))));
 
 		/// <summary>
 		/// Returns a double between 0 and 1

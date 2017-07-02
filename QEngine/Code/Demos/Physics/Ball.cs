@@ -17,7 +17,7 @@ namespace QEngine.Demos.Physics
 
 		public override void OnStart(QGetContent get)
 		{
-			int R() => QRandom.Range(100, 255);
+			int R() => QRandom.Number(100, 255);
 			body = World.CreateCircle(this, radius, 20);
 			c = new QColor(R(), R(), R());
 			//body.Restitution = 1f;

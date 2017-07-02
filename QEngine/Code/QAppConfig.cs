@@ -1,7 +1,11 @@
-﻿namespace QEngine
+﻿using System.Reflection;
+
+namespace QEngine
 {
 	public class QAppConfig
 	{
+		public Assembly Assembly = null;
+		
 		public int Width = 800;
 
 		public int Height = 600;
@@ -21,5 +25,10 @@
 		public string Title = "QGame";
 
 		public string AssetDirectory = "Assets";
+
+		public QAppConfig(Assembly a = null)
+		{
+			Assembly = a;
+		}
 	}
 }

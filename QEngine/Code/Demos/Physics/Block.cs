@@ -9,27 +9,33 @@ namespace QEngine.Demos.Physics
         public float Width { get; }
 
         public float Height { get; }
-        
-        public QColor Color { get; private set; }
 
-        public Block(float w, float h)
+        QSprite sprite;
+
+        public Block(int w, int h)
         {
             Width = w;
             Height = h;
         }
 
+        public override void OnLoad(QAddContent add)
+        {
+            add.Rectangle(Name, (int)Width, (int)Height, QColor.White);
+        }
+
         public override void OnStart(QGetContent get)
         {
-            int R() => QRandom.Range(1, 255);
             body = World.CreateRectangle(this, Width, Height, 10);
+            sprite = new QSprite(this, get.TextureSource(Name));
+            int R() => QRandom.Number(1, 255);
+            sprite.Color = new QColor(R(), R(), R());
             //body.FixedRotation = true;
-            Color = new QColor(R(), R(), R());
             //body.Restitution = 1f;
         }
 
         public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
         {
-            spriteRenderer.DrawRect(Transform, Width, Height, Color);
+            spriteRenderer.Draw(sprite, Transform);
         }
     }
 }

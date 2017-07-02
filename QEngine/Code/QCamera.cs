@@ -8,24 +8,21 @@ namespace QEngine
 
 		public QMat TransformMatrix { get; private set; } = Matrix.Identity;
 
-		public float MinZoom = 1f;
+		public float MinZoom = 0.1f;
 
-		public float MaxZoom = 1000f;
-
-		const float DividerZoom = 100f;
+		public float MaxZoom = 10f;
 
 		public float Zoom
 		{
-			//changing this
 			get => Transform.Scale.X;
 			set
 			{
-				Transform.Scale = new QVec(MathHelper.Clamp(value, MinZoom, MaxZoom), 0);
+				Transform.Scale = new QVec(MathHelper.Clamp(value, MinZoom, MaxZoom), 1);
 				_isDirty = true;
 			}
 		}
 
-		public QVec Position
+		public new QVec Position
 		{
 			get => Transform.Position;
 			set
@@ -35,12 +32,12 @@ namespace QEngine
 			}
 		}
 
-		public float Rotation
+		public new float Rotation
 		{
 			get => Transform.Rotation;
 			set
 			{
-				Transform.Rotation = MathHelper.ToRadians(value);
+				Transform.Rotation = value;//MathHelper.ToRadians(value);
 				_isDirty = true;
 			}
 		}
@@ -67,15 +64,14 @@ namespace QEngine
 
 		public void OnStart(QGetContent get)
 		{
-			Zoom = 100f;
-			UpdateMatrix();
+			
 		}
 
 		public QRect Bounds
 		{
 			get
 			{
-				var f = Zoom / DividerZoom;
+				var f = Zoom;
 				return
 					new QRect(((Position - new QVec(Window.Width, Window.Height) / 2f)) / (f), new Vector2(Window.Width, Window.Height) / (f));
 			}
@@ -112,7 +108,7 @@ namespace QEngine
 		{
 			if(_isDirty)
 			{
-				var f = Zoom / DividerZoom;
+				var f = Zoom;
 				TransformMatrix = Matrix.CreateTranslation(-Position.X, -Position.Y, 0) *
 				                  Matrix.CreateRotationZ(Rotation) *
 				                  Matrix.CreateScale(f, f, 1) *
@@ -121,8 +117,6 @@ namespace QEngine
 			}
 			return TransformMatrix;
 		}
-
-		internal QCamera() : base("QCamera") { }
 	}
 }
 

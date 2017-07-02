@@ -1,4 +1,4 @@
-﻿namespace QEngine.Demos.PlatformingDemo.Scripts
+﻿namespace QEngine.Demos.PlatformingDemo
 {
 	public class HealthBar : QBehavior, IQLoad,  IQStart, IQDrawGui
 	{

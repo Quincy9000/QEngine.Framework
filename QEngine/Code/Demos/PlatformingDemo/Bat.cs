@@ -2,29 +2,13 @@
 using System.Collections.Generic;
 using QEngine.Prefabs;
 
-namespace QEngine.Demos.PlatformingDemo.Scripts.Enemies
+namespace QEngine.Demos.PlatformingDemo
 {
-    public class BatSpawner : QBehavior, IQStart
-    {
-        public void OnStart(QGetContent get)
-        {
-            Instantiate(new Bat(Id));
-        }
-
-        public BatSpawner() : base("BatSpawner")
-        {
-        }
-    }
-
     public class Bat : QCharacterController
     {
         List<QRect> Frames;
 
         QAnimation BatFlap;
-
-        BatSpawner batSpawner;
-
-        Guid spawnerId;
 
         QVec spawnerPosition;
 
@@ -44,18 +28,6 @@ namespace QEngine.Demos.PlatformingDemo.Scripts.Enemies
 
         double damageAccum;
 
-        public Bat(Guid spawnerId) : base("Bat")
-        {
-            this.spawnerId = spawnerId;
-        }
-
-        QVec toPos;
-
-        public Bat(QVec pos) : base("Bat")
-        {
-            spawnerPosition = toPos = pos;
-        }
-
         public override void OnLoad(QAddContent add)
         {
             add.Texture(Assets.Bryan + "BryanStuff1");
@@ -63,6 +35,8 @@ namespace QEngine.Demos.PlatformingDemo.Scripts.Enemies
 
         public override void OnStart(QGetContent get)
         {
+            spawnerPosition = Transform.Position;
+            
             Health = MaxHealth;
 
             Frames = Scene.MegaTexture["BryanStuff1"].Split(32, 32);
@@ -73,8 +47,6 @@ namespace QEngine.Demos.PlatformingDemo.Scripts.Enemies
             Transform.Scale = new QVec(4);
 
             BatFlap = new QAnimation(Frames, 0.1f, 28, 30);
-
-            Transform.Position = toPos;
 
             body = World.CreateRectangle(this, 13 * Transform.Scale.X, 13 * Transform.Scale.Y);
             body.IgnoreGravity = true;

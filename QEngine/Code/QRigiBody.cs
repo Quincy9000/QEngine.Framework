@@ -21,26 +21,32 @@ namespace QEngine
 			}
 		}
 
-		internal void MoveBody(ref QVec v)
-		{
-			body.SetTransform(v.ToSim(), Rotation);
-		}
-
-		internal void RotateBody(ref float f)
-		{
-			body.SetTransform(Position.ToSim(), f);
-		}
+//		internal void MoveBody(ref QVec v)
+//		{
+//			body.SetTransform(v.ToSim(), Rotation);
+//		}
+//
+//		internal void RotateBody(ref float f)
+//		{
+//			body.SetTransform(Position.ToSim(), f);
+//		}
 
 		public delegate void Collision(QRigiBody other);
 
 		public event Collision OnCollision;
 
+		/// <summary>
+		/// Set or get the rotation that the body is, in radians, 2Pi = 360 degree etc
+		/// </summary>
 		internal float Rotation
 		{
 			get => body.Rotation;
 			set => body.Rotation = value;
 		}
 
+		/// <summary>
+		/// Direction and speed of the bodies movement
+		/// </summary>
 		public QVec LinearVelocity
 		{
 			get => body.LinearVelocity;
@@ -52,6 +58,14 @@ namespace QEngine
 			return body.UserData;
 		}
 
+		public T Data<T>()
+		{
+			return (T)body.UserData;
+		}
+
+		/// <summary>
+		/// Whether it rotates or not
+		/// </summary>
 		public bool FixedRotation
 		{
 			get => body.FixedRotation;
@@ -64,6 +78,9 @@ namespace QEngine
 			set => body.Mass = value;
 		}
 
+		/// <summary>
+		/// Rubbing Friction
+		/// </summary>
 		public float Friction
 		{
 			set => body.Friction = value;
@@ -93,6 +110,9 @@ namespace QEngine
 			set => body.SleepingAllowed = value;
 		}
 
+		/// <summary>
+		/// Air friction
+		/// </summary>
 		public float LinearDamping
 		{
 			get => body.LinearDamping;
@@ -105,6 +125,9 @@ namespace QEngine
 			set => body.GravityScale = value;
 		}
 
+		/// <summary>
+		/// Bounciness
+		/// </summary>
 		public float Restitution
 		{
 			set => body.Restitution = value;
@@ -135,9 +158,19 @@ namespace QEngine
 
 		public bool IsStatic => body.IsStatic;
 
-		public static QCollisionDirection Direction(QRigiBody b, QRigiBody b2)
+		public bool IsDynamic => body.IsDynamic;
+
+		public bool IsKinematic => body.IsKinematic;
+
+		/// <summary>
+		/// useful for the direction of collision, not much else, dont use with platforms that are really big
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
+		public static QCollisionDirection Direction(QRigiBody a, QRigiBody b)
 		{
-			QVec dir = (b.Script.Position - b2.Script.Position).Normalize();
+			QVec dir = (a.Script.Position - b.Script.Position).Normalize();
 			QCollisionDirection d;
 			if(Math.Abs(dir.X) > Math.Abs(dir.Y))
 			{
@@ -162,10 +195,13 @@ namespace QEngine
 			set => body.Awake = value;
 		}
 
-		public bool IsIgnoreCcd
+		/// <summary>
+		/// Is Constant Collision Detection On?
+		/// </summary>
+		public bool IsCCD
 		{
-			get => body.IgnoreCCD;
-			set => body.IgnoreCCD = value;
+			get => !body.IgnoreCCD;
+			set => body.IgnoreCCD = !value;
 		}
 
 		internal QRigiBody(QBehavior sc, Body bo)
@@ -178,13 +214,12 @@ namespace QEngine
 			};
 			body.OnCollision += (a, b, contact) =>
 			{
-				QBehavior script = b.Body.UserData as QBehavior;
-				if(script != null)
-				{
-					var booby = script.World.Bodies.Find(r => r.Id == script.Id);
-					if(booby != null)
-						OnCollision?.Invoke(booby);
-				}
+				QBehavior script = (QBehavior)b.Body.UserData;
+				if(script == null) return;
+
+				var bodySearch = script.World.Bodies.Find(r => r.Id == script.Id);
+				if(bodySearch != null)
+					OnCollision?.Invoke(bodySearch);
 			};
 		}
 	}

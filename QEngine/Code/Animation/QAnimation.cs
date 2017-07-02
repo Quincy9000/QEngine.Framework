@@ -68,7 +68,7 @@ namespace QEngine
 		public bool IsDone { get; private set; } = false;
 
 		/// <summary>
-		/// Updates the animation smoothly no matter what the fps is running at
+		/// Updates the animation smoothly no matter what the Fps is running at
 		/// </summary>
 		/// <param name="delta"></param>
 		public QRect Play(float delta)

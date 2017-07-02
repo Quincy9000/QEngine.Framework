@@ -39,11 +39,12 @@ namespace QEngine
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="color"></param>
-		public virtual void DrawRect(QTransform t, float width, float height, QColor color)
+		public void DrawRect(QTransform t, float width, float height, QColor color)
 		{
 			var v = t.Position;
 			//sb.DrawRectangle(v - new QVec(width, height)/2f, new QVec(width, height), color);
-			sb.FillRectangle(t.Position.X, t.Position.Y, width, height, color, t.Rotation);
+			sb.FillRectangle(v - new QVec(width, height)/2f, new QVec(width, height), color);
+			//sb.FillRectangle(t.Position.X, t.Position.Y, width, height, color, t.Rotation);
 		}
 
 		internal virtual void Draw(QTexture t, QVec pos, QColor c)

@@ -8,7 +8,7 @@ namespace QEngine
 	/// <summary>
 	/// Debug tool that can display Text inside the game scene area
 	/// </summary>
-	public class QConsole : QBehavior, IQUpdate, IQDrawGui
+	public class QConsole : QBehavior, IQStart, IQUpdate, IQDrawGui
 	{
 		/*Structs*/
 
@@ -89,6 +89,11 @@ namespace QEngine
 		{
 			Messages = new LinkedList<MessageBox>();
 			_startFade = 0;
+		}
+
+		public void OnStart(QGetContent content)
+		{
+			Clear();
 		}
 
 		public void OnUpdate(float time)
@@ -183,15 +188,6 @@ namespace QEngine
 
 				startIndex = index + 1;
 			}
-		}
-
-		/*Ctors*/
-
-		internal QConsole(int width, int height) : base("QConsole")
-		{
-			Width = width;
-			Height = height;
-			Messages = new LinkedList<MessageBox>();
 		}
 	}
 }

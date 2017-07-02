@@ -48,7 +48,7 @@ namespace QEngine
 
 		public void Rectangle(string n, int w, int h, QColor color)
 		{
-			var t = new Texture2D(cm.Engine.GraphicsDevice, w, h, false, SurfaceFormat.Color, w * h);
+			var t = new Texture2D(cm.Engine.GraphicsDevice, w, h);
 			var c = new QColor[w * h];
 			for(var i = 0; i < c.Length; i++)
 				c[i] = color;

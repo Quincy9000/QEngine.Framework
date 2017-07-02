@@ -1,4 +1,6 @@
-﻿namespace QEngine.Demos.QSnake
+﻿using QEngine.Demos.QSnake;
+
+namespace QEngine.Demos.Scenes
 {
 	public class QSnakeScene : QScene
 	{

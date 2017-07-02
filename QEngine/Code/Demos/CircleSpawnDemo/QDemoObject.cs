@@ -43,17 +43,17 @@ namespace QEngine.Demos.CircleSpawnDemo
 
 		public override void OnFixedUpdate(float time)
 		{
-			if(Input.IsKeyDown(QKeys.W))
+			if(Input.IsKeyHeld(QKeys.W))
 				Transform.Position += QVec.Up * speed * time;
-			if(Input.IsKeyDown(QKeys.A))
+			if(Input.IsKeyHeld(QKeys.A))
 				Transform.Position += QVec.Left * speed * time;
-			if(Input.IsKeyDown(QKeys.S))
+			if(Input.IsKeyHeld(QKeys.S))
 				Transform.Position += QVec.Down * speed * time;
-			if(Input.IsKeyDown(QKeys.D))
+			if(Input.IsKeyHeld(QKeys.D))
 				Transform.Position += QVec.Right * speed * time;
 			if(Input.IsKeyPressed(QKeys.Tab))
 				Scene.ResetScene();
-			if(Input.IsKeyDown(QKeys.Space) && Accumulator.CheckAccum("ball", 0.06f))
+			if(Input.IsKeyHeld(QKeys.Space) && Accumulator.CheckAccum("ball", 0.06f))
 				Instantiate(new QDemoCircle());
 			if(Input.IsMouseScrolledUp())
 				Camera.Zoom += Camera.Zoom * 0.1f;
