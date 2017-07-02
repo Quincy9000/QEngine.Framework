@@ -91,13 +91,13 @@ namespace QEngine.Demos.PlatformingDemo
 			spaceJam = get.Music("areYouReadyForThis");
 			//spaceJam.Play();
 
-			Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 100);
+			Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
 			//Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 3f, 10);
 			//Body = World.CreateRoundedRect(this, Sprite.Width /3f + 20, Sprite.Height / 1.2f, 10);
 
 			Body.FixedRotation = true;
 			Body.Friction = 0.4f;
-			Body.IsCCD = false;
+			Body.IsCCD = true;
 			//Body.Restitution = 1f;
 
 			Body.OnCollision += Collision;
@@ -129,9 +129,13 @@ namespace QEngine.Demos.PlatformingDemo
 //				if(IsTouchingFloor)
 //					JumpGas = MaxJumpGas;
 //			}
+			if(Input.IsMouseScrolledUp())
+				Camera.Zoom += Camera.Zoom * 0.1f;
+			if(Input.IsMouseScrolledDown())
+				Camera.Zoom -= Camera.Zoom * 0.1f;
 			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(WalkingIntoWallsDistance, 0), out QRigiBody b))
 			{
-				if(b.Script is Platform)
+				if(b.Script is BiomeFloor)
 				{
 					Transform.Position += QVec.Left * 2 * time;
 					Sprite.Source = RightIdle;
@@ -140,7 +144,7 @@ namespace QEngine.Demos.PlatformingDemo
 			}
 			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(-WalkingIntoWallsDistance, 0), out QRigiBody bb))
 			{
-				if(bb.Script is Platform)
+				if(bb.Script is BiomeFloor)
 				{
 					Transform.Position += QVec.Right * 2 * time;
 					Sprite.Source = LeftIdle;
@@ -158,10 +162,10 @@ namespace QEngine.Demos.PlatformingDemo
 					Instantiate(new Ball(40), Camera.ScreenToWorld(Input.MousePosition()));
 			}
 			if(Input.IsKeyPressed(QKeys.Escape))
-				Scene.ResetScene();
+				Scene.ExitGame();
 			if(Input.IsKeyPressed(QKeys.C))
 			{
-				Platform.CheckDistance = !Platform.CheckDistance;
+				BiomeFloor.CheckDistance = !BiomeFloor.CheckDistance;
 			}
 			if(Input.IsKeyHeld(QKeys.LeftShift) || Input.IsKeyHeld(QKeys.RightShift))
 				sprint = true;
@@ -217,7 +221,7 @@ namespace QEngine.Demos.PlatformingDemo
 				Sprite.Source = RightIdle;
 //				Body.LinearVelocity = new QVec(0, Body.LinearVelocity.Y);
 			}
-			Debug.AppendText($"Velocity: {Body.LinearVelocity}");
+			Debug.Label.AppendLine($"Velocity: {Body.LinearVelocity}");
 		}
 
 		public override void OnLateUpdate(float delta)
@@ -228,9 +232,7 @@ namespace QEngine.Demos.PlatformingDemo
 			if(Camera.Bounds.Contains(mouse))
 				Camera.Lerp(middle, cameraSpeed, delta);
 			else
-			{
 				Camera.Lerp(Position, cameraSpeed, delta);
-			}
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
@@ -245,21 +247,22 @@ namespace QEngine.Demos.PlatformingDemo
 			{
 				Health--;
 				CanMove = false;
-				const float force = 12000;
+				const float force = 2000;
+				Console.WriteLine("Collide");
 				if(Position.X < bat.Position.X)
 				{
 					Body.ApplyForce(new QVec(-force, -force));
-					other.ApplyForce(new QVec(300, -300));
+					other.ApplyForce(new QVec(450, -150));
 				}
 				else
 				{
 					Body.ApplyForce(new QVec(force, -force));
-					other.ApplyForce(new QVec(-300, -300));
+					other.ApplyForce(new QVec(-450, -150));
 				}
 			}
-			else if(other.Data() is Platform plat)
+			else if(other.Data() is BiomeFloor floor)
 			{
-				if(Position.Y < plat.Position.Y)
+				if(Position.Y < floor.Position.Y)
 				{
 					JumpGas = MaxJumpGas;
 				}

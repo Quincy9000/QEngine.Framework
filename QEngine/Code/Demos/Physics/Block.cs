@@ -25,7 +25,8 @@ namespace QEngine.Demos.Physics
 
         public override void OnStart(QGetContent get)
         {
-            body = World.CreateRectangle(this, Width, Height, 10);
+            body = World.CreateRectangle(this, Width, Height);
+            body.IsCCD = true;
             sprite = new QSprite(this, get.TextureSource(Name));
             int R() => QRandom.Number(1, 255);
             sprite.Color = new QColor(R(), R(), R());

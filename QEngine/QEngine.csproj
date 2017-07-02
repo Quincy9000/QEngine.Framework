@@ -62,11 +62,13 @@
     <Compile Include="Code\Demos\Physics\Ball.cs" />
     <Compile Include="Code\Demos\Physics\Block.cs" />
     <Compile Include="Code\Demos\Physics\BlockCreator.cs" />
+    <Compile Include="Code\Demos\Physics\Platform.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Assets.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\BackgroundRendering.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Bat.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\BiomeFloor.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\BiomeLevel.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\HealthBar.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\Platform.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Player.cs" />
     <Compile Include="Code\Demos\QDemo.cs" />
     <Compile Include="Code\Demos\CircleSpawnDemo\QDemoCircle.cs" />

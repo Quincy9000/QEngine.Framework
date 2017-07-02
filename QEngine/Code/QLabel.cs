@@ -22,21 +22,12 @@ namespace QEngine
 
 		public bool Visible { get; set; } = true;
 
-		/// <summary>
-		/// Adds the text to the next line on the output
-		/// </summary>
-		public string AppendLine
-		{
-			get => PerformanceString.ToString();
-			set => PerformanceString.AppendLine(value);
-		}
-
 		public void OnDrawGui(QGuiRenderer renderer)
 		{
 			renderer.DrawString(this, Transform);
 		}
 
-		public static implicit operator string(QLabel l) => l.Text;
+		public static implicit operator string(QLabel l) => l.PerformanceString.ToString();
 
 		public static QLabel operator +(QLabel l, string s)
 		{
@@ -52,6 +43,14 @@ namespace QEngine
 				PerformanceString.Clear();
 				PerformanceString.Append(value);
 			}
+		}
+		
+		/// <summary>
+		/// Adds the text to the next line on the output
+		/// </summary>
+		public void AppendLine(string value)
+		{
+			PerformanceString.AppendLine(value);
 		}
 
 		public void ClearText()

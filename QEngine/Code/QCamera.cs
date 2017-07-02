@@ -8,9 +8,11 @@ namespace QEngine
 
 		public QMat TransformMatrix { get; private set; } = Matrix.Identity;
 
-		public float MinZoom = 0.1f;
+		public float MinZoom = 1f;
 
-		public float MaxZoom = 10f;
+		public float MaxZoom = 1000f;
+
+		const float Divider = 100f;
 
 		public float Zoom
 		{
@@ -37,7 +39,7 @@ namespace QEngine
 			get => Transform.Rotation;
 			set
 			{
-				Transform.Rotation = value;//MathHelper.ToRadians(value);
+				Transform.Rotation = value; //MathHelper.ToRadians(value);
 				_isDirty = true;
 			}
 		}
@@ -64,16 +66,17 @@ namespace QEngine
 
 		public void OnStart(QGetContent get)
 		{
-			
+			Zoom = 100f;
 		}
 
 		public QRect Bounds
 		{
 			get
 			{
-				var f = Zoom;
+				var f = Zoom / Divider;
 				return
-					new QRect(((Position - new QVec(Window.Width, Window.Height) / 2f)) / (f), new Vector2(Window.Width, Window.Height) / (f));
+					new QRect(Position - new QVec(Window.Width, Window.Height) / 2f / f,
+						new Vector2(Window.Width, Window.Height) / (f));
 			}
 		}
 
@@ -108,7 +111,7 @@ namespace QEngine
 		{
 			if(_isDirty)
 			{
-				var f = Zoom;
+				var f = Zoom / Divider;
 				TransformMatrix = Matrix.CreateTranslation(-Position.X, -Position.Y, 0) *
 				                  Matrix.CreateRotationZ(Rotation) *
 				                  Matrix.CreateScale(f, f, 1) *

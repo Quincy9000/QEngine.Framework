@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace QEngine
@@ -100,6 +101,11 @@ namespace QEngine
 		{
 			if(!s.IsVisible) return;
 			sb.Draw(s.Texture, t.Position + s.Offset, s.Source, s.Color, t.Rotation, s.Origin, t.Scale, (SpriteEffects)s.Effect, s.Layer);
+		}
+
+		public void Draw(QRect source, QSprite sprite, QTransform t, QVec pos)
+		{
+			sb.Draw(sprite.Texture, pos, source, sprite.Color, t.Rotation, sprite.Origin, t.Scale, (SpriteEffects)sprite.Effect, sprite.Layer);
 		}
 
 		/// <summary>

@@ -120,7 +120,7 @@ namespace QEngine
 
 		float PhysicsAccum { get; set; } = 0;
 
-		const float Simulation = 1 / 61f;
+		const float Simulation = 1 / 60f;
 
 		/// <summary>
 		/// Moves all the bodies to the most recent transform 
@@ -134,8 +134,8 @@ namespace QEngine
 			bool step = false;
 			var delta = t.Delta;
 			var simulation = Simulation;
-//			if(t.IsLagging)
-//				simulation = Simulation * 2;
+			if(t.IsLagging)
+				simulation = Simulation * 2;
 			PhysicsAccum += delta;
 			while(PhysicsAccum >= simulation)
 			{
@@ -192,18 +192,10 @@ namespace QEngine
 
 		void ctor(float x, float y)
 		{
-//			body.OnCollision += (a, b, contact) =>
-//			{
-//				QBehavior script = b.Body.UserData as QBehavior;
-//				if(script != null)
-//				{
-//					var booby = script.World.Bodies.Find(r => r.Id == script.Id);
-//					if(booby != null)
-//						OnCollision?.Invoke(booby);
-//				}
-//			};
 			world = new World(new QVec(x, y));
 			world.Clear();
+			world.ProcessChanges();
+			world.ClearForces();
 			world.ContactManager.OnBroadphaseCollision += (ref FixtureProxy a, ref FixtureProxy b) =>
 			{
 				//Finds the bodies if they have parent, and then passes them to the collision event

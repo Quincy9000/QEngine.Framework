@@ -19,6 +19,7 @@ namespace QEngine.Demos.Physics
 		{
 			int R() => QRandom.Number(100, 255);
 			body = World.CreateCircle(this, radius, 20);
+			body.IsCCD = true;
 			c = new QColor(R(), R(), R());
 			//body.Restitution = 1f;
 		}

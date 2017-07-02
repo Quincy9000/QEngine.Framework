@@ -4,21 +4,21 @@ using System.ComponentModel;
 
 namespace QEngine
 {
+	[ImmutableObject(true)]
+	public struct QTilePos
+	{
+		public QRect Source { get; }
+		public QVec Position { get; }
+
+		public QTilePos(QVec pos, QRect source)
+		{
+			Position = pos;
+			Source = source;
+		}
+	}
+	
 	public static class QMapTools
 	{
-		[ImmutableObject(true)]
-		public struct TilePos
-		{
-			public QRect Source { get; }
-			public QVec Position { get; }
-
-			public TilePos(QVec pos, QRect source)
-			{
-				Position = pos;
-				Source = source;
-			}
-		}
-
 		public delegate QRect TileMapper(QColor color);
 
 		public delegate void ObjectCreator(QColor color, QVec pos);
@@ -56,9 +56,9 @@ namespace QEngine
 		}
 
 		//turns list of colors into list of rectangles and positions
-		static List<TilePos> CompileLayer(QColor[,] colors, QVec startingPos, QVec scale, TileMapper layer)
+		static List<QTilePos> CompileLayer(QColor[,] colors, QVec startingPos, QVec scale, TileMapper layer)
 		{
-			var tiles = new List<TilePos>();
+			var tiles = new List<QTilePos>();
 			var pos = startingPos;
 			for(int i = 0; i < colors.GetLength(0); i++)
 			{
@@ -67,7 +67,7 @@ namespace QEngine
 					var r = layer(colors[i, j]);
 					if(r != QRect.Empty)
 					{
-						tiles.Add(new TilePos(pos, r));
+						tiles.Add(new QTilePos(pos, r));
 					}
 					pos.X += scale.X;
 				}
@@ -77,7 +77,7 @@ namespace QEngine
 			return tiles;
 		}
 
-		public static List<TilePos> CreateSpriteLayer(QGetContent content, string nameOfTexture, QVec startingPos, QVec scale, TileMapper layer)
+		public static List<QTilePos> CreateSpriteLayer(QGetContent content, string nameOfTexture, QVec startingPos, QVec scale, TileMapper layer)
 		{
 			var t = content.Texture(nameOfTexture);
 			var colors = t.GetPixels();

@@ -1,6 +1,6 @@
 ﻿using QEngine.Prefabs;
 
-namespace QEngine.Demos.PlatformingDemo
+namespace QEngine.Demos.Physics
 {
 	/// <summary>
 	/// Platform for the player to stand on

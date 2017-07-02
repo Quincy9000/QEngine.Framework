@@ -77,6 +77,11 @@ namespace QEngine
 			Engine.Manager.ChangeScene(s);
 		}
 
+		public void ExitGame()
+		{
+			Engine.Exit();
+		}
+
 		public QRect Window => Engine.GraphicsDevice.Viewport.Bounds;
 
 		public void Instantiate(QBehavior script, QVec pos = default(QVec), float rotation = 0)
@@ -194,8 +199,8 @@ namespace QEngine
 			BehaviorScriptLoader(Loaders);
 			foreach(var loader in Loaders)
 			{
-				((QBehavior)(loader)).SetName();
-				((QBehavior)(loader)).Parent = QObject.NewObject();
+				((QBehavior)loader).SetName();
+				((QBehavior)loader).Parent = QObject.NewObject();
 				loader.OnLoad(new QAddContent(Content));
 				QObject.DeleteObject(((QBehavior)(loader)).Parent);
 			}

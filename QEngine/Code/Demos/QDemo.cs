@@ -16,7 +16,7 @@ namespace QEngine.Demos
 				AssetDirectory = "Assets",
 				Width = 1280,
 				Height = 720,
-				Fullscreen = false,
+				Fullscreen = true,
 				Vsync = false,
 				MouseVisible = true,
 			}).Run(new Platformer());

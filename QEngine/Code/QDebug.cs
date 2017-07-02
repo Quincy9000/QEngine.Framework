@@ -21,11 +21,6 @@
 
 		public int DebugLevel { get; set; }
 
-		public void AppendText(string msg)
-		{
-			Label.Text += msg + "\n";
-		}
-
 		public void OnLoad(QAddContent add)
 		{
 			add.Font("Fonts/arial");
@@ -47,8 +42,8 @@
 			if(DebugLevel > 0)
 			{
 				Label.Visible = true;
-				Label.Text += $"FrameDelay: {Lag}ms\nFPS: {FramesPerSecond}\n" +
-				              $"TotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds";
+				Label.AppendLine($"FrameDelay: {Lag}ms\nFPS: {FramesPerSecond}\n" +
+				              $"TotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds");
 				Transform.Position = new QVec(Window.Left, Window.Bottom - Label.Measure(Label.Text).Y);
 			}
 			else
