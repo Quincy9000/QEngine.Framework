@@ -40,6 +40,7 @@ namespace QEngine
 		protected override void LoadContent()
 		{
 			SpriteBatch = new SpriteBatch(GraphicsDevice);
+			Content.Unload();
 			Manager.Init();
 		}
 

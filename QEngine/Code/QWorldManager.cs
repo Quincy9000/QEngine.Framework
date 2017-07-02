@@ -120,7 +120,7 @@ namespace QEngine
 
 		float PhysicsAccum { get; set; } = 0;
 
-		const float Simulation = 1 / 60f;
+		const float Simulation = 1 / 61f;
 
 		/// <summary>
 		/// Moves all the bodies to the most recent transform 
@@ -134,8 +134,8 @@ namespace QEngine
 			bool step = false;
 			var delta = t.Delta;
 			var simulation = Simulation;
-			if(t.IsLagging)
-				simulation = Simulation * 2;
+//			if(t.IsLagging)
+//				simulation = Simulation * 2;
 			PhysicsAccum += delta;
 			while(PhysicsAccum >= simulation)
 			{

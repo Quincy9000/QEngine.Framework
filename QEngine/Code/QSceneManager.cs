@@ -13,6 +13,7 @@ namespace QEngine
 		{
 			CurrentScene = Scenes.First().Value;
 			CurrentScene.OnLoad();
+			ResetScene();
 		}
 
 		internal void AddScene(QScene scene)
@@ -32,8 +33,8 @@ namespace QEngine
 
 		public void ResetScene()
 		{
-			CurrentScene.OnUnload();
-			CurrentScene.OnLoad();
+			CurrentScene?.OnUnload();
+			CurrentScene?.OnLoad();
 		}
 
 		public void Update(QTime time)

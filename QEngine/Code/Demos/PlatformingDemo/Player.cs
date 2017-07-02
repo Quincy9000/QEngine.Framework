@@ -23,7 +23,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		const float JumpSpeed = 7;
 
-		const float MaxJumpGas = 0.2f;
+		const float MaxJumpGas = 0.3f;
 
 		const float MaxVel = 5;
 
@@ -222,8 +222,15 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public override void OnLateUpdate(float delta)
 		{
-			var middle = QVec.Middle(Transform.Position, Camera.ScreenToWorld(Input.MousePosition()));
-			Camera.Lerp(middle, 11, delta);
+			const float cameraSpeed = 11;
+			var mouse = Camera.ScreenToWorld(Input.MousePosition());
+			var middle = QVec.Middle(Transform.Position, mouse);
+			if(Camera.Bounds.Contains(mouse))
+				Camera.Lerp(middle, cameraSpeed, delta);
+			else
+			{
+				Camera.Lerp(Position, cameraSpeed, delta);
+			}
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
@@ -236,6 +243,7 @@ namespace QEngine.Demos.PlatformingDemo
 			if(!Accumulator.CheckAccum("Collision", 1 / 60f)) return;
 			if(other.Data() is Bat bat)
 			{
+				Health--;
 				CanMove = false;
 				const float force = 12000;
 				if(Position.X < bat.Position.X)
