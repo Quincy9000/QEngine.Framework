@@ -98,6 +98,7 @@
     <Compile Include="Code\Primitives\QColor.cs" />
     <Compile Include="Code\Primitives\QLayer.cs" />
     <Compile Include="Code\Primitives\QMat.cs" />
+    <Compile Include="Code\Primitives\QQuad.cs" />
     <Compile Include="Code\Primitives\QTime.cs" />
     <Compile Include="Code\QAccum.cs" />
     <Compile Include="Code\Animation\QAnimation.cs" />

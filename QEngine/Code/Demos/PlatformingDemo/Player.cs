@@ -163,6 +163,8 @@ namespace QEngine.Demos.PlatformingDemo
 			}
 			if(Input.IsKeyPressed(QKeys.Escape))
 				Scene.ExitGame();
+			if(Input.IsKeyPressed("r"))
+				Scene.ResetScene();
 			if(Input.IsKeyPressed(QKeys.C))
 			{
 				BiomeFloor.CheckDistance = !BiomeFloor.CheckDistance;
