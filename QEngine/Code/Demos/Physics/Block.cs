@@ -2,41 +2,41 @@
 
 namespace QEngine.Demos.Physics
 {
-    class Block : QCharacterController
-    {
-        QRigiBody body;
+	class Block : QCharacterController
+	{
+		QRigiBody body;
 
-        public float Width { get; }
+		public float Width { get; }
 
-        public float Height { get; }
+		public float Height { get; }
 
-        QSprite sprite;
+		QSprite sprite;
 
-        public Block(int w, int h)
-        {
-            Width = w;
-            Height = h;
-        }
+		QVec DirectionOfMovement;
 
-        public override void OnLoad(QAddContent add)
-        {
-            add.Rectangle(Name, (int)Width, (int)Height, QColor.White);
-        }
+		public Block(int w, int h, QVec direction)
+		{
+			Width = w;
+			Height = h;
+			DirectionOfMovement = direction;
+		}
 
-        public override void OnStart(QGetContent get)
-        {
-            body = World.CreateRectangle(this, Width, Height);
-            body.IsCCD = true;
-            sprite = new QSprite(this, get.TextureSource(Name));
-            int R() => QRandom.Number(1, 255);
-            sprite.Color = new QColor(R(), R(), R());
-            //body.FixedRotation = true;
-            //body.Restitution = 1f;
-        }
+		public override void OnLoad(QAddContent add)
+		{
+			add.Rectangle(Name, (int)Width, (int)Height, QColor.White);
+		}
 
-        public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
-        {
-            spriteRenderer.Draw(sprite, Transform);
-        }
-    }
+		public override void OnStart(QGetContent get)
+		{
+			sprite = new QSprite(this, get.TextureSource(Name));
+			sprite.Color = QRandom.Color();
+			body = World.CreateRectangle(this, Width, Height);
+			body.ApplyForce(DirectionOfMovement);
+		}
+
+		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
+		{
+			spriteRenderer.Draw(sprite, Transform);
+		}
+	}
 }

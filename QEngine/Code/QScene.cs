@@ -235,7 +235,7 @@ namespace QEngine
 			FrameTime = Stopwatch.StartNew();
 			World.TryStep(time, GameObjects);
 			CheckQueue();
-			SpriteRenderer.Matrix = Camera.UpdateMatrix();
+			SpriteRenderer.Matrix = Camera.TransformMatrix;
 		}
 
 		/// <summary>

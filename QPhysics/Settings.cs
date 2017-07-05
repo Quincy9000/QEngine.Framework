@@ -47,7 +47,7 @@ namespace QPhysics
         /// tools by removing the overhead of the checks, but you will need to handle checks
         /// yourself where it is needed.
         /// </summary>
-        public const bool SkipSanityChecks = false; //default: false
+        public const bool SkipSanityChecks = true; //default: false
 
         /// <summary>
         /// Maximum number of sub-steps per contact in continuous physics simulation.
@@ -57,7 +57,7 @@ namespace QPhysics
         /// <summary>
         /// Enable/Disable warmstarting
         /// </summary>
-        public const bool EnableWarmstarting = true;
+        public const bool EnableWarmstarting = false; //default: true
 
         /// <summary>
         /// The maximum number of contact points between two convex shapes.
@@ -103,7 +103,7 @@ namespace QPhysics
         /// <summary>
         /// Maximum number of contacts to be handled to solve a TOI impact.
         /// </summary>
-        public const int MaxTOIContacts = 32;
+        public const int MaxTOIContacts = 32; //default: 32
 
         /// <summary>
         /// A velocity threshold for elastic collisions. Any collision with a relative linear
@@ -128,13 +128,13 @@ namespace QPhysics
         /// that overlap is removed in one time step. However using values close to 1 often lead
         /// to overshoot.
         /// </summary>
-        public const float Baumgarte = 0.2f;//default is 0.2
+        public const float Baumgarte = 0.2f;//default is 0.2f
 
         // Sleep
         /// <summary>
         /// The time that a body must be still before it will go to sleep.
         /// </summary>
-        public const float TimeToSleep = 0.5f;
+        public const float TimeToSleep = 0.1f; //default: 0.5f
 
         /// <summary>
         /// A body cannot sleep if its linear velocity is above this tolerance.
@@ -195,7 +195,7 @@ namespace QPhysics
         /// <summary>
         /// Enable/Disable Continuous Collision Detection (CCD)
         /// </summary>
-        public static bool ContinuousPhysics = false;
+        public static bool ContinuousPhysics = true; //default: true
 
         /// <summary>
         /// If true, it will run a GiftWrap convex hull on all polygon inputs.
@@ -203,7 +203,7 @@ namespace QPhysics
         /// but if speed of the creation of polygons are more important,
         /// you might want to set this to false.
         /// </summary>
-        public static bool UseConvexHullPolygons = true; 
+        public static bool UseConvexHullPolygons = true; //default: true
 
         /// <summary>
         /// The number of velocity iterations in the TOI solver

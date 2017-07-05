@@ -13,21 +13,29 @@ namespace QEngine
 
 		int level;
 
-		List<QRect> list;
+		List<QRect> objects;
 		QRect bounds;
 		QQuad[] nodes;
 
-		public QQuad(int plevel, QRect pBounds)
+		QQuad(int plevel, QRect pBounds)
 		{
 			level = plevel;
-			list = new List<QRect>();
+			objects = new List<QRect>();
+			bounds = pBounds;
+			nodes = new QQuad[4];
+		}
+
+		public QQuad(QRect pBounds)
+		{
+			level = 0;
+			objects = new List<QRect>();
 			bounds = pBounds;
 			nodes = new QQuad[4];
 		}
 
 		public void Clear()
 		{
-			list.Clear();
+			objects.Clear();
 			for(int i = 0; i < nodes.Length; i++)
 			{
 				if(nodes[i] != null)
@@ -100,9 +108,9 @@ namespace QEngine
 				return;
 			}
 
-			list.Add(r);
+			objects.Add(r);
 
-			if(list.Count > MAX_OBJECTS && level < MAX_LEVELS)
+			if(objects.Count > MAX_OBJECTS && level < MAX_LEVELS)
 			{
 				if(nodes[0] == null)
 				{
@@ -110,13 +118,13 @@ namespace QEngine
 				}
 
 				int i = 0;
-				while(i < list.Count)
+				while(i < objects.Count)
 				{
-					int index = Index(list[i]);
+					int index = Index(objects[i]);
 					if(index != -1)
 					{
-						nodes[index].Insert(list[i]);
-						list.RemoveAt(i);
+						nodes[index].Insert(objects[i]);
+						objects.RemoveAt(i);
 					}
 					else
 					{
@@ -134,8 +142,8 @@ namespace QEngine
 			{
 				nodes[index].Retrieve(returnObjects, rect);
 			}
-			
-			returnObjects.AddRange(list);
+
+			returnObjects.AddRange(objects);
 
 			return returnObjects;
 		}

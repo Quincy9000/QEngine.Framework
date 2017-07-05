@@ -18,7 +18,7 @@ namespace QEngine
 
 		public QVec Scale { get; set; } = Vector2.One;
 
-		public QLayer Layer { get; set; } = 0;
+		public float Layer { get; set; } = 0;
 
 		public bool Visible { get; set; } = true;
 

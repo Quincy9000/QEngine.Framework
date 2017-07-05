@@ -7,7 +7,7 @@ namespace QEngine
 	{
 		Dictionary<string, QScene> Scenes { get; }
 
-		QScene CurrentScene { get; set; }
+		internal QScene CurrentScene { get; set; }
 
 		internal void Init()
 		{

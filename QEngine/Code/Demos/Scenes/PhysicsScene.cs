@@ -8,7 +8,7 @@ namespace QEngine.Demos.Scenes
 	{
 		protected override void BehaviorScriptLoader(List<IQLoad> scripts)
 		{
-			scripts.Add(new Block(40, 40));
+//			scripts.Add(new Block(40, 40));
 		}
 
 		protected override void Load()

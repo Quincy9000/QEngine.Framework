@@ -37,8 +37,7 @@
 
 		public void OnLateUpdate(float delta)
 		{
-			if(Accumulator.CheckAccum("Debugger", 1 / 25f))
-				Fps.Update(delta);
+			Fps.Update(delta);
 			if(DebugLevel > 0)
 			{
 				Label.Visible = true;

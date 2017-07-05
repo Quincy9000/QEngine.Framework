@@ -10,19 +10,19 @@
 
 		public QColor Color { get; set; } = QColor.White;
 
-		public QLayer Layer { get; set; } = 0.5f;
+		public float Layer { get; set; } = 0.5f;
 
 		public QSpriteEffects Effect { get; set; } = QSpriteEffects.None;
 
 		public bool IsVisible { get; set; } = true;
 
 		/// <summary>
-		/// returns the Source width * scaleX
+		/// returns the Source width * scale
 		/// </summary>
 		public float Width => Source.Width * script.Transform.Scale.X;
 
 		/// <summary>
-		/// Returns the source height * scaley
+		/// Returns the source height * scale
 		/// </summary>
 		public float Height => Source.Height * script.Transform.Scale.Y;
 
@@ -30,18 +30,23 @@
 
 		internal QBehavior script{ get; }
 
-		public QSprite(QBehavior s, string textureName)
+		public QSprite(QBehavior s, string textureName) : this(s)
 		{
-			script = s;
 			Source = Texture[textureName];
 			Origin = Source.Center;
 		}
 
-		public QSprite(QBehavior s, QRect source)
+		public QSprite(QBehavior s, QRect source) : this(s)
 		{
-			script = s;
 			Source = source;
 			Origin = Source.Center;
+		}
+
+		public QSprite(QBehavior script)
+		{
+			this.script = script;
+			Source = QRect.Empty;
+			Origin = QVec.Zero;
 		}
 	}
 }

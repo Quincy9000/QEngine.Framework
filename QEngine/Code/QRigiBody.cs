@@ -21,15 +21,15 @@ namespace QEngine
 			}
 		}
 
-//		internal void MoveBody(ref QVec v)
-//		{
-//			body.SetTransform(v.ToSim(), Rotation);
-//		}
-//
-//		internal void RotateBody(ref float f)
-//		{
-//			body.SetTransform(Position.ToSim(), f);
-//		}
+		internal void MoveBody(ref QVec v)
+		{
+			body.SetTransform(v.ToSim(), Rotation);
+		}
+
+		internal void RotateBody(ref float f)
+		{
+			body.SetTransform(Position.ToSim(), f);
+		}
 
 		public delegate void Collision(QRigiBody other);
 

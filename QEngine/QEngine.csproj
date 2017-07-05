@@ -59,13 +59,13 @@
     <Compile Include="Code\Assets\QTexture.cs" />
     <Compile Include="Code\Debug\QDebugView.cs" />
     <Compile Include="Code\Debug\QPrimitiveBatch.cs" />
+    <Compile Include="Code\Demos\Assets.cs" />
     <Compile Include="Code\Demos\Physics\Ball.cs" />
     <Compile Include="Code\Demos\Physics\Block.cs" />
     <Compile Include="Code\Demos\Physics\BlockCreator.cs" />
     <Compile Include="Code\Demos\Physics\Platform.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\Assets.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\BackgroundRendering.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\Bat.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\BiomeBackgroundRendering.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\BiomeBat.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\BiomeFloor.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\BiomeLevel.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\HealthBar.cs" />
@@ -96,7 +96,6 @@
     <Compile Include="Code\Interfaces\IQUpdate.cs" />
     <Compile Include="Code\Prefabs\QCharacterController.cs" />
     <Compile Include="Code\Primitives\QColor.cs" />
-    <Compile Include="Code\Primitives\QLayer.cs" />
     <Compile Include="Code\Primitives\QMat.cs" />
     <Compile Include="Code\Primitives\QQuad.cs" />
     <Compile Include="Code\Primitives\QTime.cs" />
@@ -129,7 +128,6 @@
     <Compile Include="Code\QObject.cs" />
     <Compile Include="Code\Primitives\QRect.cs" />
     <Compile Include="Code\Rendering\QImage.cs" />
-    <Compile Include="Code\Rendering\QPrimitives.cs" />
     <Compile Include="Code\Rendering\QRenderer.cs" />
     <Compile Include="Code\QScene.cs" />
     <Compile Include="Code\QSceneManager.cs" />

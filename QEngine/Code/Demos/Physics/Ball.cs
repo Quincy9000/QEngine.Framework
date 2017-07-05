@@ -6,28 +6,34 @@ namespace QEngine.Demos.Physics
 	{
 		QRigiBody body;
 
-		QColor c;
+		QVec DirectionOfMovement;
 
-		float radius;
+		QSprite Sprite;
 
-		public Ball(float diameter)
+		int Radius;
+
+		public Ball(int diameter, QVec direction)
 		{
-			radius = diameter / 2f;
+			Radius = diameter / 2;
+			DirectionOfMovement = direction;
+		}
+
+		public override void OnLoad(QAddContent add)
+		{
+			add.Circle(Name, Radius);
 		}
 
 		public override void OnStart(QGetContent get)
 		{
-			int R() => QRandom.Number(100, 255);
-			body = World.CreateCircle(this, radius, 20);
-			body.IsCCD = true;
-			c = new QColor(R(), R(), R());
-			//body.Restitution = 1f;
+			Sprite = new QSprite(this, get.TextureSource(Name));
+			Sprite.Color = QRandom.Color();
+			body = World.CreateCircle(this, Radius);
+			body.ApplyForce(DirectionOfMovement);
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
 		{
-			//spriteRenderer.Draw(sprite, Transform);
-			spriteRenderer.DrawCircle(Transform, radius, c);
+			spriteRenderer.Draw(Sprite, Transform);
 		}
 	}
 }

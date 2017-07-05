@@ -21,9 +21,9 @@ namespace QEngine.Demos.PlatformingDemo
 
 		const float PlayerSpeed = 5;
 
-		const float JumpSpeed = 7;
+		const float JumpSpeed = 8.3f;
 
-		const float MaxJumpGas = 0.3f;
+		const float MaxJumpGas = 0.15f;
 
 		const float MaxVel = 5;
 
@@ -71,7 +71,7 @@ namespace QEngine.Demos.PlatformingDemo
 		{
 			add.Texture(Assets.Bryan + "BryanSpriteSheet");
 			add.Texture(Assets.Bryan + "SwordAttack2");
-			add.Music("Audio/areYouReadyForThis");
+			add.Music(Assets.Audio + "areYouReadyForThis");
 		}
 
 		public override void OnStart(QGetContent get)
@@ -133,7 +133,7 @@ namespace QEngine.Demos.PlatformingDemo
 				Camera.Zoom += Camera.Zoom * 0.1f;
 			if(Input.IsMouseScrolledDown())
 				Camera.Zoom -= Camera.Zoom * 0.1f;
-			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(WalkingIntoWallsDistance, 0), out QRigiBody b))
+			if(World.WhatDidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(WalkingIntoWallsDistance, 0), out QRigiBody b))
 			{
 				if(b.Script is BiomeFloor)
 				{
@@ -142,7 +142,7 @@ namespace QEngine.Demos.PlatformingDemo
 					right = false;
 				}
 			}
-			if(World.DidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(-WalkingIntoWallsDistance, 0), out QRigiBody bb))
+			if(World.WhatDidRaycastHit(Transform.Position + new QVec(0, Sprite.Width / 3f - 5), new QVec(-WalkingIntoWallsDistance, 0), out QRigiBody bb))
 			{
 				if(bb.Script is BiomeFloor)
 				{
@@ -153,13 +153,24 @@ namespace QEngine.Demos.PlatformingDemo
 			}
 			if(!CanMove && Accumulator.CheckAccum("Damaged", 0.5f))
 				CanMove = true;
-			if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.03f))
+			if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.15f))
 			{
-				int i = QRandom.Number(0, 1);
-				if(i == 0)
-					Instantiate(new Block(40, 40), Camera.ScreenToWorld(Input.MousePosition()));
+				var mouseCamera = Camera.ScreenToWorld(Input.MousePosition());
+				var direction = QVec.MoveTowards(Position, mouseCamera);
+				QVec t;
+				if(mouseCamera.X > Position.X)
+				{
+					t = new QVec(50, 0);
+				}
 				else
-					Instantiate(new Ball(40), Camera.ScreenToWorld(Input.MousePosition()));
+				{
+					t = new QVec(-50, 0);
+				}
+				var force = 200f;
+				if(QRandom.Number(0, 1) == 0)
+					Instantiate(new Block(40, 40, direction * force), Position + t);
+				else
+					Instantiate(new Ball(40, direction * force), Position + t);
 			}
 			if(Input.IsKeyPressed(QKeys.Escape))
 				Scene.ExitGame();
@@ -223,7 +234,7 @@ namespace QEngine.Demos.PlatformingDemo
 				Sprite.Source = RightIdle;
 //				Body.LinearVelocity = new QVec(0, Body.LinearVelocity.Y);
 			}
-			Debug.Label.AppendLine($"Velocity: {Body.LinearVelocity}");
+			//Debug.Label.AppendLine($"Velocity: {Body.LinearVelocity}");
 		}
 
 		public override void OnLateUpdate(float delta)
@@ -242,15 +253,16 @@ namespace QEngine.Demos.PlatformingDemo
 			spriteRenderer.Draw(Sprite, Transform);
 		}
 
+		//TODO Add WhileTouching event
+
 		public void Collision(QRigiBody other)
 		{
-			if(!Accumulator.CheckAccum("Collision", 1 / 60f)) return;
-			if(other.Data() is Bat bat)
+			if(other.Data() is Bat bat && Accumulator.CheckAccum("BatCanDamage", 0.1f))
 			{
 				Health--;
 				CanMove = false;
 				const float force = 2000;
-				Console.WriteLine("Collide");
+				//Console.WriteLine("Collide");
 				if(Position.X < bat.Position.X)
 				{
 					Body.ApplyForce(new QVec(-force, -force));
@@ -269,7 +281,7 @@ namespace QEngine.Demos.PlatformingDemo
 					JumpGas = MaxJumpGas;
 				}
 			}
-			else if(other.IsDynamic && other.Mass > 1)
+			else if(other.IsDynamic)
 			{
 				if(Position.Y < other.Position.Y)
 				{

@@ -124,6 +124,11 @@ namespace QEngine
 		{
 			return l.rect != r.rect;
 		}
+		
+		public static QRect operator *(QRect r, int scaleSize)
+		{
+			return new QRect(r.X, r.Y, r.Width * scaleSize, r.Height * scaleSize);
+		}
 
 		/*Ctors*/
 
@@ -132,14 +137,19 @@ namespace QEngine
 			rect = r;
 		}
 
-		public QRect(QVec v, int w, int h)
+		public QRect(QVec v, int w, int h) : this((int)v.X, (int)v.Y, w, h)
 		{
-			rect = new Rectangle((int)v.X, (int)v.Y, w, h);
+			
 		}
 
-		public QRect(QVec v, QVec v2)
+		public QRect(int x, int y, QVec size) : this(x,y,(int)size.X, (int)size.Y)
 		{
-			rect = new Rectangle((int)v.X, (int)v.Y, (int)v2.X, (int)v2.Y);
+			
+		}
+
+		public QRect(QVec v, QVec v2) : this((int)v.X, (int)v.Y, (int)v2.X, (int)v2.Y)
+		{
+			
 		}
 
 		public QRect(int x, int y, int w, int h)

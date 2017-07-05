@@ -8,14 +8,15 @@ namespace QEngine.Demos.PlatformingDemo
 		{
 			add.Texture(Assets.Bryan + "BiomeMap/biomeMapFront");
 			add.Texture(Assets.Bryan + "cavern_biome");
+			add.Texture(Assets.Quincy + "testMap");
 		}
 
 		public void OnStart(QGetContent get)
 		{
 			Scene.SpriteRenderer.ClearColor = QColor.Black;
-			
+
 			Instantiate(new BackgroundRendering());
-			
+
 			QMapTools.SpawnObjects(get, "biomeMapFront", QVec.Zero, new QVec(64, 64), (c, v) =>
 			{
 				if(c == new QColor(0, 150, 50)) //player
@@ -35,6 +36,30 @@ namespace QEngine.Demos.PlatformingDemo
 					Instantiate(new Bat(), v);
 				}
 			});
+
+//			QMapTools.SpawnObjects(get, "testMap", QVec.Zero, new QVec(64, 64), (c, v) =>
+//			{
+//				if(c == new QColor(38, 255, 74)) //player
+//				{
+//					Instantiate(new Player(), v);
+//				}
+//				else if(c == QColor.Black)
+//				{
+//					Instantiate(new BiomeFloor(), v);
+//				}
+//				else if(c == new QColor(75, 60, 45)) //ground
+//				{
+//					Instantiate(new BiomeFloor(), v);
+//				}
+//				else if(c == new QColor(35, 30, 20)) //walls
+//				{
+//					Instantiate(new BiomeFloor(), v);
+//				}
+//				else if(c == new QColor(255, 0, 0)) //bats
+//				{
+//					Instantiate(new Bat(), v);
+//				}
+//			});
 		}
 	}
 }

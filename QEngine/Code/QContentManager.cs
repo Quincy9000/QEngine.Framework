@@ -85,7 +85,7 @@ namespace QEngine
 			if(megaTexture != null)
 				((Texture2D)megaTexture.Texture).Dispose();
 			megaTexture = new QMegaTexture(target, rects);
-			megaTexture.Texture.SaveAsPng("here.png");
+			//megaTexture.Texture.SaveAsPng("here.png");
 		}
 
 		public bool AddTexture(string name, string path)
