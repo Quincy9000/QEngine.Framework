@@ -5,7 +5,7 @@ namespace QEngine.Demos.Physics
 {
 	class BlockCreator : QCharacterController
 	{
-		public override void OnUpdate(float time)
+		public override void OnUpdate(QTime delta)
 		{
 //			if(Input.IsKeyHeld(QKeys.Space))
 //				World.Gravity = new QVec(0, -10);

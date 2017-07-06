@@ -57,7 +57,7 @@ namespace QPhysics
         /// <summary>
         /// Enable/Disable warmstarting
         /// </summary>
-        public const bool EnableWarmstarting = false; //default: true
+        public const bool EnableWarmstarting = true; //default: true
 
         /// <summary>
         /// The maximum number of contact points between two convex shapes.
@@ -195,7 +195,7 @@ namespace QPhysics
         /// <summary>
         /// Enable/Disable Continuous Collision Detection (CCD)
         /// </summary>
-        public static bool ContinuousPhysics = true; //default: true
+        public static bool ContinuousPhysics = false; //default: true
 
         /// <summary>
         /// If true, it will run a GiftWrap convex hull on all polygon inputs.

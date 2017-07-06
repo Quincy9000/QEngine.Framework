@@ -4,7 +4,7 @@ using QEngine.Prefabs;
 
 namespace QEngine.Demos.PlatformingDemo
 {
-	public class Bat : QCharacterController
+	public class BiomeBat : QCharacterController
 	{
 		List<QRect> Frames;
 
@@ -18,7 +18,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		QSprite Sprite;
 
-		public int Speed = 300;
+		public int Speed = 150; //default: 150
 
 		public int Health = 3;
 
@@ -29,6 +29,11 @@ namespace QEngine.Demos.PlatformingDemo
 		bool WillAttack = false;
 
 		double damageAccum;
+
+		public void Flick(QVec flickDirection)
+		{
+			body?.ApplyForce(flickDirection);
+		}
 
 		public override void OnLoad(QAddContent add)
 		{
@@ -58,13 +63,12 @@ namespace QEngine.Demos.PlatformingDemo
 			body.LinearDamping = 10f;
 		}
 
-		public override void OnUpdate(float time)
+		public override void OnUpdate(QTime time)
 		{
 			var s = Speed;
 			if(Health < 1)
 				Scene.Destroy(this);
-			damageAccum += time;
-			if(damageAccum > 0.5f)
+			if(Accumulator.CheckAccum("BatCanTakeDamage", 0.5, time))
 			{
 				CanTakeDamage = true;
 				damageAccum = 0;
@@ -89,8 +93,8 @@ namespace QEngine.Demos.PlatformingDemo
 						Sprite.Effect = QSpriteEffects.FlipHorizontally;
 					else
 						Sprite.Effect = QSpriteEffects.None;
-					Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time * s;
-					Sprite.Source = BatFlap.Play(time);
+					Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * delta * s;
+					Sprite.Source = BatFlap.Play(delta);
 				}
 				//only attacks from above
 				else */if(distanceFromPlayer < 800)// && player.Transform.Position.Y > Transform.Position.Y)
@@ -99,8 +103,8 @@ namespace QEngine.Demos.PlatformingDemo
 						Sprite.Effect = QSpriteEffects.FlipHorizontally;
 					else
 						Sprite.Effect = QSpriteEffects.None;
-					Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time * s;
-					Sprite.Source = BatFlap.Play(time);
+					Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time.Delta * s;
+					Sprite.Source = BatFlap.Play(time.Delta);
 				}
 				else
 				{
@@ -111,8 +115,8 @@ namespace QEngine.Demos.PlatformingDemo
 							Sprite.Effect = QSpriteEffects.FlipHorizontally;
 						else
 							Sprite.Effect = QSpriteEffects.None;
-						Transform.Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * time * Speed;
-						Sprite.Source = BatFlap.Play(time);
+						Transform.Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * time.Delta * Speed;
+						Sprite.Source = BatFlap.Play(time.Delta);
 					}
 					else if(distanceFromPlayer > 1000)
 					{

@@ -418,7 +418,7 @@ namespace QPhysics.Dynamics.Solver
             _joints[JointCount++] = joint;
         }
 
-        private void Report(ContactVelocityConstraint[] constraints)
+        void Report(ContactVelocityConstraint[] constraints)
         {
             if (_contactManager == null)
                 return;

@@ -35,14 +35,14 @@
 			Label = new QLabel(Font);
 		}
 
-		public void OnLateUpdate(float delta)
+		public void OnLateUpdate(QTime time)
 		{
-			Fps.Update(delta);
+			Fps.Update(time.Delta);
 			if(DebugLevel > 0)
 			{
 				Label.Visible = true;
 				Label.AppendLine($"FrameDelay: {Lag}ms\nFPS: {FramesPerSecond}\n" +
-				              $"TotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds");
+				                 $"TotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds");
 				Transform.Position = new QVec(Window.Left, Window.Bottom - Label.Measure(Label.Text).Y);
 			}
 			else

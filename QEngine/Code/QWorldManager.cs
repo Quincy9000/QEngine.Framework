@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using OpenGL;
+﻿using System.Linq;
+using System.Collections.Generic;
+using QEngine.Demos.CircleSpawnDemo;
 using QPhysics;
 using QPhysics.Dynamics;
 using QPhysics.Factories;
@@ -25,20 +25,20 @@ namespace QEngine
 		/// </summary>
 		public event NearCollision OnCollision;
 
-		public QRigiBody CreateRectangle(QBehavior script, float w = 10, float h = 10, float density = 1, 
+		public QRigiBody CreateRectangle(QBehavior script, float w = 10, float h = 10, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
 			QRigiBody body = Bodies.Find(bd => script.Id == bd.Id);
 			if(body != null)
 				return body;
-			body = new QRigiBody(script, 
-				BodyFactory.CreateRectangle(world, 
-					w.ToSim(), 
-					h.ToSim(), 
-					density, 
-					script.Transform.Position.ToSim(), 
-					script.Transform.Rotation, 
-					(BodyType)bodyType, 
+			body = new QRigiBody(script,
+				BodyFactory.CreateRectangle(world,
+					w.ToSim(),
+					h.ToSim(),
+					density,
+					script.Transform.Position.ToSim(),
+					script.Transform.Rotation,
+					(BodyType)bodyType,
 					script));
 			script.Transform.Body = body;
 			Bodies.Add(body);
@@ -54,7 +54,7 @@ namespace QEngine
 //			return body;
 //		}
 
-		public QRigiBody CreateCircle(QBehavior script, float radius = 10, float density = 1, 
+		public QRigiBody CreateCircle(QBehavior script, float radius = 10, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
 			//if the body already exists we just return that one
@@ -86,21 +86,21 @@ namespace QEngine
 			return body;
 		}
 
-		public QRigiBody CreateCapsule(QBehavior script, float height = 10f, float radius = 5f, float density = 1, 
+		public QRigiBody CreateCapsule(QBehavior script, float height = 10f, float radius = 5f, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
 			//if the body already exists we just return that one
 			QRigiBody body = Bodies.Find(bd => script.Id == bd.Id);
 			if(body != null)
 				return body;
-			body = new QRigiBody(script, 
-				BodyFactory.CreateCapsule(world, 
-					height.ToSim(), 
-					radius.ToSim(), 
-					density, 
+			body = new QRigiBody(script,
+				BodyFactory.CreateCapsule(world,
+					height.ToSim(),
+					radius.ToSim(),
+					density,
 					script.Transform.Position.ToSim(),
-					script.Transform.Rotation, 
-					(BodyType)bodyType, 
+					script.Transform.Rotation,
+					(BodyType)bodyType,
 					script));
 			script.Transform.Body = body;
 			Bodies.Add(body);
@@ -114,15 +114,22 @@ namespace QEngine
 		/// <param name="b"></param>
 		/// <param name="hit"></param>
 		/// <returns></returns>
-		public bool WhatDidRaycastHit(QVec a, QVec b, out QRigiBody hit)
+		public bool WhatDidRaycastHit(QVec a, QVec b, out List<QRigiBody> hit)
 		{
 			var aSim = a.ToSim();
 			var bSim = b.ToSim();
 			var fl = world.RayCast(aSim, aSim + bSim);
 			if(fl.Count > 0)
 			{
-				var bd = fl[0].Body.UserData as QBehavior;
-				hit = bd.World.Bodies.Find(r => r.Id == bd.Id);
+				List<QRigiBody> qbodies = new List<QRigiBody>();
+				for(int i = 0; i < fl.Count; i++)
+				{
+					QBehavior script = fl[i].Body.UserData as QBehavior;
+					var qbod = script?.World.Bodies.Find(bod => script.Id == bod.Id);
+					if(qbod != null)
+						qbodies.Add(qbod);
+				}
+				hit = qbodies;
 				return true;
 			}
 			hit = null;
@@ -179,8 +186,8 @@ namespace QEngine
 				PhysicsAccum -= Simulation;
 				step = true;
 			}
-			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(delta));
-			QGameObjectManager.For(m.LateUpdateObjects, l => l.OnLateUpdate(delta));
+			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(t));
+			QGameObjectManager.For(m.LateUpdateObjects, l => l.OnLateUpdate(t));
 			if(step)
 				ClearForces();
 			/*Interpolation*/
@@ -224,9 +231,12 @@ namespace QEngine
 
 		public const float DefaultGravity = 9.807f;
 
-		void ctor(float x, float y)
+		internal QWorldManager(float x = 0, float y = DefaultGravity)
 		{
 			world = new World(new QVec(x, y));
+			for(int i = 0; i < 100; i++)
+				BodyFactory.CreateRectangle(world, 1, 1, 1);
+			BodyFactory.CreateRectangle(world, 1, 1, 1);
 			world.Clear();
 			world.ProcessChanges();
 			world.ClearForces();
@@ -242,15 +252,7 @@ namespace QEngine
 			};
 		}
 
-		internal QWorldManager(float x = 0, float y = DefaultGravity)
-		{
-			ctor(x, y);
-		}
-
-		internal QWorldManager(QVec gravity)
-		{
-			ctor(gravity.X, gravity.Y);
-		}
+		internal QWorldManager(QVec gravity) : this(gravity.X, gravity.Y) { }
 	}
 }
 

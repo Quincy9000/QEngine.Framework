@@ -54,6 +54,11 @@ namespace QEngine
 			value = new Color(r, g, b, a);
 		}
 
+		public static QColor Lerp(QColor a, QColor b, float amount)
+		{
+			return Color.Lerp(a, b, amount);
+		}
+
 		static QColor()
 		{
 			TransparentBlack = new QColor(0U);

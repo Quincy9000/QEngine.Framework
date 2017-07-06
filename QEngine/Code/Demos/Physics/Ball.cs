@@ -29,6 +29,7 @@ namespace QEngine.Demos.Physics
 			Sprite.Color = QRandom.Color();
 			body = World.CreateCircle(this, Radius);
 			body.ApplyForce(DirectionOfMovement);
+			body.IsBullet = true;
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)

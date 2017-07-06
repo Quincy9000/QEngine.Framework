@@ -33,7 +33,7 @@ namespace QEngine.Demos.PlatformingDemo
 				}
 				else if(c == new QColor(255, 0, 0))//bats
 				{
-					Instantiate(new Bat(), v);
+					Instantiate(new BiomeBat(), v);
 				}
 			});
 

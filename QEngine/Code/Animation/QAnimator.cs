@@ -12,6 +12,8 @@ namespace QEngine
 
 		public QAnimation Current { get; private set; }
 
+		public string CurrentName { get; private set; }
+
 		/// <summary>
 		/// Returns true if successfully added animation, sets currentAnimation to this one
 		/// </summary>
@@ -64,7 +66,12 @@ namespace QEngine
 		{
 			if(Animations.TryGetValue(n, out QAnimation a))
 			{
+				if(Current == a)
+				{
+					return false;
+				}
 				Current = a;
+				CurrentName = n;
 				return true;
 			}
 			return false;

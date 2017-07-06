@@ -1,21 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Security.Policy;
+using QPhysics.Collision.TOI;
 
 namespace QEngine
 {
 	/// <summary>
-	/// Limit Execution over a period of time using CheckAccum
+	/// Limit Execution over a period of executeTime using CheckAccumGlobal
 	/// </summary>
-	public class QAccum : QBehavior, IQUpdate
+	public class QAccum : QBehavior
 	{
 		class AccumTimer
 		{
-			//actual time that has passed
-			public float accum;
+			//actual executeTime that has passed
+			public double accum;
 
 			//if accum is greater than executeTime, accumulator can return true then reset
-			public float ExecuteTime { get; }
+			public double ExecuteTime { get; }
 
-			public AccumTimer(float t)
+			public AccumTimer(double t)
 			{
 				accum = 0;
 				ExecuteTime = t;
@@ -24,24 +26,21 @@ namespace QEngine
 
 		Dictionary<string, AccumTimer> Accumulators { get; } = new Dictionary<string, AccumTimer>();
 
-		public void OnUpdate(float delta)
-		{
-			foreach(var a in Accumulators)
-				a.Value.accum += delta;
-		}
-
 		/// <summary>
-		/// Returns true only after the amount of time you choose has gone by
+		/// Returns true only after the amount of executeTime you choose has gone by, always uses real executeTime 
 		/// </summary>
 		/// <param name="name"></param>
-		/// <param name="time"></param>
+		/// <param name="executeTime"></param>
 		/// <returns></returns>
-		public bool CheckAccum(string name, float time)
+		public bool CheckAccum(string name, double executeTime, QTime? time = null)
 		{
-			if(!Accumulators.TryGetValue(name, out AccumTimer t))
+			bool check = Accumulators.TryGetValue(name, out AccumTimer t);
+			if(check && time != null)
+				t.accum += time.Value.Delta;
+			else if(!check)
 			{
-				Accumulators.Add(name, new AccumTimer(time));
-				return true; //return true if first time so that there is no delay 
+				Accumulators.Add(name, new AccumTimer(executeTime));
+				return true;
 			}
 			if(t.accum > t.ExecuteTime)
 			{

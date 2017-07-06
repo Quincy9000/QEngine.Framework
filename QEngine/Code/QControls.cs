@@ -243,7 +243,7 @@ namespace QEngine
 			GetControls();
 		}
 
-		public void OnUpdate(float time)
+		public void OnUpdate(QTime delta)
 		{
 			Update();
 		}

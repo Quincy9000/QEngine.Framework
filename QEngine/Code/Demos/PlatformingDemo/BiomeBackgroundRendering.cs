@@ -4,7 +4,7 @@ using System.Runtime.Remoting.Messaging;
 
 namespace QEngine.Demos.PlatformingDemo
 {
-	public class BackgroundRendering : QBehavior, IQStart, IQLoad, IQUpdate, IQDrawSprite
+	public class BackgroundRendering : QBehavior, IQStart, IQLoad, IQDrawSprite
 	{
 		List<QTilePos> BackgroundTiles;
 
@@ -65,16 +65,6 @@ namespace QEngine.Demos.PlatformingDemo
 //			var b = content.Texture("biomeMapBack").Bounds;
 //			//quad = new QQuad(new QRect(0,0, b.Width * 64, b.Height * 64));
 //			quad = new QQuad(new QRect(0,0, b.Width * 64, b.Height * 64));
-//
-//			for(int i = 0; i < tiles.Count; i++)
-//			{
-//				quad.Insert(new QRect(tiles[i].Position, tiles[i].Source.Size));
-//			}
-		}
-
-		public void OnUpdate(float delta)
-		{
-//			quad = new QQuad(Camera.Bounds);
 //
 //			for(int i = 0; i < tiles.Count; i++)
 //			{

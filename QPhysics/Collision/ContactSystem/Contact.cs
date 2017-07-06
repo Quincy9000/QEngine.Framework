@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Remoting.Messaging;
 using Microsoft.Xna.Framework;
 using QPhysics.Collision.Narrowphase;
 using QPhysics.Collision.Shapes;
@@ -285,6 +286,15 @@ namespace QPhysics.Collision.ContactSystem
                 // callbacks for fixtures that didn't explicitly disable the collision.
                 if (!Enabled)
                     touching = false;
+            }
+
+            // Jacob testing this TODO
+            if(wasTouching && touching)
+            {
+                //seeing if this will always call the collision event when they are currently touching 
+                //even after the collision event has been triggered
+                FixtureA?.OnCollisionStay?.Invoke(FixtureA, FixtureB, this);
+                FixtureB?.OnCollisionStay?.Invoke(FixtureB, FixtureA, this);
             }
 
             if (wasTouching == true && touching == false)

@@ -13,8 +13,6 @@ namespace QEngine.Demos.PlatformingDemo
 
 		QVec toSize;
 
-		public static bool CheckDistance = true;
-
 		public override void OnStart(QGetContent get)
 		{
 			var floorTiles = get.TextureSource("cavern_biome").Split(16, 16);
@@ -27,7 +25,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
 		{
-			if(CheckDistance || QVec.Distance(Position, Camera.Position) < 1000)
+			if(QVec.Distance(Position, Camera.Position) < 1000)
 				spriteRenderer.Draw(sprite, Transform);
 		}
 	}

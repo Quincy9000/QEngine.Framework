@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace QEngine
 {
@@ -13,6 +14,20 @@ namespace QEngine
 		{
 			public QRect SourceRectangle;
 			public float Duration;
+
+			public static bool operator ==(QFrame left, QFrame right)
+			{
+				if(left.SourceRectangle == right.SourceRectangle)
+					return true;
+				return false;
+			}
+
+			public static bool operator !=(QFrame left, QFrame right)
+			{
+				if(left.SourceRectangle != right.SourceRectangle)
+					return true;
+				return false;
+			}
 		}
 
 		List<QFrame> _frames { get; }= new List<QFrame>();
@@ -157,6 +172,27 @@ namespace QEngine
 		{
 			SubList(recs, time, 0, recs.Count);
 			CurrentRectangle = _frames[_currentFrame].SourceRectangle;
+		}
+
+		public static bool operator ==(QAnimation left, QAnimation right)
+		{
+			if(left._frames.Count == right._frames.Count)
+			{
+				for(int i = 0; i < left._frames.Count; i++)
+				{
+					if(left._frames[i] != right._frames[i])
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+		
+		public static bool operator !=(QAnimation left, QAnimation right)
+		{
+			return !left._frames.Except(right._frames).Any();
 		}
 	}
 }

@@ -1227,6 +1227,29 @@ namespace QPhysics.Dynamics
                 }
             }
         }
+        
+        
+        /// <summary>
+        /// Added my own event in the physics engine that maybe runs while collision is happening
+        /// TODO just testing this
+        /// </summary>
+        public event OnCollisionHandler OnCollisionStay
+        {
+            add
+            {
+                foreach(var fixture in FixtureList)
+                {
+                    fixture.OnCollisionStay += value;
+                }
+            }
+            remove
+            {
+                foreach(var fixture in FixtureList)
+                {
+                    fixture.OnCollisionStay -= value;
+                }
+            }
+        }
 
         public event OnSeparationHandler OnSeparation
         {

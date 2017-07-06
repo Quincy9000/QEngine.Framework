@@ -9,7 +9,7 @@ namespace QEngine
 	{
 		List<IEnumerator> routines { get; }
 
-		internal QCoroutine() : base("QCoroutine")
+		internal QCoroutine()
 		{
 			routines = new List<IEnumerator>();
 		}
@@ -28,7 +28,7 @@ namespace QEngine
 			routines.Clear();
 		}
 
-		public override void OnFixedUpdate(float time)
+		public override void OnUpdate(QTime time)
 		{
 			for(var i = 0; i < routines.Count; i++)
 			{

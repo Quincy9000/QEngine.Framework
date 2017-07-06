@@ -21,19 +21,26 @@ namespace QEngine
 			}
 		}
 
-		internal void MoveBody(ref QVec v)
-		{
-			body.SetTransform(v.ToSim(), Rotation);
-		}
+		public delegate void EnterCollision(QRigiBody other);
 
-		internal void RotateBody(ref float f)
-		{
-			body.SetTransform(Position.ToSim(), f);
-		}
+		public delegate void WhileCollision(QRigiBody other);
 
-		public delegate void Collision(QRigiBody other);
+		public delegate void ExitCollision(QRigiBody other);
 
-		public event Collision OnCollision;
+		/// <summary>
+		/// Fires only once on the start of two bodies colliding
+		/// </summary>
+		public event EnterCollision OnCollisionEnter;
+
+		/// <summary>
+		/// Event fires while the collision is still touching
+		/// </summary>
+		public event WhileCollision OnCollisionStay;
+
+		/// <summary>
+		/// Fires when two bodies stop colliding
+		/// </summary>
+		public event ExitCollision OnCollisionExit;
 
 		/// <summary>
 		/// Set or get the rotation that the body is, in radians, 2Pi = 360 degree etc
@@ -196,7 +203,7 @@ namespace QEngine
 		}
 
 		/// <summary>
-		/// Is Constant Collision Detection On?
+		/// Is Constant OnCollisionEnter Detection On?
 		/// </summary>
 		public bool IsCCD
 		{
@@ -214,12 +221,40 @@ namespace QEngine
 			};
 			body.OnCollision += (a, b, contact) =>
 			{
-				QBehavior script = (QBehavior)b.Body.UserData;
-				if(script == null) return;
+				if(OnCollisionEnter != null)
+				{
+					QBehavior script = (QBehavior)b.Body.UserData;
+					if(script == null) return;
 
-				var bodySearch = script.World.Bodies.Find(r => r.Id == script.Id);
-				if(bodySearch != null)
-					OnCollision?.Invoke(bodySearch);
+					var bodySearch = script.World.Bodies.Find(r => r.Id == script.Id);
+					if(bodySearch != null)
+						OnCollisionEnter?.Invoke(bodySearch);
+				}
+			};
+			//TODO TEST
+			body.OnCollisionStay += (a, b, contact) =>
+			{
+				if(OnCollisionStay != null)
+				{
+					QBehavior script = (QBehavior)b.Body.UserData;
+					if(script == null) return;
+
+					var bodySearch = script.World.Bodies.Find(r => r.Id == script.Id);
+					if(bodySearch != null)
+						OnCollisionStay?.Invoke(bodySearch);
+				}
+			};
+			body.OnSeparation += (a, b, contact) =>
+			{
+				if(OnCollisionExit != null)
+				{
+					QBehavior script = (QBehavior)b.Body.UserData;
+					if(script == null) return;
+
+					var bodySearch = script.World.Bodies.Find(r => r.Id == script.Id);
+					if(bodySearch != null)
+						OnCollisionExit?.Invoke(bodySearch);
+				}
 			};
 		}
 	}

@@ -57,6 +57,11 @@ namespace QEngine
 		public T GetComponent<T>(string name) where T : QBehavior
 		{
 			return (T)(Scene.GameObjects.Objects.Find(u => u.Script.Name == name).Script);
+		}		
+		
+		public T GetComponent<T>() where T : QBehavior
+		{
+			return (T)(Scene.GameObjects.Objects.Find(u => u.Script is T).Script);
 		}
 
 		public T GetComponent<T>(Guid id) where T : QBehavior

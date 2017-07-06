@@ -58,7 +58,7 @@ namespace QEngine
 		}
 
 		/// <summary>
-		/// Writes to the screen and disappears after a certain amount of time has passes useful for debugging
+		/// Writes to the screen and disappears after a certain amount of delta has passes useful for debugging
 		/// </summary>
 		/// <param name="message"></param>
 		public void WriteLine(string message)
@@ -96,11 +96,11 @@ namespace QEngine
 			Clear();
 		}
 
-		public void OnUpdate(float time)
+		public void OnUpdate(QTime time)
 		{
-			_startFade += time;
+			_startFade += time.Delta;
 			if(_startFade > FadeStart)
-				_fade -= time;
+				_fade -= time.Delta;
 		}
 
 		public void OnDrawGui(QGuiRenderer renderer)

@@ -2,6 +2,6 @@
 {
     public interface IQLateUpdate : IQObject
     {
-        void OnLateUpdate(float time);
+        void OnLateUpdate(QTime time);
     }
 }

@@ -69,6 +69,11 @@ namespace QPhysics.Dynamics
         public OnCollisionHandler OnCollision;
 
         /// <summary>
+        /// Jacob added this, to test to see if we can call event WHILE two contacts are touching each time
+        /// </summary>
+        public OnCollisionHandler OnCollisionStay;
+
+        /// <summary>
         /// Fires when two shapes separate and a contact is removed between them.
         /// Note: This can in some cases be called multiple times, as a fixture can have multiple contacts.
         /// Note The first fixture argument is always the fixture that the delegate is subscribed to.

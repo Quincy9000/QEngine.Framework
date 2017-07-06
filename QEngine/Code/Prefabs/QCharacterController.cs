@@ -8,9 +8,9 @@
 
         public virtual void OnFixedUpdate(float delta) { }
 
-        public virtual void OnUpdate(float delta) { }
+        public virtual void OnUpdate(QTime delta) { }
 
-        public virtual void OnLateUpdate(float delta) { }
+        public virtual void OnLateUpdate(QTime delta) { }
 
         public virtual void OnDrawSprite(QSpriteRenderer spriteRenderer) { }
 
