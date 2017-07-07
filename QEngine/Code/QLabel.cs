@@ -52,6 +52,14 @@ namespace QEngine
 		{
 			PerformanceString.AppendLine(value);
 		}
+		
+		/// <summary>
+		/// Adds the text to the next line on the output
+		/// </summary>
+		public void Append(string value)
+		{
+			PerformanceString.Append(value);
+		}
 
 		public void ClearText()
 		{

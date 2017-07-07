@@ -29,7 +29,8 @@ namespace QEngine.Demos.PlatformingDemo
 				}
 				else if(c == new QColor(35, 30, 20)) //walls
 				{
-					Instantiate(new BiomeFloor(), v);
+					//Instantiate(new BiomeFloor(), v);
+					Instantiate(new BiomeWall(), v);
 				}
 				else if(c == new QColor(255, 0, 0))//bats
 				{

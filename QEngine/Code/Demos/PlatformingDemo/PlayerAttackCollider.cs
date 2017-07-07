@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace QEngine.Demos.PlatformingDemo
+﻿namespace QEngine.Demos.PlatformingDemo
 {
 	public class PlayerAttackCollider : QBehavior, IQLoad, IQStart, IQUpdate, IQDrawSprite
 	{
@@ -10,7 +8,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		Player p;
 
-		public const float Radius = 1000f;
+		public const float Radius = 40;
 
 		public void OnLoad(QAddContent add)
 		{
@@ -32,9 +30,9 @@ namespace QEngine.Demos.PlatformingDemo
 		public void OnUpdate(QTime time)
 		{
 			if(p.PlayerDirection == Player.Directions.Left)
-				Position = new QVec(-25, 15) + p.Position;
+				Position = new QVec(-20, 10) + p.Position;
 			else
-				Position = new QVec(25, 15) + p.Position;
+				Position = new QVec(20, 10) + p.Position;
 		}
 
 		public void OnDrawSprite(QSpriteRenderer spriteRenderer)

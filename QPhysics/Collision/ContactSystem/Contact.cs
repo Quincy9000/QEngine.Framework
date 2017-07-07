@@ -275,7 +275,7 @@ namespace QPhysics.Collision.ContactSystem
             else
                 _flags &= ~ContactFlags.TouchingFlag;
 
-            if (wasTouching == false && touching)
+            if (!wasTouching && touching)
             {
                 FixtureA.OnCollision?.Invoke(FixtureA, FixtureB, this);
                 FixtureB.OnCollision?.Invoke(FixtureB, FixtureA, this);
@@ -297,7 +297,7 @@ namespace QPhysics.Collision.ContactSystem
                 FixtureB?.OnCollisionStay?.Invoke(FixtureB, FixtureA, this);
             }
 
-            if (wasTouching == true && touching == false)
+            if (wasTouching && !touching)
             {
                 FixtureA?.OnSeparation?.Invoke(FixtureA, FixtureB, this);
                 FixtureB?.OnSeparation?.Invoke(FixtureB, FixtureA, this);

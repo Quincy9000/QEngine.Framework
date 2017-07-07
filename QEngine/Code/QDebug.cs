@@ -41,7 +41,7 @@
 			if(DebugLevel > 0)
 			{
 				Label.Visible = true;
-				Label.AppendLine($"FrameDelay: {Lag}ms\nFPS: {FramesPerSecond}\n" +
+				Label.Append($"FrameDelay: {Lag}ms\nFPS: {FramesPerSecond}\n" +
 				                 $"TotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds");
 				Transform.Position = new QVec(Window.Left, Window.Bottom - Label.Measure(Label.Text).Y);
 			}

@@ -163,7 +163,7 @@ namespace QEngine
 			Step(time, m);
 		}
 
-		float PhysicsAccum { get; set; } = 0;
+		float PhysicsAccum { get; set; } = 60;
 
 		const float Simulation = 1 / 60f;
 
@@ -177,8 +177,7 @@ namespace QEngine
 		void Step(QTime t, QGameObjectManager m)
 		{
 			bool step = false;
-			var delta = t.Delta;
-			PhysicsAccum += delta;
+			PhysicsAccum += t.Delta;
 			while(PhysicsAccum >= Simulation)
 			{
 				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(Simulation));
@@ -194,10 +193,14 @@ namespace QEngine
 			double alpha = PhysicsAccum / Simulation;
 			QGameObjectManager.For(Bodies, body =>
 			{
-				body.Script.Position = body.Position * (float)alpha +
-				                       body.Script.Position * (1.0f - (float)alpha);
-				body.Script.Rotation = body.Rotation * (float)alpha +
-				                       body.Script.Rotation * (1.0f - (float)alpha);
+				//Only move objects that need to be moved
+				if(!body.IsStatic)
+				{
+					body.Script.Position = body.Position * (float)alpha +
+					                       body.Script.Position * (1.0f - (float)alpha);
+					body.Script.Rotation = body.Rotation * (float)alpha +
+					                       body.Script.Rotation * (1.0f - (float)alpha);
+				}
 			});
 		}
 

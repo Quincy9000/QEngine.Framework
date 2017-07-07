@@ -88,7 +88,7 @@ namespace QEngine.Demos.PlatformingDemo
 			Health = HealthMax;
 
 			Scene.SpriteRenderer.Filter = QFilteringState.Point;
-			World.Gravity = new QVec(0, 30);
+			World.Gravity = new QVec(0, 25);
 			var frames = get.TextureSource("BryanSpriteSheet").Split(32, 32);
 			var attackFrames = get.TextureSource("SwordAttack2").Split(32, 32);
 			Sprite = new QSprite(this, frames[0]);
@@ -98,8 +98,8 @@ namespace QEngine.Demos.PlatformingDemo
 			spaceJam = get.Music("areYouReadyForThis");
 			//spaceJam.Play();
 
-			Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
-			//Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 3f, 10);
+			//Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
+			Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 1.3f, 10);
 			//Body = World.CreateRoundedRect(this, Sprite.Width /3f + 20, Sprite.Height / 1.2f, 10);
 
 			Body.FixedRotation = true;
@@ -168,12 +168,17 @@ namespace QEngine.Demos.PlatformingDemo
 			if(Input.IsKeyHeld(QKeys.LeftShift) || Input.IsKeyHeld(QKeys.RightShift))
 				sprint = true;
 
-			if(World.WhatDidRaycastHit(Position, new QVec(-35, 0), out List<QRigiBody> rb1))
+			if(World.WhatDidRaycastHit(Position, new QVec(-35, 0), out List<QRigiBody> rb1)) //left ray 
 			{
 				foreach(var qRigiBody in rb1)
 				{
-					if(qRigiBody.Script is BiomeFloor floor)
+					//TODO make smoother
+					if(qRigiBody.Script is BiomeWall floor || qRigiBody.Script is BiomeFloor)
 					{
+						if(QVec.Distance(Position, qRigiBody.Position) < 35)
+						{
+							Position += new QVec(35, 0);
+						}
 						left = false;
 						if(PlayerDirection == Directions.Left)
 							Sprite.Source = LeftIdle;
@@ -183,12 +188,16 @@ namespace QEngine.Demos.PlatformingDemo
 				}
 			}
 			
-			if(World.WhatDidRaycastHit(Position, new QVec(35, 0), out List<QRigiBody> rb2))
+			if(World.WhatDidRaycastHit(Position, new QVec(35, 0), out List<QRigiBody> rb2)) //right ray
 			{
 				foreach(var qRigiBody in rb2)
 				{
-					if(qRigiBody.Script is BiomeFloor floor)
+					if(qRigiBody.Script is BiomeWall floor || qRigiBody.Script is BiomeFloor)
 					{
+						if(QVec.Distance(Position, qRigiBody.Position) < 35)
+						{
+							Position += new QVec(-35, 0);
+						}
 						right = false;
 						if(PlayerDirection == Directions.Left)
 							Sprite.Source = LeftIdle;
@@ -281,7 +290,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		IEnumerator AttackDelay(QTime time)
 		{
-			yield return QCoroutine.WaitForSeconds(0.05);
+			yield return QCoroutine.WaitForSeconds(0.1);
 			PlayerState = PlayerStates.Attacking;
 		}
 
@@ -294,13 +303,15 @@ namespace QEngine.Demos.PlatformingDemo
 //				Camera.Lerp(middle, cameraSpeed, time.Delta);
 //			else
 //				Camera.Lerp(Position, cameraSpeed, time.Delta);
-			if(PlayerDirection == Directions.Left)
+			if(Camera.Bounds.Contains(Position))
 			{
-				Camera.Lerp(Position + new QVec(-100, 0), cameraSpeed, time.Delta);
+				if(QVec.Distance(Camera.Position, Position) < 100)
+					return;
+				Camera.Lerp(Position, cameraSpeed, time.Delta);
 			}
 			else
 			{
-				Camera.Lerp(Position + new QVec(100, 0), cameraSpeed, time.Delta);
+				Camera.Lerp(Position, 20, time.Delta);
 			}
 		}
 
