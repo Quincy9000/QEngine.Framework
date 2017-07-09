@@ -5,7 +5,7 @@ namespace QEngine.Demos.PlatformingDemo
 	/// <summary>
 	/// Platform for the player to stand on
 	/// </summary>
-	public class BiomeWall : QCharacterController
+	public class BiomeWall : QBehavior, IQStart, IQDrawSprite
 	{
 		QSprite sprite;
 
@@ -13,7 +13,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		QVec toSize;
 
-		public override void OnStart(QGetContent get)
+		public void OnStart(QGetContent get)
 		{
 			var floorTiles = get.TextureSource("cavern_biome").Split(16, 16);
 			sprite = new QSprite(this, floorTiles[1]);
@@ -23,7 +23,7 @@ namespace QEngine.Demos.PlatformingDemo
 			body.IsCCD = false;
 		}
 
-		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)
+		public void OnDrawSprite(QSpriteRenderer spriteRenderer)
 		{
 			if(QVec.Distance(Position, Camera.Position) < 1000)
 				spriteRenderer.Draw(sprite, Transform);

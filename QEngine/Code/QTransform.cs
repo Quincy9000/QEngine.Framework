@@ -6,9 +6,16 @@ namespace QEngine
 	{
 		QObject parent;
 
-		QVec pos;
+		QVec position;
 
 		float rotation = 0;
+		
+		QVec scale;
+
+		/// <summary>
+		/// if the transform is dirty we update the body and transform
+		/// </summary>
+		internal bool IsDirty;
 
 		internal QRigiBody body;
 
@@ -18,30 +25,40 @@ namespace QEngine
 			set
 			{
 				body = value;
-				body.Position = pos;
+				body.Position = position;
 				body.Rotation = rotation;
 			}
 		}
 
 		public QVec Position
 		{
-			get => body?.Position ?? pos;
+			get => body?.Position ?? position; //
 			set
 			{
-				pos = value;
+				position = value;
+				IsDirty = true;
 				if(body != null)
 					body.Position = value;
 			}
 		}
 
-		public QVec Scale { get; set; }
+		public QVec Scale
+		{
+			get => scale;
+			set
+			{
+				scale = value;
+				IsDirty = true;
+			}
+		}
 
 		public float Rotation
 		{
-			get => body?.Rotation ?? rotation;
+			get => body?.Rotation ?? rotation; //
 			set
 			{
 				rotation = value;
+				IsDirty = true;
 				if(body != null)
 					body.Rotation = value;
 			}
@@ -60,12 +77,13 @@ namespace QEngine
 			Rotation = 0;
 		}
 
-		public void Reset(QVec pos, QVec scale, float rotation)
+		public void Reset(QVec pos, QVec scale, float rot)
 		{
 			body = null;
 			Position = pos;
 			Scale = scale;
-			Rotation = rotation;
+			Rotation = rot;
+			IsDirty = true;
 		}
 
 		public override int GetHashCode()

@@ -7,7 +7,7 @@ namespace QEngine
 	{
 		public Guid Id { get; }
 
-		public QTransform Transform { get; }
+		public QTransform Transform { get; internal set; }
 
 		public QScene Scene { get; internal set; }
 

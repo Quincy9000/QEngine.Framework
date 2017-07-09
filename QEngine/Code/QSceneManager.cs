@@ -6,6 +6,14 @@ namespace QEngine
 	public class QSceneManager
 	{
 		Dictionary<string, QScene> Scenes { get; }
+		
+		internal bool CallToResetScene = false;
+
+		internal bool CallToExitGame = false;
+
+		internal bool CallToChangeScene = false;
+
+		internal string CallToChangeSceneName = "";
 
 		internal QScene CurrentScene { get; set; }
 
@@ -13,7 +21,10 @@ namespace QEngine
 		{
 			CurrentScene = Scenes.First().Value;
 			CurrentScene.OnLoad();
-			ResetScene();
+			for(int i = 0; i < 3; i++)
+			{
+				ResetScene();
+			}
 		}
 
 		internal void AddScene(QScene scene)
@@ -23,6 +34,7 @@ namespace QEngine
 
 		public void ChangeScene(string name)
 		{
+			CallToChangeScene = false;
 			if(Scenes.TryGetValue(name, out QScene s) && CurrentScene != null)
 			{
 				CurrentScene.OnUnload();
@@ -33,6 +45,7 @@ namespace QEngine
 
 		public void ResetScene()
 		{
+			CallToResetScene = false;
 			CurrentScene?.OnUnload();
 			CurrentScene?.OnLoad();
 		}
@@ -40,6 +53,12 @@ namespace QEngine
 		public void Update(QTime time)
 		{
 			CurrentScene.OnUpdate(time);
+			if(CallToChangeScene)
+				ChangeScene(CallToChangeSceneName);
+			else if(CallToResetScene)
+				ResetScene();
+			else if(CallToExitGame)
+				CurrentScene.ExitGame();
 		}
 
 		public void Draw()
@@ -51,7 +70,7 @@ namespace QEngine
 		{
 			CurrentScene.OnGui(CurrentScene.GuiRenderer);
 		}
-		
+
 		public void Unload()
 		{
 			CurrentScene.OnUnload();

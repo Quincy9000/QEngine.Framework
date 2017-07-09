@@ -100,7 +100,7 @@ namespace QEngine
 		{
 			if(!sprite.IsVisible) return;
 			sb.Draw(texture,
-				tr.Position + sprite.Offset,
+				(tr.Position + sprite.Offset),
 				sprite.Source,
 				sprite.Color,
 				tr.Rotation,
@@ -119,7 +119,7 @@ namespace QEngine
 		{
 			if(!sprite.IsVisible) return;
 			sb.Draw(sprite.Texture,
-				transform.Position + sprite.Offset,
+				(transform.Position + sprite.Offset),
 				sprite.Source,
 				sprite.Color,
 				transform.Rotation,

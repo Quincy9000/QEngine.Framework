@@ -2,64 +2,74 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Mime;
+using Microsoft.Win32.SafeHandles;
 using QEngine.Prefabs;
 
 namespace QEngine.Demos.PlatformingDemo
 {
+	public enum PlayerDirections
+	{
+		Left,
+		Right,
+	}
+
+	public enum PlayerMovementStates
+	{
+		Moving,
+		Sprinting,
+		Idle,
+	}
+
+	public enum PlayerJumpingStates
+	{
+		Jumping,
+		NotJumping,
+	}
+
+	public enum PlayerCombatStates
+	{
+		None,
+		Attacking,
+		TakingDamage,
+	}
+
 	public class Player : QCharacterController
 	{
-		public enum Directions
-		{
-			Left,
-			Right
-		}
-
-		public enum PlayerStates
-		{
-			Moving,
-			Attacking,
-		}
-
-		const float PlayerSpeed = 5;
-
-		const float JumpSpeed = 8.3f;
-
-		const float MaxJumpGas = 0.15f;
-
-		const float MaxVel = 5;
-
-		//distance before you cant walk into wall anymore
-		const float WalkingIntoWallsDistance = 42;
-
-		int _health;
-
 		QAnimator Animator;
 
 		QRigiBody Body;
 
 		QMusic spaceJam;
 
-		public int HealthMax = 5;
-
-		bool CanJump => JumpGas > 0 && Body.LinearVelocity.Y < 3;
-
-		bool CanMove; //getting disabled by enemies
-
-		bool IsJumpDone = false;
-
-		bool Attacking = false;
-
-		float JumpGas = MaxJumpGas;
-
 		QRect LeftIdle, RightIdle;
 
-		public Directions PlayerDirection { get; private set; }
-
-		public PlayerStates PlayerState { get; private set; }
-
-		bool CanTakeDamage = true;
-
 		QSprite Sprite;
+
+		const float PlayerSpeed = 5;
+
+		const float JumpSpeed = 5f;
+
+		const float MaxJumpTime = 0.15f;
+
+		float JumpTime { get; set; } = MaxJumpTime;
+
+		int _health;
+
+		bool CanMoveLeft = true;
+
+		bool CanMoveRight = true;
+
+		bool CanMove => CanMoveLeft && CanMoveRight;
+
+		public int MaxHealth = 5;
+
+		public PlayerDirections DirectionState { get; private set; }
+
+		public PlayerMovementStates MovementState { get; private set; }
+
+		public PlayerCombatStates CombatState { get; private set; }
+
+		public PlayerJumpingStates JumpingState { get; private set; }
 
 		public int Health
 		{
@@ -85,10 +95,10 @@ namespace QEngine.Demos.PlatformingDemo
 
 			Instantiate(new PlayerAttackCollider(), Position);
 
-			Health = HealthMax;
+			Health = MaxHealth;
 
 			Scene.SpriteRenderer.Filter = QFilteringState.Point;
-			World.Gravity = new QVec(0, 25);
+			World.Gravity = new QVec(0, 20);
 			var frames = get.TextureSource("BryanSpriteSheet").Split(32, 32);
 			var attackFrames = get.TextureSource("SwordAttack2").Split(32, 32);
 			Sprite = new QSprite(this, frames[0]);
@@ -98,13 +108,12 @@ namespace QEngine.Demos.PlatformingDemo
 			spaceJam = get.Music("areYouReadyForThis");
 			//spaceJam.Play();
 
-			//Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
-			Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 1.3f, 10);
+			Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
+			//Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 1.3f, 10);
 			//Body = World.CreateRoundedRect(this, Sprite.Width /3f + 20, Sprite.Height / 1.2f, 10);
 
 			Body.FixedRotation = true;
 			Body.Friction = 0.4f;
-			Body.IsCCD = true;
 
 			Body.OnCollisionStay += OnCollisionStay;
 
@@ -118,194 +127,219 @@ namespace QEngine.Demos.PlatformingDemo
 			Animator.EditAnimation("LeftAttack", animation =>
 			{
 				animation.Multiplyer = 2f;
+				animation.Loop = false;
 			});
 			Animator.EditAnimation("RightAttack", animation =>
 			{
 				animation.Multiplyer = 2f;
+				animation.Loop = false;
 			});
 			Animator.Swap("Right");
-			PlayerDirection = Directions.Right;
-			PlayerState = PlayerStates.Moving;
+			DirectionState = PlayerDirections.Right;
+			MovementState = PlayerMovementStates.Idle;
+			JumpingState = PlayerJumpingStates.NotJumping;
+			CombatState = PlayerCombatStates.None;
 		}
 
 		public override void OnUpdate(QTime time)
 		{
-			if(!CanTakeDamage && Accumulator.CheckAccum("CanTakeDamage", 0.5f, time))
-			{
-				CanTakeDamage = true;
-			}
-			switch(PlayerState)
-			{
-				case PlayerStates.Moving:
-					Movement(time);
-					break;
-				case PlayerStates.Attacking:
-					Attack(time);
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-		}
-
-		void Movement(QTime time)
-		{
 			if(Health == 0)
 				Scene.ResetScene();
-			QVec temp = QVec.Zero;
-			bool sprint = false;
-			bool right = true;
-			bool left = true;
+
 			if(Input.IsMouseScrolledUp())
 				Camera.Zoom += Camera.Zoom * 0.1f;
+
 			if(Input.IsMouseScrolledDown())
 				Camera.Zoom -= Camera.Zoom * 0.1f;
-			if(!CanMove && Accumulator.CheckAccum("Damaged", 0.5f, time))
-				CanMove = true;
+
 			if(Input.IsKeyPressed(QKeys.Escape))
 				Scene.ExitGame();
+
 			if(Input.IsKeyPressed("r"))
 				Scene.ResetScene();
-			if(Input.IsKeyHeld(QKeys.LeftShift) || Input.IsKeyHeld(QKeys.RightShift))
-				sprint = true;
 
-			if(World.WhatDidRaycastHit(Position, new QVec(-35, 0), out List<QRigiBody> rb1)) //left ray 
+			Move(time);
+		}
+
+		public override void OnFixedUpdate(float delta)
+		{
+			if(World.WhatDidRaycastHit(Body.Position, new QVec(-35, 0), out LinkedList<QRigiBody> rb1)) //left ray 
 			{
 				foreach(var qRigiBody in rb1)
 				{
-					//TODO make smoother
-					if(qRigiBody.Script is BiomeWall floor || qRigiBody.Script is BiomeFloor)
+					if(qRigiBody.Script is BiomeWall || qRigiBody.Script is BiomeFloor)
 					{
-						if(QVec.Distance(Position, qRigiBody.Position) < 35)
+						while(QVec.Distance(qRigiBody.Script.Position, Body.Position) < 35)
 						{
-							Position += new QVec(35, 0);
+							Body.Position += QVec.Right * 5;
 						}
-						left = false;
-						if(PlayerDirection == Directions.Left)
+						if(DirectionState == PlayerDirections.Left)
 							Sprite.Source = LeftIdle;
 						else
 							Sprite.Source = RightIdle;
+						CanMoveLeft = false;
 					}
 				}
 			}
-			
-			if(World.WhatDidRaycastHit(Position, new QVec(35, 0), out List<QRigiBody> rb2)) //right ray
+			else
+				CanMoveLeft = true;
+
+			if(World.WhatDidRaycastHit(Body.Position, new QVec(35, 0), out LinkedList<QRigiBody> rb2)) //right ray
 			{
 				foreach(var qRigiBody in rb2)
 				{
-					if(qRigiBody.Script is BiomeWall floor || qRigiBody.Script is BiomeFloor)
+					if(qRigiBody.Script is BiomeWall || qRigiBody.Script is BiomeFloor)
 					{
-						if(QVec.Distance(Position, qRigiBody.Position) < 35)
+						while(QVec.Distance(qRigiBody.Script.Position, Body.Position) < 35)
 						{
-							Position += new QVec(-35, 0);
+							Body.Position += QVec.Left * 5;
 						}
-						right = false;
-						if(PlayerDirection == Directions.Left)
+						if(DirectionState == PlayerDirections.Left)
 							Sprite.Source = LeftIdle;
 						else
 							Sprite.Source = RightIdle;
+						CanMoveRight = false;
 					}
 				}
 			}
-			
-			if(Input.IsKeyPressed("j"))
+			else
+				CanMoveRight = true;
+
+			if(MovementState != PlayerMovementStates.Idle && CombatState == PlayerCombatStates.None)
 			{
-				if(PlayerDirection == Directions.Left)
-					Animator.Swap("LeftAttack");
-				else
-					Animator.Swap("RightAttack");
-				Animator.Current.Loop = false;
-				IsJumpDone = false;
-				Attacking = true;
-				Coroutine.Start(AttackDelay(time));
-				return;
-			}
-			if(Attacking) return;
-			if(IsJumpDone && Input.IsKeyPressed(QKeys.W) || Input.IsKeyPressed(QKeys.Space))
-			{
-				IsJumpDone = false;
-			}
-			if(CanJump && !IsJumpDone && (Input.IsKeyHeld(QKeys.W) || Input.IsKeyHeld(QKeys.Space)))
-			{
-				JumpGas -= time.Delta;
-				if(JumpGas > 0)
-					Body.LinearVelocity = new QVec(0, -JumpSpeed);
-				if(JumpGas < 0)
-					IsJumpDone = true;
-			}
-			if(Input.IsKeyReleased("W") || Input.IsKeyReleased("Space"))
-			{
-				if(!IsJumpDone)
-					JumpGas = -1;
-				IsJumpDone = true;
-			}
-			if(CanMove)
-			{
-				if(Input.IsKeyHeld("A") && left)
+				float speed = MovementState == PlayerMovementStates.Sprinting ? 2 : 1;
+				if(DirectionState == PlayerDirections.Left)
 				{
-					temp += QVec.Left;
-					Animator.Swap("Left");
-					PlayerDirection = Directions.Left;
+					if(CanMoveLeft)
+						Body.Position += QVec.Left * PlayerSpeed * speed;
 				}
-				if(Input.IsKeyHeld("D") && right)
+				else
 				{
-					temp += QVec.Right;
-					Animator.Swap("Right");
-					PlayerDirection = Directions.Right;
+					if(CanMoveRight)
+						Body.Position += QVec.Right * PlayerSpeed * speed;
 				}
 			}
-			if(temp != QVec.Zero)
+			if(JumpingState == PlayerJumpingStates.Jumping)
 			{
-				if(!sprint)
-					Position += temp * time.Delta * 500;
+				if(JumpTime > 0 && Body.LinearVelocity.Y < 1)
+				{
+					Body.LinearVelocity = QVec.Up * JumpSpeed * 1.3f;
+					JumpTime -= delta;
+				}
 				else
-					Position += temp * time.Delta * 800;
-				Animator.Play(Sprite, time);
-			}
-			if(Input.IsKeyReleased(QKeys.A))
-			{
-				Sprite.Source = LeftIdle;
-				PlayerDirection = Directions.Left;
-			}
-			if(Input.IsKeyReleased(QKeys.D))
-			{
-				Sprite.Source = RightIdle;
-				PlayerDirection = Directions.Right;
+				{
+					JumpingState = PlayerJumpingStates.NotJumping;
+				}
 			}
 		}
 
-		void Attack(QTime time)
+		void Move(QTime time)
 		{
-			Animator.Play(Sprite, time);
-			if(Animator.Current.IsDone)
+			//taking damage means that you cant move a split second
+			if(CombatState == PlayerCombatStates.TakingDamage && Accumulator.CheckAccum("TakingDamage", 0.25f, time))
 			{
-				Animator.Current.Reset();
-				PlayerState = PlayerStates.Moving;
-				if(PlayerDirection == Directions.Left)
-					Sprite.Source = LeftIdle;
-				else
-					Sprite.Source = RightIdle;
-				Attacking = false;
+				CombatState = PlayerCombatStates.None;
 			}
+
+			if(CombatState != PlayerCombatStates.TakingDamage && CombatState != PlayerCombatStates.Attacking)
+			{
+				if(Input.IsKeyPressed("w") || Input.IsKeyPressed("space"))
+				{
+					JumpingState = PlayerJumpingStates.Jumping;
+				}
+				if(Input.IsKeyHeld("w") || Input.IsKeyHeld("space")) { }
+				if(Input.IsKeyReleased("w") || Input.IsKeyReleased("space"))
+				{
+					if(JumpingState == PlayerJumpingStates.Jumping)
+						JumpTime = 0;
+					JumpingState = PlayerJumpingStates.NotJumping;
+				}
+
+				if(Input.IsKeyPressed("j"))
+				{
+					CombatState = PlayerCombatStates.Attacking;
+					MovementState = PlayerMovementStates.Idle;
+				}
+
+				if(Input.IsKeyHeld("A"))
+				{
+					Animator.Swap("Left");
+					DirectionState = PlayerDirections.Left;
+					MovementState = PlayerMovementStates.Moving;
+				}
+
+				if(Input.IsKeyHeld("D"))
+				{
+					Animator.Swap("Right");
+					DirectionState = PlayerDirections.Right;
+					MovementState = PlayerMovementStates.Moving;
+				}
+
+				/*
+					If the player is press left or right shift and they also pressed A or D
+				*/
+				if((Input.IsKeyHeld(QKeys.LeftShift) || Input.IsKeyHeld(QKeys.RightShift))
+				   && MovementState == PlayerMovementStates.Moving)
+					MovementState = PlayerMovementStates.Sprinting;
+
+				if(MovementState != PlayerMovementStates.Idle && CanMove)
+					Animator.Play(Sprite, time);
+
+				if(Input.IsKeyReleased(QKeys.A))
+				{
+					Sprite.Source = LeftIdle;
+					DirectionState = PlayerDirections.Left;
+					MovementState = PlayerMovementStates.Idle;
+				}
+
+				if(Input.IsKeyReleased(QKeys.D))
+				{
+					Sprite.Source = RightIdle;
+					DirectionState = PlayerDirections.Right;
+					MovementState = PlayerMovementStates.Idle;
+				}
+			}
+			
+			if(CombatState == PlayerCombatStates.Attacking)
+			{
+				if(DirectionState == PlayerDirections.Left)
+					Animator.Swap("LeftAttack");
+				else
+					Animator.Swap("RightAttack");
+				Animator.Play(Sprite, time);
+				if(Animator.Current.IsDone)
+				{
+					Animator.Current.Reset();
+					if(DirectionState == PlayerDirections.Left)
+						Sprite.Source = LeftIdle;
+					else
+						Sprite.Source = RightIdle;
+					CombatState = PlayerCombatStates.None;
+				}
+			}
+
+			Debug.AppendLine($"Velocity: {Body.LinearVelocity}");
+			Debug.AppendLine($"CanMoveLeft: {CanMoveLeft}");
+			Debug.AppendLine($"CanMoveRight: {CanMoveRight}");
+			Debug.AppendLine($"JumpTime: {JumpTime}");
+			Debug.AppendLine($"JumpState: {JumpingState}");
+			Debug.AppendLine($"DirectionState: {DirectionState}");
+			Debug.AppendLine($"MovementState: {MovementState}");
+			Debug.AppendLine($"CombatState: {CombatState}");
 		}
 
 		IEnumerator AttackDelay(QTime time)
 		{
 			yield return QCoroutine.WaitForSeconds(0.1);
-			PlayerState = PlayerStates.Attacking;
+			CombatState = PlayerCombatStates.Attacking;
 		}
 
 		public override void OnLateUpdate(QTime time)
 		{
-			const float cameraSpeed = 6;
-//			var mouse = Camera.ScreenToWorld(Input.MousePosition());
-//			var middle = QVec.Middle(Transform.Position, mouse);
-//			if(Camera.Bounds.Contains(mouse))
-//				Camera.Lerp(middle, cameraSpeed, time.Delta);
-//			else
-//				Camera.Lerp(Position, cameraSpeed, time.Delta);
+			const float cameraSpeed = 5;
 			if(Camera.Bounds.Contains(Position))
 			{
-				if(QVec.Distance(Camera.Position, Position) < 100)
+				if(QVec.Distance(Camera.Position, Position) < 120)
 					return;
 				Camera.Lerp(Position, cameraSpeed, time.Delta);
 			}
@@ -322,35 +356,37 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public void OnCollisionStay(QRigiBody other)
 		{
-			if(other.Data() is BiomeBat bat && CanTakeDamage)
+			if(other.Data() is BiomeBat bat)
 			{
-				Health--;
-				CanMove = false;
-				CanTakeDamage = false;
-				const float force = 2000;
-				if(Position.X < bat.Position.X)
+				const float force = 500;
+				if(CombatState != PlayerCombatStates.TakingDamage)
 				{
-					Body.ApplyForce(new QVec(-force, -force));
-					bat.Flick(new QVec(450, -150));
-				}
-				else
-				{
-					Body.ApplyForce(new QVec(force, -force));
-					bat.Flick(new QVec(-450, -150));
+					Health--;
+					CombatState = PlayerCombatStates.TakingDamage;
+					if(Position.X < bat.Position.X)
+					{
+						Body.ApplyForce(new QVec(-force, -force));
+						bat.Flick(new QVec(force, -force));
+					}
+					else
+					{
+						Body.ApplyForce(new QVec(force, -force));
+						bat.Flick(new QVec(-force, -force));
+					}
 				}
 			}
 			else if(other.Data() is BiomeFloor floor)
 			{
 				if(Position.Y < floor.Position.Y)
 				{
-					JumpGas = MaxJumpGas;
+					JumpTime = MaxJumpTime;
 				}
 			}
 			else if(other.IsDynamic)
 			{
 				if(Position.Y < other.Position.Y)
 				{
-					JumpGas = MaxJumpGas;
+					JumpTime = MaxJumpTime;
 				}
 			}
 		}
@@ -371,4 +407,44 @@ namespace QEngine.Demos.PlatformingDemo
 //					Instantiate(new Block(40, 40, direction * force), Position + t);
 //				else
 //					Instantiate(new Ball(40, direction * force), Position + t);
+//			}
+
+//			var mouse = Camera.ScreenToWorld(Input.MousePosition());
+//			var middle = QVec.Middle(Transform.Position, mouse);
+//			if(Camera.Bounds.Contains(mouse))
+//				Camera.Lerp(middle, cameraSpeed, time.Delta);
+//			else
+//				Camera.Lerp(Position, cameraSpeed, time.Delta);
+
+//			if(Input.IsKeyPressed("j"))
+//			{
+//				if(PlayerPlayerDirection == PlayerDirections.Left)
+//					Animator.Swap("LeftAttack");
+//				else
+//					Animator.Swap("RightAttack");
+//				Animator.Current.Loop = false;
+//				IsJumpDone = false;
+//				Attacking = true;
+//				Coroutine.Start(AttackDelay(time));
+//				return;
+//			}
+//			if(Attacking) return;
+//			if(IsJumpDone && Input.IsKeyPressed(QKeys.W) || Input.IsKeyPressed(QKeys.Space))
+//			{
+//				IsJumpDone = false;
+//			}
+//			if(CanJump && !IsJumpDone && (Input.IsKeyHeld(QKeys.W) || Input.IsKeyHeld(QKeys.Space)))
+//			{
+//				JumpGas -= time.Delta;
+//
+//				if(JumpGas > 0)
+//					Body.LinearVelocity = new QVec(0, -JumpSpeed);
+//				if(JumpGas < 0)
+//					IsJumpDone = true;
+//			}
+//			if(Input.IsKeyReleased("W") || Input.IsKeyReleased("Space"))
+//			{
+//				if(!IsJumpDone)
+//					JumpGas = -1;
+//				IsJumpDone = true;
 //			}

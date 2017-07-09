@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security;
 using Microsoft.Xna.Framework;
 using QEngine.Debug;
@@ -49,6 +50,8 @@ namespace QEngine
 		internal Stopwatch FrameTime { get; set; }
 
 		internal QDebugView DebugView { get; set; }
+		
+		internal QPhysicsState State { get; set; }
 
 		/*Privates*/
 
@@ -233,9 +236,10 @@ namespace QEngine
 		internal void OnUpdate(QTime time)
 		{
 			FrameTime = Stopwatch.StartNew();
-			World.TryStep(time, GameObjects);
+			State = World.TryStep(time, GameObjects);
 			CheckQueue();
 			SpriteRenderer.Matrix = Camera.TransformMatrix;
+			SpriteRenderer.State = State;
 		}
 
 		/// <summary>
@@ -244,6 +248,7 @@ namespace QEngine
 		/// <param name="renderer"></param>
 		internal void OnDraw(QSpriteRenderer renderer)
 		{
+			
 			renderer.Begin();
 			QGameObjectManager.For(GameObjects.SpriteObjects, s => s.OnDrawSprite(renderer));
 			renderer.End();

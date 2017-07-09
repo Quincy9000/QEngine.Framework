@@ -21,6 +21,16 @@
 
 		public int DebugLevel { get; set; }
 
+		public void Append(string msg)
+		{
+			Label.Append(msg);
+		}
+
+		public void AppendLine(string msg)
+		{
+			Label.AppendLine(msg);
+		}
+
 		public void OnLoad(QAddContent add)
 		{
 			add.Font("Fonts/arial");

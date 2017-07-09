@@ -47,7 +47,7 @@ namespace QPhysics
         /// tools by removing the overhead of the checks, but you will need to handle checks
         /// yourself where it is needed.
         /// </summary>
-        public const bool SkipSanityChecks = true; //default: false
+        public const bool SkipSanityChecks = false; //default: false
 
         /// <summary>
         /// Maximum number of sub-steps per contact in continuous physics simulation.
@@ -195,7 +195,7 @@ namespace QPhysics
         /// <summary>
         /// Enable/Disable Continuous Collision Detection (CCD)
         /// </summary>
-        public static bool ContinuousPhysics = false; //default: true
+        public static bool ContinuousPhysics = true; //default: true
 
         /// <summary>
         /// If true, it will run a GiftWrap convex hull on all polygon inputs.

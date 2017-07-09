@@ -16,6 +16,8 @@ namespace QEngine
 
 		internal QEngine Engine;
 
+		internal QPhysicsState State;
+
 		public QColor ClearColor { get; set; } = QColor.White;
 
 		internal virtual void Begin()

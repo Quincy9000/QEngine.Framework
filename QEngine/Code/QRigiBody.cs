@@ -217,6 +217,9 @@ namespace QEngine
 			body = bo;
 			sc.OnDestroyEvent += () =>
 			{
+				OnCollisionEnter = null;
+				OnCollisionStay = null;
+				OnCollisionExit = null;
 				sc.World.RemoveBody(this);
 			};
 			body.OnCollision += (a, b, contact) =>
@@ -231,7 +234,7 @@ namespace QEngine
 						OnCollisionEnter?.Invoke(bodySearch);
 				}
 			};
-			//TODO TEST
+			//TODO TEST seems to work
 			body.OnCollisionStay += (a, b, contact) =>
 			{
 				if(OnCollisionStay != null)

@@ -33,9 +33,9 @@
 				renderer.DrawImage(Image, Transform, pos);
 				pos += new QVec(50, 0);
 			}
-			pos = new QVec(50 * p.HealthMax, 50);
+			pos = new QVec(50 * p.MaxHealth, 50);
 			Image.Source = EmptyHeart;
-			for(int i = p.Health; i < p.HealthMax; ++i)
+			for(int i = p.Health; i < p.MaxHealth; ++i)
 			{
 				renderer.DrawImage(Image, Transform, pos);
 				pos -= new QVec(50, 0);

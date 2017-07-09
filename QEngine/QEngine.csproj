@@ -69,6 +69,7 @@
     <Compile Include="Code\Demos\PlatformingDemo\BiomeFloor.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\BiomeLevel.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\BiomeWall.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\DroppableItem.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\HealthBar.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Player.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\PlayerAttackCollider.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Code\Prefabs\QCharacterController.cs" />
     <Compile Include="Code\Primitives\QColor.cs" />
     <Compile Include="Code\Primitives\QMat.cs" />
+    <Compile Include="Code\Primitives\QPhysicsState.cs" />
     <Compile Include="Code\Primitives\QQuad.cs" />
     <Compile Include="Code\Primitives\QTime.cs" />
     <Compile Include="Code\QAccum.cs" />

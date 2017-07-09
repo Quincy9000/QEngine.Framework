@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using QEngine.Demos.CircleSpawnDemo;
+﻿using System.Collections.Generic;
 using QPhysics;
 using QPhysics.Dynamics;
 using QPhysics.Factories;
@@ -25,6 +23,16 @@ namespace QEngine
 		/// </summary>
 		public event NearCollision OnCollision;
 
+		/// <summary>
+		/// Creates a rectangle, turns this script into a physics object, 
+		/// you then need to do all updates in fixedUpdate
+		/// </summary>
+		/// <param name="script"></param>
+		/// <param name="w"></param>
+		/// <param name="h"></param>
+		/// <param name="density"></param>
+		/// <param name="bodyType"></param>
+		/// <returns></returns>
 		public QRigiBody CreateRectangle(QBehavior script, float w = 10, float h = 10, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
@@ -54,6 +62,15 @@ namespace QEngine
 //			return body;
 //		}
 
+		/// <summary>
+		/// Creates a Circle, turns this script into a physics object, 
+		/// you then need to do all updates in fixedUpdate
+		/// </summary>
+		/// <param name="script"></param>
+		/// <param name="radius"></param>
+		/// <param name="density"></param>
+		/// <param name="bodyType"></param>
+		/// <returns></returns>
 		public QRigiBody CreateCircle(QBehavior script, float radius = 10, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
@@ -74,6 +91,13 @@ namespace QEngine
 			return body;
 		}
 
+		/// <summary>
+		/// Creates an edge, line collision from point a to b
+		/// </summary>
+		/// <param name="script"></param>
+		/// <param name="start"></param>
+		/// <param name="end"></param>
+		/// <returns></returns>
 		public QRigiBody CreateEdge(QBehavior script, QVec start, QVec end)
 		{
 			//if the body already exists we just return that one
@@ -86,6 +110,16 @@ namespace QEngine
 			return body;
 		}
 
+		/// <summary>
+		/// Creates a capsule, turns this script into a physics object, 
+		/// you then need to do all updates in fixedUpdate
+		/// </summary>
+		/// <param name="script"></param>
+		/// <param name="height"></param>
+		/// <param name="radius"></param>
+		/// <param name="density"></param>
+		/// <param name="bodyType"></param>
+		/// <returns></returns>
 		public QRigiBody CreateCapsule(QBehavior script, float height = 10f, float radius = 5f, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
@@ -107,6 +141,9 @@ namespace QEngine
 			return body;
 		}
 
+		/*Trying to see if using linked list is faster than creating new lists for each ray cast*/
+		LinkedList<QRigiBody> hitListNOGC = new LinkedList<QRigiBody>();
+
 		/// <summary>
 		/// returns true if it hits a body and outs the first body that it hits
 		/// </summary>
@@ -114,22 +151,24 @@ namespace QEngine
 		/// <param name="b"></param>
 		/// <param name="hit"></param>
 		/// <returns></returns>
-		public bool WhatDidRaycastHit(QVec a, QVec b, out List<QRigiBody> hit)
+		public bool WhatDidRaycastHit(QVec a, QVec b, out LinkedList<QRigiBody> hit)
 		{
 			var aSim = a.ToSim();
 			var bSim = b.ToSim();
 			var fl = world.RayCast(aSim, aSim + bSim);
 			if(fl.Count > 0)
 			{
-				List<QRigiBody> qbodies = new List<QRigiBody>();
+				//List<QRigiBody> qbodies = new List<QRigiBody>();
+				while(hitListNOGC.Count > 0)
+					hitListNOGC.RemoveFirst();
 				for(int i = 0; i < fl.Count; i++)
 				{
 					QBehavior script = fl[i].Body.UserData as QBehavior;
 					var qbod = script?.World.Bodies.Find(bod => script.Id == bod.Id);
 					if(qbod != null)
-						qbodies.Add(qbod);
+						hitListNOGC.AddFirst(qbod);
 				}
-				hit = qbodies;
+				hit = hitListNOGC;
 				return true;
 			}
 			hit = null;
@@ -158,12 +197,12 @@ namespace QEngine
 		/// Will try to update physics if its been a certain amount of time
 		/// </summary>
 		/// <param name="time"></param>
-		internal void TryStep(QTime time, QGameObjectManager m)
+		internal QPhysicsState TryStep(QTime time, QGameObjectManager m)
 		{
-			Step(time, m);
+			return Step(time, m);
 		}
 
-		float PhysicsAccum { get; set; } = 60;
+		float PhysicsAccum { get; set; }
 
 		const float Simulation = 1 / 60f;
 
@@ -174,12 +213,23 @@ namespace QEngine
 		/// </summary>
 		/// <param name="t"></param>
 		/// <param name="m"></param>
-		void Step(QTime t, QGameObjectManager m)
+		QPhysicsState Step(QTime t, QGameObjectManager m)
 		{
 			bool step = false;
 			PhysicsAccum += t.Delta;
+			QTime fixedTime = new QTime(Simulation);
 			while(PhysicsAccum >= Simulation)
 			{
+//				QGameObjectManager.For(Bodies, b =>
+//				{
+//					if(b.Script.Transform.IsDirty)
+//					{
+//						b.Position = b.Script.Position;
+//						b.Rotation = b.Script.Rotation;
+//						b.Script.Transform.IsDirty = false;
+//					}
+//				});
+				//integrate
 				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(Simulation));
 				world.Step(Simulation);
 				PhysicsAccum -= Simulation;
@@ -190,18 +240,65 @@ namespace QEngine
 			if(step)
 				ClearForces();
 			/*Interpolation*/
+			//Instead return the state and then pass the the renderer?
 			double alpha = PhysicsAccum / Simulation;
-			QGameObjectManager.For(Bodies, body =>
+			QGameObjectManager.For(Bodies, b =>
 			{
-				//Only move objects that need to be moved
-				if(!body.IsStatic)
+				//Only move objects that need to be moved, and that actively move
+				if(!b.IsStatic)
 				{
-					body.Script.Position = body.Position * (float)alpha +
-					                       body.Script.Position * (1.0f - (float)alpha);
-					body.Script.Rotation = body.Rotation * (float)alpha +
-					                       body.Script.Rotation * (1.0f - (float)alpha);
+//					body.Script.Position = body.Position * (float)alpha +
+//					                       body.Script.Position * (1.0f - (float)alpha);
+//					body.Script.Rotation = body.Rotation * (float)alpha +
+//					                       body.Script.Rotation * (1.0f - (float)alpha);
+					b.Script.Position = b.Position * (float)alpha +
+					                    b.Script.Position * (float)(1.0 - alpha);
+					b.Script.Rotation = b.Rotation * (float)alpha +
+					                    b.Script.Rotation * (float)(1.0 - alpha);
 				}
 			});
+			return alpha;
+		}
+
+		//http://www.gamasutra.com/blogs/BramStolk/20160408/269988/Fixing_your_time_step_the_easy_way_with_the_golden_48537_ms.php
+		static int stepsToTake(double elapsed)
+		{
+			// Our simulation frequency is 480Hz, a 2𐧶 (two one twelfth) ms.
+			const double e = 1 / 480.0;
+
+			// We will pretend our display sync rate is one of these:
+			if(elapsed > 15.5 * e)
+				return 16; // 30 Hz        ( .. to 30.97 Hz )
+			else if(elapsed > 14.5 * e)
+				return 15; // 32 Hz        ( 30.97 Hz to 33.10 Hz )
+			else if(elapsed > 13.5 * e)
+				return 14; // 36.92 Hz     ( 33.10 Hz to 38.4 Hz )
+			else if(elapsed > 12.5 * e)
+				return 13; // 40 Hz        ( 38.4 Hz to 41.74 Hz )
+			else if(elapsed > 11.5 * e)
+				return 12; // 43.64Hz      ( 41.74 Hz to 45.71 Hz )
+			else if(elapsed > 10.5 * e)
+				return 11; // 48 Hz        ( 45.71 Hz to 50.53 Hz )
+			else if(elapsed > 9.5 * e)
+				return 10; // 53.33 Hz     ( 50.53 Hz to 56.47 Hz )
+			else if(elapsed > 8.5 * e)
+				return 9; // 60 Hz        ( 56.47 Hz to 64 Hz )
+			else if(elapsed > 7.5 * e)
+				return 8; // 68.57 Hz     ( 64 Hz to 73.85 Hz )
+			else if(elapsed > 6.5 * e)
+				return 7; // 80 Hz        ( 73.85 Hz to 87.27 Hz )
+			else if(elapsed > 5.5 * e)
+				return 6; // 96 Hz        ( 87.27 Hz to 106.67 Hz )
+			else if(elapsed > 4.5 * e)
+				return 5; // 120 Hz       ( 106.67 Hz to 137.14 Hz )
+			else if(elapsed > 3.5 * e)
+				return 4; // 160 Hz       ( 137.14 Hz to 192 Hz )
+			else if(elapsed > 2.5 * e)
+				return 2; // 240 Hz       ( 192 Hz to 320 Hz )
+			else if(elapsed > 1.5 * e)
+				return 2; // 480 Hz       ( 320 Hz to .. )
+			else
+				return 1;
 		}
 
 		/// <summary>
@@ -227,8 +324,8 @@ namespace QEngine
 				/*Was removing them manually but I think process changes is a better way to remove a body
 				annoy AF*/
 				//world.BodyList.Remove(body.body);
-				world.RemoveBody(body.body);
 			}
+			world.RemoveBody(body.body);
 			world.ProcessChanges();
 		}
 

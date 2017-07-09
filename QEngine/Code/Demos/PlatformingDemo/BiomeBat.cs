@@ -26,9 +26,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public bool CanTakeDamage { get; set; } = true;
 
-		bool WillAttack = false;
-
-		double damageAccum;
+		bool WillAttack;
 
 		public void Flick(QVec flickDirection)
 		{
@@ -57,7 +55,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 			BatFlap = new QAnimation(Frames, 0.1f, 28, 30);
 
-			body = World.CreateRectangle(this, 13 * Transform.Scale.X, 13 * Transform.Scale.Y);
+			body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 3f, 5);
 			body.IgnoreGravity = true;
 			body.FixedRotation = true;
 			body.LinearDamping = 10f;
@@ -68,10 +66,9 @@ namespace QEngine.Demos.PlatformingDemo
 			var s = Speed;
 			if(Health < 1)
 				Scene.Destroy(this);
-			if(Accumulator.CheckAccum("BatCanTakeDamage", 0.5, time))
+			if(!CanTakeDamage && Accumulator.CheckAccum("BatCanTakeDamage", 1f, time))
 			{
 				CanTakeDamage = true;
-				damageAccum = 0;
 			}
 			if(Health < MaxHealth)
 			{
@@ -84,62 +81,71 @@ namespace QEngine.Demos.PlatformingDemo
 			var distanceFromPlayer = QVec.Distance(player.Transform.Position, Transform.Position);
 			if(player.Position.Y > Position.Y)
 				WillAttack = true;
-			if(WillAttack)
+			if(!WillAttack)
+				return;
+			if(distanceFromPlayer < 800) // && player.Transform.Position.Y > Transform.Position.Y)
 			{
-/*				//if the bat sees the player, it goes on the attacks
-				if(distanceFromPlayer < 200)
+				if(player.Transform.Position.X > Transform.Position.X)
+					Sprite.Effect = QSpriteEffects.FlipHorizontally;
+				else
+					Sprite.Effect = QSpriteEffects.None;
+				Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time.Delta * s;
+				//body.LinearVelocity += QVec.MoveTowards(Transform.Position, player.Position) * Speed * time.Delta;
+				Sprite.Source = BatFlap.Play(time.Delta);
+			}
+			else
+			{
+				//runs away
+				if(QVec.Distance(Transform.Position, spawnerPosition) > 1)
 				{
-					if(player.Transform.Position.X > Transform.Position.X)
+					if(spawnerPosition.X > Transform.Position.X)
 						Sprite.Effect = QSpriteEffects.FlipHorizontally;
 					else
 						Sprite.Effect = QSpriteEffects.None;
-					Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * delta * s;
-					Sprite.Source = BatFlap.Play(delta);
-				}
-				//only attacks from above
-				else */if(distanceFromPlayer < 800)// && player.Transform.Position.Y > Transform.Position.Y)
-				{
-					if(player.Transform.Position.X > Transform.Position.X)
-						Sprite.Effect = QSpriteEffects.FlipHorizontally;
-					else
-						Sprite.Effect = QSpriteEffects.None;
-					Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time.Delta * s;
+					Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * time.Delta * Speed;
+					//Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * Speed * time.Delta;
 					Sprite.Source = BatFlap.Play(time.Delta);
 				}
-				else
+				else if(distanceFromPlayer > 1000)
 				{
-					//runs away
-					if(QVec.Distance(Transform.Position, spawnerPosition) > 1)
-					{
-						if(spawnerPosition.X > Transform.Position.X)
-							Sprite.Effect = QSpriteEffects.FlipHorizontally;
-						else
-							Sprite.Effect = QSpriteEffects.None;
-						Transform.Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * time.Delta * Speed;
-						Sprite.Source = BatFlap.Play(time.Delta);
-					}
-					else if(distanceFromPlayer > 1000)
-					{
-						//closes eyes
-						Sprite.Effect = QSpriteEffects.FlipVertically;
-						Sprite.Source = Frames[30];
-					}
-					else if(distanceFromPlayer < 1000)
-					{
-						//opens eyes
-						Sprite.Effect = QSpriteEffects.FlipVertically;
-						Sprite.Source = Frames[28];
-					}
+					//closes eyes
+					Sprite.Effect = QSpriteEffects.FlipVertically;
+					Sprite.Source = Frames[30];
+				}
+				else if(distanceFromPlayer < 1000)
+				{
+					//opens eyes
+					Sprite.Effect = QSpriteEffects.FlipVertically;
+					Sprite.Source = Frames[28];
 				}
 			}
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer renderer)
 		{
-			//if(QVec.Distance(Transform.Position, Camera.Position) < Scene.Window.Width)
-			renderer.Draw(Sprite, Transform);
+			if(QVec.Distance(Transform.Position, Camera.Position) < Scene.Window.Width)
+				renderer.Draw(Sprite, Transform);
+		}
+
+		public override void OnDestroy()
+		{
+			/*if(QRandom.Number(0,1)== 1)*/
+			Instantiate(new DroppableItem(), Position);
 		}
 
 		public override void OnUnload() { }
 	}
 }
+
+/*//if the bat sees the player, it goes on the attacks
+if(distanceFromPlayer < 200)
+{
+	if(player.Transform.Position.X > Transform.Position.X)
+		Sprite.Effect = QSpriteEffects.FlipHorizontally;
+	else
+		Sprite.Effect = QSpriteEffects.None;
+	Transform.Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * delta * s;
+	Sprite.Source = BatFlap.Play(delta);
+}
+//only attacks from above
+else */
