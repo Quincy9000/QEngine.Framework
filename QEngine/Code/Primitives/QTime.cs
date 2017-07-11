@@ -7,15 +7,15 @@ namespace QEngine
 		float delta { get; }
 
 		//if the delta is greater than 0.25 (4fps) then return 0.25 instead of delta
-		public float Delta => delta < 0.25 ? delta : 0.25f;
-//		{
-//			get
-//			{
-//				if(delta > 0.25)
-//					return 0.25f;
-//				return delta;
-//			}
-//		}
+		public float Delta
+		{
+			get
+			{
+				if(delta > 0.25)
+					return 0.25f;
+				return delta;
+			}
+		}
 
 		public float Fps => 1 / delta;
 

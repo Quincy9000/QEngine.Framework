@@ -6,7 +6,7 @@ namespace QEngine
 	public class QSceneManager
 	{
 		Dictionary<string, QScene> Scenes { get; }
-		
+
 		internal bool CallToResetScene = false;
 
 		internal bool CallToExitGame = false;
@@ -34,31 +34,32 @@ namespace QEngine
 
 		public void ChangeScene(string name)
 		{
-			CallToChangeScene = false;
 			if(Scenes.TryGetValue(name, out QScene s) && CurrentScene != null)
 			{
 				CurrentScene.OnUnload();
 				CurrentScene = s;
 				CurrentScene.OnLoad();
 			}
+			CallToChangeScene = false;
+			CallToChangeSceneName = "";
 		}
 
 		public void ResetScene()
 		{
-			CallToResetScene = false;
 			CurrentScene?.OnUnload();
 			CurrentScene?.OnLoad();
+			CallToResetScene = false;
 		}
 
 		public void Update(QTime time)
 		{
-			CurrentScene.OnUpdate(time);
 			if(CallToChangeScene)
 				ChangeScene(CallToChangeSceneName);
 			else if(CallToResetScene)
 				ResetScene();
 			else if(CallToExitGame)
-				CurrentScene.ExitGame();
+				CurrentScene.Engine.Exit();
+			CurrentScene.OnUpdate(time);
 		}
 
 		public void Draw()

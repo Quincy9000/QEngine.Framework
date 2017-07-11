@@ -130,6 +130,7 @@ namespace QEngine.Demos.PlatformingDemo
 		public override void OnDestroy()
 		{
 			/*if(QRandom.Number(0,1)== 1)*/
+			Console.WriteLine("FUCK");
 			Instantiate(new DroppableItem(), Position);
 		}
 

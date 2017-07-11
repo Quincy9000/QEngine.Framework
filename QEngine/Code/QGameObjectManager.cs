@@ -113,19 +113,15 @@ namespace QEngine
 			}
 			if(script is IQDestroy des)
 			{
-				if(!script.IsDestroyed)
-				{
-					des.OnDestroy();
-					script.IsDestroyed = true;
-					//invokes event
-					script.DestroyEvent();
-				}
+				des.OnDestroy();
 				DestroyObjects.Remove(des);
 			}
 			if(script is IQUnload un)
 			{
 				UnloadObjects.Remove(un);
 			}
+			//invokes event even if does not inherit OnDestroy
+			script.DestroyEvent();
 		}
 
 //		public QObject this[Type t, int i]

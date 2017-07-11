@@ -20,7 +20,7 @@
 			Sprite = new QSprite(this, get.TextureSource(Name));
 			Sprite.Color = QColor.Black;
 
-			Body = World.CreateCircle(this, Radius, bodyType: QBodyType.Static);
+			Body = World.CreateCircle(this, Radius, 1, QBodyType.Static);
 			Body.IsSensor = true;
 			Body.OnCollisionStay += OnCollisionStay;
 

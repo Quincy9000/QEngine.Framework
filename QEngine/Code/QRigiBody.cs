@@ -217,10 +217,12 @@ namespace QEngine
 			body = bo;
 			sc.OnDestroyEvent += () =>
 			{
+				sc.World.RemoveBody(this);
 				OnCollisionEnter = null;
 				OnCollisionStay = null;
 				OnCollisionExit = null;
-				sc.World.RemoveBody(this);
+				bo.UserData = null;
+				bo = null;
 			};
 			body.OnCollision += (a, b, contact) =>
 			{
@@ -231,7 +233,7 @@ namespace QEngine
 
 					var bodySearch = script.World.Bodies.Find(r => r.Id == script.Id);
 					if(bodySearch != null)
-						OnCollisionEnter?.Invoke(bodySearch);
+						OnCollisionEnter.Invoke(bodySearch);
 				}
 			};
 			//TODO TEST seems to work
@@ -244,7 +246,7 @@ namespace QEngine
 
 					var bodySearch = script.World.Bodies.Find(r => r.Id == script.Id);
 					if(bodySearch != null)
-						OnCollisionStay?.Invoke(bodySearch);
+						OnCollisionStay.Invoke(bodySearch);
 				}
 			};
 			body.OnSeparation += (a, b, contact) =>
@@ -256,7 +258,7 @@ namespace QEngine
 
 					var bodySearch = script.World.Bodies.Find(r => r.Id == script.Id);
 					if(bodySearch != null)
-						OnCollisionExit?.Invoke(bodySearch);
+						OnCollisionExit.Invoke(bodySearch);
 				}
 			};
 		}

@@ -55,7 +55,7 @@ namespace QEngine
 
 		/*Privates*/
 
-		List<QObject> CreatorQueue { get; set; }
+		Queue<QObject> CreatorQueue { get; set; }
 
 		Queue<QBehavior> DestroyQueue { get; set; }
 
@@ -68,7 +68,7 @@ namespace QEngine
 		/// </summary>
 		public void ResetScene()
 		{
-			Engine.Manager.ResetScene();
+			Engine.Manager.CallToResetScene = true;
 		}
 
 		/// <summary>
@@ -77,48 +77,16 @@ namespace QEngine
 		/// <param name="s"></param>
 		public void ChangeScene(string s)
 		{
-			Engine.Manager.ChangeScene(s);
+			Engine.Manager.CallToChangeScene = true;
+			Engine.Manager.CallToChangeSceneName = s;
 		}
 
 		public void ExitGame()
 		{
-			Engine.Exit();
+			Engine.Manager.CallToExitGame = true;
 		}
 
 		public QRect Window => Engine.GraphicsDevice.Viewport.Bounds;
-
-		public void Instantiate(QBehavior script, QVec pos = default(QVec), float rotation = 0)
-		{
-			script.Parent = QObject.NewObject();
-			script.Parent.Scene = this;
-			script.Parent.Script = script;
-			script.Transform.Reset(pos, QVec.One, rotation);
-			script.SetName();
-			CreatorQueue.Add(script.Parent);
-			CreatorFlag = true;
-		}
-
-		/// <summary>
-		/// Destroys script
-		/// </summary>
-		/// <param name="script"></param>
-		public void Destroy(QBehavior script)
-		{
-			if(!DestroyQueue.Contains(script))
-				DestroyQueue.Enqueue(script);
-		}
-
-		/*Private Methods*/
-
-		/// <summary>
-		/// frees up qobject and removes it from all arrays, sounds cool
-		/// </summary>
-		/// <param name="script"></param>
-		void Obliterate(QBehavior script)
-		{
-			GameObjects.Remove(script);
-			QObject.DeleteObject(script.Parent);
-		}
 
 		/*Protected Virtuals*/
 
@@ -148,12 +116,14 @@ namespace QEngine
 		{
 			while(CreatorFlag)
 			{
-				//Add all the queue to the main array
-				QGameObjectManager.For(CreatorQueue, o => GameObjects.Add(o.Script));
-				//Then make temp array to store the queue
+				//make temp array to store the queue
 				var temp = CreatorQueue.ToArray();
+				//Add all the queue to the main array
+				//QGameObjectManager.For(CreatorQueue, o => GameObjects.Add(o.Script));
+				while(CreatorQueue.Count > 0)
+					GameObjects.Add(CreatorQueue.Dequeue().Script);
 				//reset the queue for objects that might get added from the OnStart() from the queued objects
-				CreatorQueue = new List<QObject>();
+				CreatorQueue = new Queue<QObject>();
 				//Set the flag to false again, Instantiate makes it flip, means we need to load more objects
 				CreatorFlag = false;
 				QGameObjectManager.For(temp, o =>
@@ -162,7 +132,7 @@ namespace QEngine
 						l.OnLoad(new QAddContent(Content));
 				});
 				MegaTexture = Content.MegaTexture;
-				//could potentially set flag to true
+				//OnStart can potentially set flag to true
 				QGameObjectManager.For(temp, o =>
 				{
 					if(o.Script is IQStart s)
@@ -170,7 +140,43 @@ namespace QEngine
 				});
 			}
 		}
+		
+		public void Instantiate(QBehavior script, QVec pos = default(QVec), float rotation = 0)
+		{
+			script.Parent = QObject.NewObject();
+			script.Parent.Scene = this;
+			script.Parent.Script = script;
+			script.IsDestroyed = false;
+			script.Transform.Reset(pos, QVec.One, rotation);
+			script.SetName();
+			CreatorQueue.Enqueue(script.Parent);
+			CreatorFlag = true;
+		}
 
+		/// <summary>
+		/// Destroys script
+		/// </summary>
+		/// <param name="script"></param>
+		public void Destroy(QBehavior script)
+		{
+			script.IsDestroyed = true;
+			if(!DestroyQueue.Contains(script))
+				DestroyQueue.Enqueue(script);
+		}
+
+		/*Private Methods*/
+
+		/// <summary>
+		/// frees up qobject and removes it from all arrays, sounds cool
+		/// </summary>
+		/// <param name="script"></param>
+		void Obliterate(QBehavior script)
+		{
+			GameObjects.Remove(script);
+			script.Transform.Reset();
+			QObject.DeleteObject(script.Parent);
+		}
+		
 		/// <summary>
 		/// Removes all the items from the destroy queue
 		/// </summary>
@@ -188,7 +194,7 @@ namespace QEngine
 		internal void OnLoad()
 		{
 			QPrefs.Load().Wait();
-			CreatorQueue = new List<QObject>();
+			CreatorQueue = new Queue<QObject>();
 			DestroyQueue = new Queue<QBehavior>();
 			SpriteRenderer = new QSpriteRenderer(Engine);
 			GuiRenderer = new QGuiRenderer(Engine);
@@ -236,8 +242,8 @@ namespace QEngine
 		internal void OnUpdate(QTime time)
 		{
 			FrameTime = Stopwatch.StartNew();
-			State = World.TryStep(time, GameObjects);
 			CheckQueue();
+			State = World.TryStep(time, GameObjects);
 			SpriteRenderer.Matrix = Camera.TransformMatrix;
 			SpriteRenderer.State = State;
 		}
@@ -248,7 +254,6 @@ namespace QEngine
 		/// <param name="renderer"></param>
 		internal void OnDraw(QSpriteRenderer renderer)
 		{
-			
 			renderer.Begin();
 			QGameObjectManager.For(GameObjects.SpriteObjects, s => s.OnDrawSprite(renderer));
 			renderer.End();

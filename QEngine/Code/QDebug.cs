@@ -43,6 +43,7 @@
 			Font = get.Font("arial");
 			Console.Label = new QLabel(Font);
 			Label = new QLabel(Font);
+			Label.Visible = false;
 		}
 
 		public void OnLateUpdate(QTime time)

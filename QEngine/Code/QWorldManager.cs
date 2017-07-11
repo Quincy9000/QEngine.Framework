@@ -215,28 +215,17 @@ namespace QEngine
 		/// <param name="m"></param>
 		QPhysicsState Step(QTime t, QGameObjectManager m)
 		{
+			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(t));
+			QGameObjectManager.For(m.LateUpdateObjects, l => l.OnLateUpdate(t));
 			bool step = false;
 			PhysicsAccum += t.Delta;
-			QTime fixedTime = new QTime(Simulation);
 			while(PhysicsAccum >= Simulation)
 			{
-//				QGameObjectManager.For(Bodies, b =>
-//				{
-//					if(b.Script.Transform.IsDirty)
-//					{
-//						b.Position = b.Script.Position;
-//						b.Rotation = b.Script.Rotation;
-//						b.Script.Transform.IsDirty = false;
-//					}
-//				});
-				//integrate
 				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(Simulation));
 				world.Step(Simulation);
 				PhysicsAccum -= Simulation;
 				step = true;
 			}
-			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(t));
-			QGameObjectManager.For(m.LateUpdateObjects, l => l.OnLateUpdate(t));
 			if(step)
 				ClearForces();
 			/*Interpolation*/
@@ -245,12 +234,8 @@ namespace QEngine
 			QGameObjectManager.For(Bodies, b =>
 			{
 				//Only move objects that need to be moved, and that actively move
-				if(!b.IsStatic)
+				if(b.IsDynamic)
 				{
-//					body.Script.Position = body.Position * (float)alpha +
-//					                       body.Script.Position * (1.0f - (float)alpha);
-//					body.Script.Rotation = body.Rotation * (float)alpha +
-//					                       body.Script.Rotation * (1.0f - (float)alpha);
 					b.Script.Position = b.Position * (float)alpha +
 					                    b.Script.Position * (float)(1.0 - alpha);
 					b.Script.Rotation = b.Rotation * (float)alpha +
@@ -258,47 +243,6 @@ namespace QEngine
 				}
 			});
 			return alpha;
-		}
-
-		//http://www.gamasutra.com/blogs/BramStolk/20160408/269988/Fixing_your_time_step_the_easy_way_with_the_golden_48537_ms.php
-		static int stepsToTake(double elapsed)
-		{
-			// Our simulation frequency is 480Hz, a 2𐧶 (two one twelfth) ms.
-			const double e = 1 / 480.0;
-
-			// We will pretend our display sync rate is one of these:
-			if(elapsed > 15.5 * e)
-				return 16; // 30 Hz        ( .. to 30.97 Hz )
-			else if(elapsed > 14.5 * e)
-				return 15; // 32 Hz        ( 30.97 Hz to 33.10 Hz )
-			else if(elapsed > 13.5 * e)
-				return 14; // 36.92 Hz     ( 33.10 Hz to 38.4 Hz )
-			else if(elapsed > 12.5 * e)
-				return 13; // 40 Hz        ( 38.4 Hz to 41.74 Hz )
-			else if(elapsed > 11.5 * e)
-				return 12; // 43.64Hz      ( 41.74 Hz to 45.71 Hz )
-			else if(elapsed > 10.5 * e)
-				return 11; // 48 Hz        ( 45.71 Hz to 50.53 Hz )
-			else if(elapsed > 9.5 * e)
-				return 10; // 53.33 Hz     ( 50.53 Hz to 56.47 Hz )
-			else if(elapsed > 8.5 * e)
-				return 9; // 60 Hz        ( 56.47 Hz to 64 Hz )
-			else if(elapsed > 7.5 * e)
-				return 8; // 68.57 Hz     ( 64 Hz to 73.85 Hz )
-			else if(elapsed > 6.5 * e)
-				return 7; // 80 Hz        ( 73.85 Hz to 87.27 Hz )
-			else if(elapsed > 5.5 * e)
-				return 6; // 96 Hz        ( 87.27 Hz to 106.67 Hz )
-			else if(elapsed > 4.5 * e)
-				return 5; // 120 Hz       ( 106.67 Hz to 137.14 Hz )
-			else if(elapsed > 3.5 * e)
-				return 4; // 160 Hz       ( 137.14 Hz to 192 Hz )
-			else if(elapsed > 2.5 * e)
-				return 2; // 240 Hz       ( 192 Hz to 320 Hz )
-			else if(elapsed > 1.5 * e)
-				return 2; // 480 Hz       ( 320 Hz to .. )
-			else
-				return 1;
 		}
 
 		/// <summary>
@@ -317,16 +261,8 @@ namespace QEngine
 
 		public void RemoveBody(QRigiBody body)
 		{
-			if(Bodies.Contains(body))
-				Bodies.Remove(body);
-			if(world.BodyList.Contains(body.body))
-			{
-				/*Was removing them manually but I think process changes is a better way to remove a body
-				annoy AF*/
-				//world.BodyList.Remove(body.body);
-			}
+			Bodies.Remove(body);
 			world.RemoveBody(body.body);
-			world.ProcessChanges();
 		}
 
 		public const float DefaultGravity = 9.807f;
@@ -334,17 +270,13 @@ namespace QEngine
 		internal QWorldManager(float x = 0, float y = DefaultGravity)
 		{
 			world = new World(new QVec(x, y));
-			for(int i = 0; i < 100; i++)
-				BodyFactory.CreateRectangle(world, 1, 1, 1);
-			BodyFactory.CreateRectangle(world, 1, 1, 1);
 			world.Clear();
-			world.ProcessChanges();
-			world.ClearForces();
 			world.ContactManager.OnBroadphaseCollision += (ref FixtureProxy a, ref FixtureProxy b) =>
 			{
 				//Finds the bodies if they have parent, and then passes them to the collision event
 				QBehavior qa = a.Fixture.Body.UserData as QBehavior;
 				QBehavior qb = b.Fixture.Body.UserData as QBehavior;
+				if(qa == null || qb == null) return;
 				QRigiBody bodya = qa.World.Bodies.Find(r => r.Id == qa.Id);
 				QRigiBody bodyb = qb.World.Bodies.Find(r => r.Id == qb.Id);
 				if(bodya != null && bodyb != null)
@@ -365,3 +297,44 @@ namespace QEngine
 //                Bodies[i].Rotation = Bodies[i].Transform.Rotation;
 //            }
 //TODO FIX THIS GOD DAMN TRANSFORM MOVEMENT
+
+//http://www.gamasutra.com/blogs/BramStolk/20160408/269988/Fixing_your_time_step_the_easy_way_with_the_golden_48537_ms.php
+//		static int stepsToTake(double elapsed)
+//		{
+//			// Our simulation frequency is 480Hz, a 2𐧶 (two one twelfth) ms.
+//			const double e = 1 / 480.0;
+//
+//			// We will pretend our display sync rate is one of these:
+//			if(elapsed > 15.5 * e)
+//				return 16; // 30 Hz        ( .. to 30.97 Hz )
+//			else if(elapsed > 14.5 * e)
+//				return 15; // 32 Hz        ( 30.97 Hz to 33.10 Hz )
+//			else if(elapsed > 13.5 * e)
+//				return 14; // 36.92 Hz     ( 33.10 Hz to 38.4 Hz )
+//			else if(elapsed > 12.5 * e)
+//				return 13; // 40 Hz        ( 38.4 Hz to 41.74 Hz )
+//			else if(elapsed > 11.5 * e)
+//				return 12; // 43.64Hz      ( 41.74 Hz to 45.71 Hz )
+//			else if(elapsed > 10.5 * e)
+//				return 11; // 48 Hz        ( 45.71 Hz to 50.53 Hz )
+//			else if(elapsed > 9.5 * e)
+//				return 10; // 53.33 Hz     ( 50.53 Hz to 56.47 Hz )
+//			else if(elapsed > 8.5 * e)
+//				return 9; // 60 Hz        ( 56.47 Hz to 64 Hz )
+//			else if(elapsed > 7.5 * e)
+//				return 8; // 68.57 Hz     ( 64 Hz to 73.85 Hz )
+//			else if(elapsed > 6.5 * e)
+//				return 7; // 80 Hz        ( 73.85 Hz to 87.27 Hz )
+//			else if(elapsed > 5.5 * e)
+//				return 6; // 96 Hz        ( 87.27 Hz to 106.67 Hz )
+//			else if(elapsed > 4.5 * e)
+//				return 5; // 120 Hz       ( 106.67 Hz to 137.14 Hz )
+//			else if(elapsed > 3.5 * e)
+//				return 4; // 160 Hz       ( 137.14 Hz to 192 Hz )
+//			else if(elapsed > 2.5 * e)
+//				return 2; // 240 Hz       ( 192 Hz to 320 Hz )
+//			else if(elapsed > 1.5 * e)
+//				return 2; // 480 Hz       ( 320 Hz to .. )
+//			else
+//				return 1;
+//		}

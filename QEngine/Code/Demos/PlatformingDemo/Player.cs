@@ -229,6 +229,7 @@ namespace QEngine.Demos.PlatformingDemo
 				else
 				{
 					JumpingState = PlayerJumpingStates.NotJumping;
+					MovementState = PlayerMovementStates.Idle;
 				}
 			}
 		}
@@ -315,6 +316,7 @@ namespace QEngine.Demos.PlatformingDemo
 					else
 						Sprite.Source = RightIdle;
 					CombatState = PlayerCombatStates.None;
+					MovementState = PlayerMovementStates.Idle;
 				}
 			}
 
@@ -339,7 +341,7 @@ namespace QEngine.Demos.PlatformingDemo
 			const float cameraSpeed = 5;
 			if(Camera.Bounds.Contains(Position))
 			{
-				if(QVec.Distance(Camera.Position, Position) < 120)
+				if(QVec.Distance(Camera.Position, Position) < 100)
 					return;
 				Camera.Lerp(Position, cameraSpeed, time.Delta);
 			}
@@ -356,7 +358,15 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public void OnCollisionStay(QRigiBody other)
 		{
-			if(other.Data() is BiomeBat bat)
+			if(other.Data() is DroppableItem potion)
+			{
+				if(!potion.IsDestroyed)
+				{
+					Health++;
+					Scene.Destroy(potion);
+				}
+			}
+			else if(other.Data() is BiomeBat bat)
 			{
 				const float force = 500;
 				if(CombatState != PlayerCombatStates.TakingDamage)

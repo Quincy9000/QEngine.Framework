@@ -27,6 +27,7 @@ namespace QEngine
 				body = value;
 				body.Position = position;
 				body.Rotation = rotation;
+				IsDirty = true;
 			}
 		}
 
