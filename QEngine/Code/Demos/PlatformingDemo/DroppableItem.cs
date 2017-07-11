@@ -15,9 +15,8 @@
 
 		public void OnStart(QGetContent get)
 		{
-			Console.WriteLine("New Potion");
 			Sprite = new QSprite(this, get.TextureSource("BryanStuff1").Split(32, 32)[7]);
-			//Sprite.Offset += new QVec(4, 0);
+			Sprite.Offset += new QVec(2, 0);
 			Transform.Scale = QVec.One * 2;
 			Body = World.CreateCircle(this, PotionRadius, 5);
 		}

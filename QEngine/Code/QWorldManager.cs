@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using QPhysics;
 using QPhysics.Dynamics;
 using QPhysics.Factories;
+using QPhysics.Tools.PolygonManipulation;
 
 namespace QEngine
 {
@@ -202,9 +204,9 @@ namespace QEngine
 			return Step(time, m);
 		}
 
-		float PhysicsAccum { get; set; }
+		float PhysicsAccumulator { get; set; }
 
-		const float Simulation = 1 / 60f;
+		const float StepSimluation = 1 / 60f;
 
 		/// <summary>
 		/// Moves all the bodies to the most recent transform 
@@ -215,34 +217,55 @@ namespace QEngine
 		/// <param name="m"></param>
 		QPhysicsState Step(QTime t, QGameObjectManager m)
 		{
-			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(t));
-			QGameObjectManager.For(m.LateUpdateObjects, l => l.OnLateUpdate(t));
+//			for(int i = 0; i < Bodies.Count; i++)
+//			{
+//				QRigiBody b = Bodies[i];
+//				if(b.Script.Transform.IsDirty)
+//				{
+//					b.Position = b.Script.Transform.Position;
+//					b.Rotation = b.Script.Transform.Rotation;
+//				}
+//			}
 			bool step = false;
-			PhysicsAccum += t.Delta;
-			while(PhysicsAccum >= Simulation)
+			PhysicsAccumulator += t.Delta;
+			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(t));
+			while(PhysicsAccumulator >= StepSimluation)
 			{
-				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(Simulation));
-				world.Step(Simulation);
-				PhysicsAccum -= Simulation;
-				step = true;
+				//previous = current
+//				for(int i = 0; i < Bodies.Count; i++)
+//				{
+//					QRigiBody b = Bodies[i];
+//					if(b.IsDynamic)
+//					{
+//						b.PreviousPosition = b.Position;
+//						b.PreviousRotation = b.Rotation;
+//					}
+//				}
+				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(StepSimluation));
+				world.Step(StepSimluation);
+				PhysicsAccumulator -= StepSimluation;
+				if(!step)
+					step = true;
 			}
 			if(step)
 				ClearForces();
-			/*Interpolation*/
-			//Instead return the state and then pass the the renderer?
-			double alpha = PhysicsAccum / Simulation;
-			QGameObjectManager.For(Bodies, b =>
+			QGameObjectManager.For(m.LateUpdateObjects, l => l.OnLateUpdate(t));
+			return 0;//Interpolate(PhysicsAccumulator / StepSimluation);
+		}
+
+		float Interpolate(QPhysicsState alpha)
+		{
+			float a = alpha;
+			for(int i = 0; i < Bodies.Count; i++)
 			{
-				//Only move objects that need to be moved, and that actively move
-				if(b.IsDynamic)
+				QRigiBody body = Bodies[i];
+				if(body.IsDynamic)
 				{
-					b.Script.Position = b.Position * (float)alpha +
-					                    b.Script.Position * (float)(1.0 - alpha);
-					b.Script.Rotation = b.Rotation * (float)alpha +
-					                    b.Script.Rotation * (float)(1.0 - alpha);
+					body.Script.Transform.Position = body.Position * a + body.Script.Transform.Position * (1.0f - a);
+					body.Script.Transform.Rotation = body.Rotation * a + body.Script.Transform.Rotation * (1.0f - a);
 				}
-			});
-			return alpha;
+			}
+			return a;
 		}
 
 		/// <summary>
@@ -338,3 +361,15 @@ namespace QEngine
 //			else
 //				return 1;
 //		}
+
+//QGameObjectManager.For(Bodies, b =>
+//{
+////Only move objects that need to be moved, and that actively move
+//if(b.IsDynamic)
+//{
+//b.Script.Position = b.Position * (float)alpha +
+//b.Script.Position * (float)(1.0 - alpha);
+//b.Script.Rotation = b.Rotation * (float)alpha +
+//b.Script.Rotation * (float)(1.0 - alpha);
+//}
+//});

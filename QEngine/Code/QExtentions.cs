@@ -1,5 +1,4 @@
-﻿using System;
-using QPhysics.Utilities;
+﻿using QPhysics.Utilities;
 
 namespace QEngine
 {

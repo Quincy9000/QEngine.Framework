@@ -162,7 +162,7 @@ namespace QEngine
 			_transformMatrix = Matrix.CreateTranslation(-Position.X, -Position.Y, 0) *
 			                   Matrix.CreateRotationZ(Rotation) *
 			                   Matrix.CreateScale(f, f, 1) *
-			                   Matrix.CreateTranslation((Scene.Window.Width / 2f), (Scene.Window.Height / 2f), 0);
+			                   Matrix.CreateTranslation(Scene.Window.Width / 2f, Scene.Window.Height / 2f, 0);
 			_isDirty = false;
 		}
 	}

@@ -765,7 +765,7 @@ namespace QPhysics.Dynamics
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="angle">The angle.</param>
-        public void SetTransformIgnoreContacts(ref Vector2 position, float angle)
+        public void SetTransformIgnoreContacts(ref Vector2 position, float angle) //default: ref
         {
             _xf.q.Set(angle);
             _xf.p = position;

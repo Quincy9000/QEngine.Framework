@@ -67,7 +67,7 @@ namespace QEngine.Demos.QSnake
 			{
 				if(Collision.Intersects(Bodies[i].Collision))
 					Scene.Destroy(this);
-				//Bodies[i + 1].LastPosition = Bodies[i].LastPosition;
+				//Bodies[i + 1].PreviousPosition = Bodies[i].PreviousPosition;
 			}
 			if(Input.IsKeyHeld(QKeys.W))
 				CurrentDir = SnakeDirection.Up;

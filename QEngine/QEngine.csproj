@@ -73,6 +73,7 @@
     <Compile Include="Code\Demos\PlatformingDemo\HealthBar.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\Player.cs" />
     <Compile Include="Code\Demos\PlatformingDemo\PlayerAttackCollider.cs" />
+    <Compile Include="Code\Demos\PlatformingDemo\PlayerCamera.cs" />
     <Compile Include="Code\Demos\QDemo.cs" />
     <Compile Include="Code\Demos\CircleSpawnDemo\QDemoCircle.cs" />
     <Compile Include="Code\Demos\CircleSpawnDemo\QDemoCreator.cs" />

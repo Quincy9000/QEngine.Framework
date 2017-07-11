@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using QPhysics.Dynamics;
 
 namespace QEngine
@@ -10,6 +11,10 @@ namespace QEngine
 		public QBehavior Script { get; }
 
 		internal Guid Id => Script.Id;
+
+		internal QVec PreviousPosition;
+
+		internal float PreviousRotation;
 
 		internal QVec Position
 		{

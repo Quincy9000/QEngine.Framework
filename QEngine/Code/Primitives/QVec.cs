@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Security;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Design;
 using QPhysics.Utilities;
@@ -96,7 +97,7 @@ namespace QEngine
 
         public static QVec operator *(QVec left, float right)
         {
-            return new QVec(left.pos * right);
+            return left.pos * right;
         }
 
         public static QVec operator /(QVec left, QVec right)

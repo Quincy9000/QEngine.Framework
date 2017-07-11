@@ -9,7 +9,7 @@ namespace QEngine
 		QVec position;
 
 		float rotation = 0;
-		
+
 		QVec scale;
 
 		/// <summary>
@@ -17,7 +17,7 @@ namespace QEngine
 		/// </summary>
 		internal bool IsDirty;
 
-		internal QRigiBody body;
+		QRigiBody body;
 
 		internal QRigiBody Body
 		{
@@ -31,19 +31,19 @@ namespace QEngine
 			}
 		}
 
-		public QVec Position
+		internal QVec Position
 		{
 			get => body?.Position ?? position; //
 			set
 			{
-				position = value;
 				IsDirty = true;
+				position = value;
 				if(body != null)
 					body.Position = value;
 			}
 		}
 
-		public QVec Scale
+		internal QVec Scale
 		{
 			get => scale;
 			set
@@ -53,13 +53,13 @@ namespace QEngine
 			}
 		}
 
-		public float Rotation
+		internal float Rotation
 		{
 			get => body?.Rotation ?? rotation; //
 			set
 			{
-				rotation = value;
 				IsDirty = true;
+				rotation = value;
 				if(body != null)
 					body.Rotation = value;
 			}
@@ -70,19 +70,11 @@ namespace QEngine
 			return QVec.Transform(point - origin, Matrix.CreateRotationZ(rotation)) + origin;
 		}
 
-		public void Reset()
-		{
-			body = null;
-			Position = QVec.Zero;
-			Scale = QVec.One;
-			Rotation = 0;
-		}
-
-		public void Reset(QVec pos, QVec scale, float rot)
+		public void Reset(QVec pos = default(QVec), QVec sca = default (QVec), float rot = 0)
 		{
 			body = null;
 			Position = pos;
-			Scale = scale;
+			Scale = sca;
 			Rotation = rot;
 			IsDirty = true;
 		}

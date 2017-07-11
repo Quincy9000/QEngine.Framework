@@ -8,7 +8,6 @@ namespace QEngine.Demos.PlatformingDemo
 		{
 			add.Texture(Assets.Bryan + "BiomeMap/biomeMapFront");
 			add.Texture(Assets.Bryan + "cavern_biome");
-			add.Texture(Assets.Quincy + "testMap");
 		}
 
 		public void OnStart(QGetContent get)
@@ -37,6 +36,8 @@ namespace QEngine.Demos.PlatformingDemo
 					Instantiate(new BiomeBat(), v);
 				}
 			});
+			
+			Instantiate(new PlayerCamera());
 
 //			QMapTools.SpawnObjects(get, "testMap", QVec.Zero, new QVec(64, 64), (c, v) =>
 //			{

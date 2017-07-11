@@ -86,7 +86,6 @@ namespace QEngine.Demos.PlatformingDemo
 		{
 			add.Texture(Assets.Bryan + "BryanSpriteSheet");
 			add.Texture(Assets.Bryan + "SwordAttack2");
-			add.Music(Assets.Audio + "areYouReadyForThis");
 		}
 
 		public override void OnStart(QGetContent get)
@@ -105,11 +104,9 @@ namespace QEngine.Demos.PlatformingDemo
 			Transform.Scale = new QVec(4);
 			LeftIdle = frames[2];
 			RightIdle = frames[0];
-			spaceJam = get.Music("areYouReadyForThis");
-			//spaceJam.Play();
 
-			Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
-			//Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 1.3f, 10);
+			//Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
+			Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 1.3f, 10);
 			//Body = World.CreateRoundedRect(this, Sprite.Width /3f + 20, Sprite.Height / 1.2f, 10);
 
 			Body.FixedRotation = true;
@@ -169,9 +166,9 @@ namespace QEngine.Demos.PlatformingDemo
 				{
 					if(qRigiBody.Script is BiomeWall || qRigiBody.Script is BiomeFloor)
 					{
-						while(QVec.Distance(qRigiBody.Script.Position, Body.Position) < 35)
+						while(QVec.Distance(qRigiBody.Script.Position, Position) < 35)
 						{
-							Body.Position += QVec.Right * 5;
+							Position += QVec.Right * 5;
 						}
 						if(DirectionState == PlayerDirections.Left)
 							Sprite.Source = LeftIdle;
@@ -190,9 +187,9 @@ namespace QEngine.Demos.PlatformingDemo
 				{
 					if(qRigiBody.Script is BiomeWall || qRigiBody.Script is BiomeFloor)
 					{
-						while(QVec.Distance(qRigiBody.Script.Position, Body.Position) < 35)
+						while(QVec.Distance(qRigiBody.Script.Position, Position) < 35)
 						{
-							Body.Position += QVec.Left * 5;
+							Position += QVec.Left * 5;
 						}
 						if(DirectionState == PlayerDirections.Left)
 							Sprite.Source = LeftIdle;
@@ -207,20 +204,23 @@ namespace QEngine.Demos.PlatformingDemo
 
 			if(MovementState != PlayerMovementStates.Idle && CombatState == PlayerCombatStates.None)
 			{
-				float speed = MovementState == PlayerMovementStates.Sprinting ? 2 : 1;
+				float speed = MovementState == PlayerMovementStates.Sprinting ? 2.6f : 2;
 				if(DirectionState == PlayerDirections.Left)
 				{
 					if(CanMoveLeft)
-						Body.Position += QVec.Left * PlayerSpeed * speed;
+					//Body.Position += QVec.Left * PlayerSpeed * speed;
+						Position += QVec.Left * PlayerSpeed * speed;
 				}
 				else
 				{
 					if(CanMoveRight)
-						Body.Position += QVec.Right * PlayerSpeed * speed;
+					//Body.Position += QVec.Right * PlayerSpeed * speed;
+						Position += QVec.Right * PlayerSpeed * speed;
 				}
 			}
 			if(JumpingState == PlayerJumpingStates.Jumping)
 			{
+				//greater than 1 Y is falling
 				if(JumpTime > 0 && Body.LinearVelocity.Y < 1)
 				{
 					Body.LinearVelocity = QVec.Up * JumpSpeed * 1.3f;
@@ -236,6 +236,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		void Move(QTime time)
 		{
+			//Position += QVec.Right * time.Delta * 8000;
 			//taking damage means that you cant move a split second
 			if(CombatState == PlayerCombatStates.TakingDamage && Accumulator.CheckAccum("TakingDamage", 0.25f, time))
 			{
@@ -300,7 +301,7 @@ namespace QEngine.Demos.PlatformingDemo
 					MovementState = PlayerMovementStates.Idle;
 				}
 			}
-			
+
 			if(CombatState == PlayerCombatStates.Attacking)
 			{
 				if(DirectionState == PlayerDirections.Left)
@@ -334,21 +335,6 @@ namespace QEngine.Demos.PlatformingDemo
 		{
 			yield return QCoroutine.WaitForSeconds(0.1);
 			CombatState = PlayerCombatStates.Attacking;
-		}
-
-		public override void OnLateUpdate(QTime time)
-		{
-			const float cameraSpeed = 5;
-			if(Camera.Bounds.Contains(Position))
-			{
-				if(QVec.Distance(Camera.Position, Position) < 100)
-					return;
-				Camera.Lerp(Position, cameraSpeed, time.Delta);
-			}
-			else
-			{
-				Camera.Lerp(Position, 20, time.Delta);
-			}
 		}
 
 		public override void OnDrawSprite(QSpriteRenderer spriteRenderer)

@@ -4,7 +4,9 @@
 	{
 		Player p;
 
-		QImage Image { get; set; }
+		QImage GuiHeart { get; set; }
+
+		QImage GuiEmptyHeart { get; set; }
 
 		QRect Heart;
 
@@ -20,24 +22,23 @@
 			Heart = get.TextureSource("BryanStuff1").Split(32, 32)[21];
 			EmptyHeart = get.TextureSource("BryanStuff1").Split(32, 32)[22];
 			p = GetComponent<Player>("Player");
-			Image = new QImage(this, Heart);
+			GuiHeart = new QImage(this, Heart);
+			GuiEmptyHeart = new QImage(this, EmptyHeart);
 			Transform.Scale = new QVec(4);
 		}
 
 		public void OnDrawGui(QGuiRenderer renderer)
 		{
 			QVec pos = new QVec(50, 50);
-			Image.Source = Heart;
 			for(int i = 0; i < p.Health; i++)
 			{
-				renderer.DrawImage(Image, Transform, pos);
+				renderer.DrawImage(GuiHeart, Transform, pos);
 				pos += new QVec(50, 0);
 			}
 			pos = new QVec(50 * p.MaxHealth, 50);
-			Image.Source = EmptyHeart;
 			for(int i = p.Health; i < p.MaxHealth; ++i)
 			{
-				renderer.DrawImage(Image, Transform, pos);
+				renderer.DrawImage(GuiEmptyHeart, Transform, pos);
 				pos -= new QVec(50, 0);
 			}
 		}

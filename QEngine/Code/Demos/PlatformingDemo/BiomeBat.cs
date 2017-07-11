@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using QEngine.Prefabs;
 
 namespace QEngine.Demos.PlatformingDemo
@@ -66,7 +67,7 @@ namespace QEngine.Demos.PlatformingDemo
 			var s = Speed;
 			if(Health < 1)
 				Scene.Destroy(this);
-			if(!CanTakeDamage && Accumulator.CheckAccum("BatCanTakeDamage", 1f, time))
+			if(!CanTakeDamage && Accumulator.CheckAccum("BatCanTakeDamage", 0.2f, time))
 			{
 				CanTakeDamage = true;
 			}
@@ -83,27 +84,26 @@ namespace QEngine.Demos.PlatformingDemo
 				WillAttack = true;
 			if(!WillAttack)
 				return;
+			//flies to player
 			if(distanceFromPlayer < 800) // && player.Transform.Position.Y > Transform.Position.Y)
 			{
-				if(player.Transform.Position.X > Transform.Position.X)
+				if(player.Position.X > Position.X)
 					Sprite.Effect = QSpriteEffects.FlipHorizontally;
 				else
 					Sprite.Effect = QSpriteEffects.None;
-				Position += QVec.MoveTowards(Transform.Position, player.Transform.Position) * time.Delta * s;
-				//body.LinearVelocity += QVec.MoveTowards(Transform.Position, player.Position) * Speed * time.Delta;
+				Position += QVec.MoveTowards(Position, player.Position) * time.Delta * s;
 				Sprite.Source = BatFlap.Play(time.Delta);
 			}
 			else
 			{
-				//runs away
+				//runs back to spawn
 				if(QVec.Distance(Transform.Position, spawnerPosition) > 1)
 				{
-					if(spawnerPosition.X > Transform.Position.X)
+					if(spawnerPosition.X > Position.X)
 						Sprite.Effect = QSpriteEffects.FlipHorizontally;
 					else
 						Sprite.Effect = QSpriteEffects.None;
-					Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * time.Delta * Speed;
-					//Position += QVec.MoveTowards(Transform.Position, spawnerPosition) * Speed * time.Delta;
+					Position += QVec.MoveTowards(Position, spawnerPosition) * time.Delta * Speed;
 					Sprite.Source = BatFlap.Play(time.Delta);
 				}
 				else if(distanceFromPlayer > 1000)
@@ -123,15 +123,14 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public override void OnDrawSprite(QSpriteRenderer renderer)
 		{
-			if(QVec.Distance(Transform.Position, Camera.Position) < Scene.Window.Width)
+			if(QVec.Distance(Position, Camera.Position) < Scene.Window.Width)
 				renderer.Draw(Sprite, Transform);
 		}
 
 		public override void OnDestroy()
 		{
-			/*if(QRandom.Number(0,1)== 1)*/
-			Console.WriteLine("FUCK");
-			Instantiate(new DroppableItem(), Position);
+			if(QRandom.Number(1, 4) > 1)
+				Instantiate(new DroppableItem(), Position);
 		}
 
 		public override void OnUnload() { }
