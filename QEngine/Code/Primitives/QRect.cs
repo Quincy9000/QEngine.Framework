@@ -85,6 +85,7 @@ namespace QEngine
 		/// <summary>
 		/// splits rectangle into an array of smaller rectangles, that are the dimention of the width and height
 		/// Great for textures that are spritesheets, as long as you follow a convention
+		/// if this rect is a sprite sheet
 		/// </summary>
 		/// <param name="rec"></param>
 		/// <param name="w"></param>
@@ -95,10 +96,26 @@ namespace QEngine
 			var rects = new List<QRect>();
 
 			for(var i = 0; i < Height / h; i++)
-			for(var j = 0; j < Width / w; j++)
-				rects.Add(new QRect(X + j * w, Y + i * h, w, h));
-
+			{
+				for(var j = 0; j < Width / w; j++)
+				{
+					rects.Add(new QRect(X + j * w, Y + i * h, w, h));
+				}
+			}
 			return rects;
+		}
+
+		/// <summary>
+		/// Get the textureSource from a spritesheet with uneven cells for sprites
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <returns></returns>
+		public QRect RelativeSource(int x, int y, int width, int height)
+		{
+			return new QRect(X + x, Y + y, width, height);
 		}
 
 		/*Implicits*/
@@ -124,7 +141,7 @@ namespace QEngine
 		{
 			return l.rect != r.rect;
 		}
-		
+
 		public static QRect operator *(QRect r, int scaleSize)
 		{
 			return new QRect(r.X, r.Y, r.Width * scaleSize, r.Height * scaleSize);
@@ -137,20 +154,11 @@ namespace QEngine
 			rect = r;
 		}
 
-		public QRect(QVec v, int w, int h) : this((int)v.X, (int)v.Y, w, h)
-		{
-			
-		}
+		public QRect(QVec v, int w, int h) : this((int)v.X, (int)v.Y, w, h) { }
 
-		public QRect(int x, int y, QVec size) : this(x,y,(int)size.X, (int)size.Y)
-		{
-			
-		}
+		public QRect(int x, int y, QVec size) : this(x, y, (int)size.X, (int)size.Y) { }
 
-		public QRect(QVec v, QVec v2) : this((int)v.X, (int)v.Y, (int)v2.X, (int)v2.Y)
-		{
-			
-		}
+		public QRect(QVec v, QVec v2) : this((int)v.X, (int)v.Y, (int)v2.X, (int)v2.Y) { }
 
 		public QRect(int x, int y, int w, int h)
 		{

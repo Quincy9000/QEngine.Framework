@@ -294,6 +294,7 @@ namespace QEngine
 		{
 			world = new World(new QVec(x, y));
 			world.Clear();
+			world.Step(100);
 			world.ContactManager.OnBroadphaseCollision += (ref FixtureProxy a, ref FixtureProxy b) =>
 			{
 				//Finds the bodies if they have parent, and then passes them to the collision event

@@ -23,6 +23,7 @@ x86/
 bld/
 QEngine/Assets/
 *.mgcb
+QGames/
 [Bb]in/
 [Oo]bj/
 [Ll]og/

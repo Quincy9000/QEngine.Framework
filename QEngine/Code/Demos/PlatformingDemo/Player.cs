@@ -166,10 +166,6 @@ namespace QEngine.Demos.PlatformingDemo
 				{
 					if(qRigiBody.Script is BiomeWall || qRigiBody.Script is BiomeFloor)
 					{
-						while(QVec.Distance(qRigiBody.Script.Position, Position) < 35)
-						{
-							Position += QVec.Right * 5;
-						}
 						if(DirectionState == PlayerDirections.Left)
 							Sprite.Source = LeftIdle;
 						else
@@ -187,10 +183,6 @@ namespace QEngine.Demos.PlatformingDemo
 				{
 					if(qRigiBody.Script is BiomeWall || qRigiBody.Script is BiomeFloor)
 					{
-						while(QVec.Distance(qRigiBody.Script.Position, Position) < 35)
-						{
-							Position += QVec.Left * 5;
-						}
 						if(DirectionState == PlayerDirections.Left)
 							Sprite.Source = LeftIdle;
 						else
@@ -208,13 +200,11 @@ namespace QEngine.Demos.PlatformingDemo
 				if(DirectionState == PlayerDirections.Left)
 				{
 					if(CanMoveLeft)
-					//Body.Position += QVec.Left * PlayerSpeed * speed;
 						Position += QVec.Left * PlayerSpeed * speed;
 				}
 				else
 				{
 					if(CanMoveRight)
-					//Body.Position += QVec.Right * PlayerSpeed * speed;
 						Position += QVec.Right * PlayerSpeed * speed;
 				}
 			}

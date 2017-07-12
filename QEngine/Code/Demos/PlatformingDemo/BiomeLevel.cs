@@ -1,6 +1,4 @@
-﻿using QEngine.Demos.Physics;
-
-namespace QEngine.Demos.PlatformingDemo
+﻿namespace QEngine.Demos.PlatformingDemo
 {
 	public class BiomeLevel : QBehavior, IQLoad, IQStart
 	{
@@ -28,7 +26,6 @@ namespace QEngine.Demos.PlatformingDemo
 				}
 				else if(c == new QColor(35, 30, 20)) //walls
 				{
-					//Instantiate(new BiomeFloor(), v);
 					Instantiate(new BiomeWall(), v);
 				}
 				else if(c == new QColor(255, 0, 0))//bats
@@ -38,30 +35,6 @@ namespace QEngine.Demos.PlatformingDemo
 			});
 			
 			Instantiate(new PlayerCamera());
-
-//			QMapTools.SpawnObjects(get, "testMap", QVec.Zero, new QVec(64, 64), (c, v) =>
-//			{
-//				if(c == new QColor(38, 255, 74)) //player
-//				{
-//					Instantiate(new Player(), v);
-//				}
-//				else if(c == QColor.Black)
-//				{
-//					Instantiate(new BiomeFloor(), v);
-//				}
-//				else if(c == new QColor(75, 60, 45)) //ground
-//				{
-//					Instantiate(new BiomeFloor(), v);
-//				}
-//				else if(c == new QColor(35, 30, 20)) //walls
-//				{
-//					Instantiate(new BiomeFloor(), v);
-//				}
-//				else if(c == new QColor(255, 0, 0)) //bats
-//				{
-//					Instantiate(new Bat(), v);
-//				}
-//			});
 		}
 	}
 }

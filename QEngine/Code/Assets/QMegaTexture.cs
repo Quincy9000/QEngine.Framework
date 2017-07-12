@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace QEngine
 {
+	/// <summary>
+	/// Texture Atlas
+	/// </summary>
 	public class QMegaTexture
 	{
 		internal QMegaTexture(QTexture texture, Dictionary<string, QRect> rects)

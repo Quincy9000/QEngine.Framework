@@ -74,11 +74,13 @@ namespace QEngine
 			render.gd.SetRenderTarget(target);
 			render.ClearColor = QColor.Transparent;
 			render.Begin();
-			foreach(var t in Textures)
+			var textures = Textures.ToList();
+			for(int i = 0; i < textures.Count; i++)
 			{
-				render.Draw(t.Value, pos, QColor.White);
-				rects.Add(t.Key, new QRect(pos, t.Value.Bounds.Size));
-				pos.X += t.Value.Width + 1;
+				QTexture t = textures[i].Value;
+				render.Draw(t, pos, QColor.White);
+				rects.Add(textures[i].Key, new QRect(pos, t.Bounds.Size));
+				pos.X += t.Width + 1;
 			}
 			render.End();
 			render.gd.SetRenderTarget(null);
