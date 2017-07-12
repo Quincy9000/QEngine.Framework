@@ -1,4 +1,4 @@
-﻿namespace QEngine.Demos.PlatformingDemo
+﻿namespace QEngine.Demos
 {
 	public static class Assets
 	{

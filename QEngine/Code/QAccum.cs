@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Policy;
-using QPhysics.Collision.TOI;
 
 namespace QEngine
 {

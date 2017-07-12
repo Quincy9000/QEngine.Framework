@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security;
 using Microsoft.Xna.Framework;
 using QEngine.Debug;
-using QPhysics.Dynamics;
-using QPhysics.Tools.Cutting;
-using QPhysics.Utilities;
+using QEngine.Physics.Utilities;
 
 namespace QEngine
 {
@@ -260,9 +255,8 @@ namespace QEngine
 			//normally ends here, debug renders here, laggy af
 			if(Debug.DebugLevel < 2) return;
 			var c = Camera.Bounds;
-			float ToSim(double v) => ConvertUnits.ToSimUnits(v);
-			Matrix a = Matrix.CreateOrthographicOffCenter(ToSim(c.Left), ToSim(c.Right),
-				ToSim(c.Bottom), ToSim(c.Top), 0, 1);
+			Matrix a = Matrix.CreateOrthographicOffCenter(c.Left.ToSim(), c.Right.ToSim(),
+				c.Bottom.ToSim(), c.Top.ToSim(), 0, 1);
 			DebugView.RenderDebugData(ref a);
 		}
 

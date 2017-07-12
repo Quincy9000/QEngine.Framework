@@ -1,4 +1,4 @@
-﻿using QPhysics.Utilities;
+﻿using QEngine.Physics.Utilities;
 
 namespace QEngine
 {
@@ -18,14 +18,14 @@ namespace QEngine
 		
 		/*Ints*/
 		
-		public static int ToSim(this int f)
+		public static float ToSim(this int f)
 		{
-			return (int)ConvertUnits.ToSimUnits(f);
+			return ConvertUnits.ToSimUnits(f);
 		}
 
-		public static int ToDis(this int f)
+		public static float ToDis(this int f)
 		{
-			return (int)ConvertUnits.ToDisplayUnits(f);
+			return ConvertUnits.ToDisplayUnits(f);
 		}
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using QPhysics.Dynamics;
+using QEngine.Physics.Dynamics;
 
 namespace QEngine
 {

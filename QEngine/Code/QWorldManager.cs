@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using QPhysics;
-using QPhysics.Dynamics;
-using QPhysics.Factories;
-using QPhysics.Tools.PolygonManipulation;
+using QEngine.Physics;
+using QEngine.Physics.Factories;
+using QEngine.Physics.Dynamics;
 
 namespace QEngine
 {

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.Serialization;
-using System.Security;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Design;
-using QPhysics.Utilities;
+using ConvertUnits = QEngine.Physics.Utilities.ConvertUnits;
 
 namespace QEngine
 {

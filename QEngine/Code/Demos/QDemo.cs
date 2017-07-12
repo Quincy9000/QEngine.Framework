@@ -14,9 +14,9 @@ namespace QEngine.Demos
 			new QApplication(new QAppConfig(Assembly.GetCallingAssembly())
 			{
 				AssetDirectory = "Assets",
-				Width = 1280,
-				Height = 720,
-				Fullscreen = false,
+				Width = 1920,
+				Height = 1080,
+				Fullscreen = true,
 				Vsync = false,
 				MouseVisible = true,
 			}).Run(new Platformer());

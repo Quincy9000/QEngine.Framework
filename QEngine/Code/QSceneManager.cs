@@ -21,10 +21,6 @@ namespace QEngine
 		{
 			CurrentScene = Scenes.First().Value;
 			CurrentScene.OnLoad();
-			for(int i = 0; i < 3; i++)
-			{
-				ResetScene();
-			}
 		}
 
 		internal void AddScene(QScene scene)

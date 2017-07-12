@@ -25,7 +25,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public void OnDrawSprite(QSpriteRenderer spriteRenderer)
 		{
-			if(QVec.Distance(Position, Camera.Position) < 1000)
+			if(QVec.Distance(Position, Camera.Position) < Scene.Window.Width)
 				spriteRenderer.Draw(sprite, Transform);
 		}
 	}

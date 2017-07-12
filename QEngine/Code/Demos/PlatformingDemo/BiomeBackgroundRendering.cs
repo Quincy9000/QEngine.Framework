@@ -74,17 +74,19 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public void OnDrawSprite(QSpriteRenderer renderer)
 		{
+			//copy here so less references
+			var renderWidth = Scene.Window.Width;
 			Sprite.Color = QColor.White;
 			var cpos = Camera.Position;
 			for(int i = 0; i < BackgroundTiles.Count; ++i)
 			{
-				if(QVec.Distance(BackgroundTiles[i].Position, cpos) < 1000)
+				if(QVec.Distance(BackgroundTiles[i].Position, cpos) < renderWidth)
 					renderer.Draw(BackgroundTiles[i].Source, Sprite, Transform, BackgroundTiles[i].Position);
 			}
 			Sprite.Color *= 0.3f;
 			for(int i = 0; i < LevelTiles.Count; ++i)
 			{
-				if(QVec.Distance(LevelTiles[i].Position, cpos) < 1000)
+				if(QVec.Distance(LevelTiles[i].Position, cpos) < renderWidth)
 					renderer.Draw(LevelTiles[i].Source, Sprite, Transform, LevelTiles[i].Position);
 			}
 			//quad tree rendering
