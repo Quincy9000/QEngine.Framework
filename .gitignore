@@ -22,6 +22,7 @@ x64/
 x86/
 bld/
 QEngine/Assets/
+AQPhysics/
 *.mgcb
 QGames/
 [Bb]in/
