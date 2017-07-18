@@ -110,7 +110,7 @@ namespace QEngine
 			{
 				Label.Text = m.Text;
 				renderer.DrawString(Label, temp, Transform, (float)_fade);
-				temp += new QVec(0, m.MeasureMent.Y * Transform.Scale.Y); //??
+				temp += new QVec(0, m.MeasureMent.Y); //??
 			}
 		}
 

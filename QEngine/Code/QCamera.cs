@@ -8,6 +8,8 @@ namespace QEngine
 
 		QMat _transformMatrix;
 
+		float _zoom = 1f;
+
 		public QMat TransformMatrix
 		{
 			get
@@ -38,10 +40,10 @@ namespace QEngine
 		/// </summary>
 		public float Zoom
 		{
-			get => Transform.Scale.X;
+			get => _zoom;
 			set
 			{
-				Transform.Scale = new QVec(MathHelper.Clamp(value, MinZoom, MaxZoom), 1);
+				_zoom = MathHelper.Clamp(value, MinZoom, MaxZoom);
 				_isDirty = true;
 			}
 		}

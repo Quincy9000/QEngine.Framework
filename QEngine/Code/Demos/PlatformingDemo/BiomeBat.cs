@@ -50,7 +50,7 @@ namespace QEngine.Demos.PlatformingDemo
 			player = GetComponent<Player>("Player");
 
 			Sprite = new QSprite(this, Frames[28]);
-			Transform.Scale = new QVec(4);
+			Sprite.Scale = new QVec(4);
 			Sprite.Effect = QSpriteEffects.FlipVertically;
 			Sprite.Source = Frames[30];
 

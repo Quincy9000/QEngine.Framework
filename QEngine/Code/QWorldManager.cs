@@ -142,7 +142,8 @@ namespace QEngine
 		}
 
 		/*Trying to see if using linked list is faster than creating new lists for each ray cast*/
-		LinkedList<QRigiBody> hitListNOGC = new LinkedList<QRigiBody>();
+		//LinkedList<QRigiBody> hitListNOGC = new LinkedList<QRigiBody>();
+		readonly List<QRigiBody> _hitListNogc = new List<QRigiBody>(10);
 
 		/// <summary>
 		/// returns true if it hits a body and outs the first body that it hits
@@ -151,7 +152,7 @@ namespace QEngine
 		/// <param name="b"></param>
 		/// <param name="hit"></param>
 		/// <returns></returns>
-		public bool WhatDidRaycastHit(QVec a, QVec b, out LinkedList<QRigiBody> hit)
+		public bool WhatDidRaycastHit(QVec a, QVec b, out List<QRigiBody> hit)
 		{
 			var aSim = a.ToSim();
 			var bSim = b.ToSim();
@@ -159,16 +160,19 @@ namespace QEngine
 			if(fl.Count > 0)
 			{
 				//List<QRigiBody> qbodies = new List<QRigiBody>();
-				while(hitListNOGC.Count > 0)
-					hitListNOGC.RemoveFirst();
+				while(_hitListNogc.Count > 0)
+				{
+					//hitListNOGC.RemoveFirst();
+					_hitListNogc.Clear();
+				}
 				for(int i = 0; i < fl.Count; i++)
 				{
 					QBehavior script = fl[i].Body.UserData as QBehavior;
 					var qbod = script?.World.Bodies.Find(bod => script.Id == bod.Id);
 					if(qbod != null)
-						hitListNOGC.AddFirst(qbod);
+						_hitListNogc.Add(qbod);
 				}
-				hit = hitListNOGC;
+				hit = _hitListNogc;
 				return true;
 			}
 			hit = null;
@@ -242,8 +246,7 @@ namespace QEngine
 				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(StepSimluation));
 				world.Step(StepSimluation);
 				PhysicsAccumulator -= StepSimluation;
-				if(!step)
-					step = true;
+				step = true;
 			}
 			if(step)
 				ClearForces();
@@ -259,8 +262,8 @@ namespace QEngine
 				QRigiBody body = Bodies[i];
 				if(body.IsDynamic)
 				{
-					body.Script.Transform.Position = body.Position * a + body.Script.Transform.Position * (1.0f - a);
-					body.Script.Transform.Rotation = body.Rotation * a + body.Script.Transform.Rotation * (1.0f - a);
+					body.Script.Transform.position = body.Position * a + body.Script.Transform.position * (1.0f - a);
+					body.Script.Transform.rotation = body.Rotation * a + body.Script.Transform.rotation * (1.0f - a);
 				}
 			}
 			return a;
@@ -271,8 +274,7 @@ namespace QEngine
 		/// </summary>
 		internal void ClearForces()
 		{
-			if(!Settings.AutoClearForces)
-				world.ClearForces();
+			world.ClearForces();
 		}
 
 		internal void Clear()

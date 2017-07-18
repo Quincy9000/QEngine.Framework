@@ -24,7 +24,8 @@
 			p = GetComponent<Player>("Player");
 			GuiHeart = new QImage(this, Heart);
 			GuiEmptyHeart = new QImage(this, EmptyHeart);
-			Transform.Scale = new QVec(4);
+			GuiHeart.Scale = new QVec(4);
+			GuiEmptyHeart.Scale = new QVec(4);
 		}
 
 		public void OnDrawGui(QGuiRenderer renderer)

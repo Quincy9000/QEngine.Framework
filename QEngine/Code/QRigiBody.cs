@@ -11,10 +11,6 @@ namespace QEngine
 
 		internal Guid Id => Script.Id;
 
-		internal QVec PreviousPosition;
-
-		internal float PreviousRotation;
-
 		internal QVec Position
 		{
 			get => ((QVec)body.Position).ToDis();

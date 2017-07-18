@@ -105,7 +105,7 @@ namespace QEngine
 				sprite.Color,
 				tr.Rotation,
 				sprite.Origin,
-				tr.Scale,
+				sprite.Scale,
 				(SpriteEffects)sprite.Effect,
 				sprite.Layer);
 		}
@@ -124,7 +124,7 @@ namespace QEngine
 				sprite.Color,
 				transform.Rotation,
 				sprite.Origin,
-				transform.Scale,
+				sprite.Scale,
 				(SpriteEffects)sprite.Effect,
 				sprite.Layer);
 		}
@@ -145,7 +145,7 @@ namespace QEngine
 				sprite.Color,
 				t.Rotation,
 				sprite.Origin,
-				t.Scale,
+				sprite.Scale,
 				(SpriteEffects)sprite.Effect,
 				sprite.Layer);
 		}
@@ -190,7 +190,7 @@ namespace QEngine
 				sprite.Color,
 				transform.Rotation,
 				sprite.Origin,
-				transform.Scale,
+				sprite.Scale,
 				(SpriteEffects)sprite.Effect,
 				sprite.Layer);
 		}

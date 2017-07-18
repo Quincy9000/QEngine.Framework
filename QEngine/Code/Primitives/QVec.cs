@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using ConvertUnits = QEngine.Physics.Utilities.ConvertUnits;
+using QEngine.Physics.Utilities;
 
 namespace QEngine
 {

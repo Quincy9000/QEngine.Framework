@@ -1,4 +1,5 @@
-﻿using QEngine.Prefabs;
+﻿using Microsoft.Xna.Framework.Graphics;
+using QEngine.Prefabs;
 
 namespace QEngine.Demos.PlatformingDemo
 {
@@ -21,11 +22,15 @@ namespace QEngine.Demos.PlatformingDemo
 			sprite = new QSprite(this, floorTiles[0]);
 			//Randomly decide to put mushroom on floor tile
 			if(QRandom.Number(1, 10) > 6)
+			{
 				mushroomSprite = new QSprite(this, floorTiles[QRandom.Number(2,4)]);
-			Transform.Scale = QVec.One * 4.01f;
+				mushroomSprite.Scale = QVec.One * 4f;
+			}
+			sprite.Scale = QVec.One * 4f;
 			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
-			body.Friction = 0.2f;
+			body.Friction = 0.1f;
 			body.IsCCD = true;
+			body.Restitution = 0f;
 		}
 
 		public void OnDrawSprite(QSpriteRenderer spriteRenderer)

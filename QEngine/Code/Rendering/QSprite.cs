@@ -10,6 +10,8 @@
 
 		public QColor Color { get; set; } = QColor.White;
 
+		public QVec Scale { get; set; } = QVec.One;
+
 		public float Layer { get; set; } = 0.5f;
 
 		public QSpriteEffects Effect { get; set; } = QSpriteEffects.None;
@@ -19,16 +21,16 @@
 		/// <summary>
 		/// returns the Source width * scale
 		/// </summary>
-		public float Width => Source.Width * script.Transform.Scale.X;
+		public float Width => Source.Width * Scale.X;
 
 		/// <summary>
 		/// Returns the source height * scale
 		/// </summary>
-		public float Height => Source.Height * script.Transform.Scale.Y;
+		public float Height => Source.Height * Scale.Y;
 
-		internal QMegaTexture Texture => script.Scene.MegaTexture;
+		internal QMegaTexture Texture => Script.Scene.MegaTexture;
 
-		internal QBehavior script{ get; }
+		internal QBehavior Script { get; }
 
 		public QSprite(QBehavior s, string textureName) : this(s)
 		{
@@ -44,7 +46,7 @@
 
 		public QSprite(QBehavior script)
 		{
-			this.script = script;
+			Script = script;
 			Source = QRect.Empty;
 			Origin = QVec.Zero;
 		}

@@ -30,7 +30,7 @@ namespace QEngine
 			}
 		}
 
-		List<QFrame> _frames { get; }= new List<QFrame>();
+		List<QFrame> _frames { get; } = new List<QFrame>();
 
 		float _accumulator;
 
@@ -192,7 +192,7 @@ namespace QEngine
 		
 		public static bool operator !=(QAnimation left, QAnimation right)
 		{
-			return !left._frames.Except(right._frames).Any();
+			return !(left == right);
 		}
 	}
 }

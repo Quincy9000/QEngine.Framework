@@ -6,11 +6,9 @@ namespace QEngine
 	{
 		QObject parent;
 
-		QVec position;
+		internal QVec position;
 
-		float rotation = 0;
-
-		QVec scale;
+		internal float rotation = 0;
 
 		/// <summary>
 		/// if the transform is dirty we update the body and transform
@@ -43,16 +41,6 @@ namespace QEngine
 			}
 		}
 
-		internal QVec Scale
-		{
-			get => scale;
-			set
-			{
-				scale = value;
-				IsDirty = true;
-			}
-		}
-
 		internal float Rotation
 		{
 			get => body?.Rotation ?? rotation; //
@@ -70,28 +58,22 @@ namespace QEngine
 			return QVec.Transform(point - origin, Matrix.CreateRotationZ(rotation)) + origin;
 		}
 
-		public void Reset(QVec pos = default(QVec), QVec sca = default (QVec), float rot = 0)
+		public void Reset(QVec pos = default(QVec), float rot = 0)
 		{
 			body = null;
 			Position = pos;
-			Scale = sca;
 			Rotation = rot;
 			IsDirty = true;
 		}
 
-		public override int GetHashCode()
-		{
-			return Position.GetHashCode() + Scale.GetHashCode() + rotation.GetHashCode();
-		}
-
 		public static bool operator ==(QTransform t, QTransform t2)
 		{
-			return t.Position == t2.Position && t.Scale == t2.Scale && t.Rotation == t2.Rotation;
+			return t.Position == t2.Position && t.Rotation == t2.Rotation;
 		}
 
 		public static bool operator !=(QTransform t, QTransform t2)
 		{
-			return t.Position != t2.Position || t.Scale != t2.Scale || t.Rotation != t2.Rotation;
+			return t.Position != t2.Position || t.Rotation != t2.Rotation;
 		}
 
 		public override bool Equals(object obj)

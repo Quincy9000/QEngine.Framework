@@ -49,11 +49,21 @@ namespace QEngine
 			s.Source = Current.Play(time);
 		}
 
+		/// <summary>
+		/// Change animation conditions
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="action"></param>
+		/// <exception cref="Exception"></exception>
 		public void EditAnimation(string name, Action<QAnimation> action)
 		{
 			if(Animations.TryGetValue(name, out QAnimation a))
 			{
 				action(a);
+			}
+			else
+			{
+				throw new Exception($"Animation {name} does not exist!");
 			}
 		}
 

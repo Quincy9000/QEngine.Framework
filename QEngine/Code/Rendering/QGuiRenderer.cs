@@ -90,30 +90,30 @@ namespace QEngine
 
 		public void DrawImage(QImage i, QTransform t)
 		{
-			sb.Draw(i.Texture, t.Position + i.Offset, i.Source, i.Color, t.Rotation, i.Origin, t.Scale, SpriteEffects.None, i.Layer);
+			sb.Draw(i.Texture, t.Position + i.Offset, i.Source, i.Color, t.Rotation, i.Origin, i.Scale, SpriteEffects.None, i.Layer);
 		}
 
 		public void DrawImage(QImage i, QTransform t, QVec pos)
 		{
-			sb.Draw(i.Texture, pos + i.Offset, i.Source, i.Color, t.Rotation, i.Origin, t.Scale, SpriteEffects.None, i.Layer);
+			sb.Draw(i.Texture, pos + i.Offset, i.Source, i.Color, t.Rotation, i.Origin, i.Scale, SpriteEffects.None, i.Layer);
 		}
 
 		public void DrawString(QLabel label, QTransform pos)
 		{
 			if(label.Visible)
-				sb.DrawString(label.Font, label.Text, pos.Position, label.Color, pos.Rotation, QVec.Zero, pos.Scale, SpriteEffects.None, label.Layer);
+				sb.DrawString(label.Font, label.Text, pos.Position, label.Color, pos.Rotation, QVec.Zero, label.Scale, SpriteEffects.None, label.Layer);
 		}
 
 		public void DrawString(QLabel label, QVec pos, QTransform t)
 		{
 			if(label.Visible)
-				sb.DrawString(label.Font, label.Text, pos, label.Color, t.Rotation, QVec.Zero, t.Scale, SpriteEffects.None, label.Layer);
+				sb.DrawString(label.Font, label.Text, pos, label.Color, t.Rotation, QVec.Zero, label.Scale, SpriteEffects.None, label.Layer);
 		}
 
 		public void DrawString(QLabel label, QVec pos, QTransform t, float fade)
 		{
 			if(label.Visible)
-				sb.DrawString(label.Font, label.Text, pos, label.Color * fade, t.Rotation, QVec.Zero, t.Scale, SpriteEffects.None, label.Layer);
+				sb.DrawString(label.Font, label.Text, pos, label.Color * fade, t.Rotation, QVec.Zero, label.Scale, SpriteEffects.None, label.Layer);
 		}
 
 		internal override void End()

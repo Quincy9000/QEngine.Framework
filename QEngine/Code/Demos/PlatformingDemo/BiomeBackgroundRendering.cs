@@ -29,7 +29,7 @@ namespace QEngine.Demos.PlatformingDemo
 			var cavernBiomes = content.TextureSource("cavern_biome").Split(16, 16);
 
 			Sprite = new QSprite(this, cavernBiomes[0]);
-			Transform.Scale = QVec.One * 4;
+			Sprite.Scale = QVec.One * 4;
 
 			BackgroundTiles = QMapTools.CreateSpriteLayer(content, "biomeMapBack", QVec.Zero, QVec.One * 64, c =>
 			{

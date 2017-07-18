@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Metadata;
+using System.Xml.Serialization;
 using QEngine.Prefabs;
 
 namespace QEngine.Demos.PlatformingDemo
@@ -49,11 +51,11 @@ namespace QEngine.Demos.PlatformingDemo
 
 		QSprite Sprite;
 
-		const float PlayerSpeed = 5;
+		const float PlayerSpeed = 5f;
 
-		const float JumpSpeed = 5f;
+		const float JumpSpeed = 8f;
 
-		const float MaxJumpTime = 0.15f;
+		const float MaxJumpTime = 0.2f;
 
 		float JumpTime { get; set; } = MaxJumpTime;
 
@@ -85,6 +87,8 @@ namespace QEngine.Demos.PlatformingDemo
 				_health = value;
 				if(_health < 0)
 					_health = 0;
+				if(_health > MaxHealth)
+					_health = MaxHealth;
 			}
 		}
 
@@ -103,23 +107,23 @@ namespace QEngine.Demos.PlatformingDemo
 			Health = MaxHealth;
 
 			Scene.SpriteRenderer.Filter = QFilteringState.Point;
-			World.Gravity = new QVec(0, 20);
+			World.Gravity = new QVec(0, 30);
 			var frames = get.TextureSource("BryanSpriteSheet").Split(32, 32);
 			var attackFrames = get.TextureSource("SwordAttack2").Split(32, 32);
 			Sprite = new QSprite(this, frames[0]);
-			Transform.Scale = new QVec(4);
+			Sprite.Scale = new QVec(4);
 			LeftIdle = frames[2];
 			RightIdle = frames[0];
 
-			//Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
-			Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 1.3f, 10);
+			Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
+			//Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 1.3f, 10);
 			//Body = World.CreateRoundedRect(this, Sprite.Width /3f + 20, Sprite.Height / 1.2f, 10);
 
 			Body.FixedRotation = true;
-			Body.Friction = 0.4f;
+			Body.Friction = 0f;
+			Body.Restitution = 0f;
 
 			Body.OnCollisionStay += OnCollisionStay;
-			Body.OnCollisionExit += OnCollisionExit;
 
 			Camera.Position = Transform.Position;
 
@@ -167,7 +171,11 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public override void OnFixedUpdate(float delta)
 		{
-			if(World.WhatDidRaycastHit(Body.Position, new QVec(-35, 0), out LinkedList<QRigiBody> rb1)) //left ray 
+			var b = Body;
+			CanMoveLeft = true;
+			CanMoveRight = true;
+
+			if(World.WhatDidRaycastHit(b.Position, new QVec(-100, 0), out List<QRigiBody> rb1)) //left ray 
 			{
 				foreach(var qRigiBody in rb1)
 				{
@@ -181,10 +189,8 @@ namespace QEngine.Demos.PlatformingDemo
 					}
 				}
 			}
-			else
-				CanMoveLeft = true;
 
-			if(World.WhatDidRaycastHit(Body.Position, new QVec(35, 0), out LinkedList<QRigiBody> rb2)) //right ray
+			if(World.WhatDidRaycastHit(b.Position, new QVec(35, 0), out List<QRigiBody> rb2)) //right ray
 			{
 				foreach(var qRigiBody in rb2)
 				{
@@ -198,134 +204,109 @@ namespace QEngine.Demos.PlatformingDemo
 					}
 				}
 			}
-			else
-				CanMoveRight = true;
 
-			//can only move when on the ground and not attacking OR can only move when attacking in the air
-			if((MovementState != PlayerMovementStates.Idle &&
-			    CombatState == PlayerCombatStates.None &&
-			    JumpingState == PlayerJumpingStates.NotJumping) ||
-			   (TouchingState != PlayerTouchingGroundStates.TouchingGround &&
-			    MovementState != PlayerMovementStates.Idle))
+			if(MovementState == PlayerMovementStates.Idle)
+				Body.LinearVelocity = new QVec(0, b.LinearVelocity.Y);
+			else
 			{
-				float speed = MovementState == PlayerMovementStates.Sprinting ? 3f : 1.8f;
+				float speed = MovementState == PlayerMovementStates.Sprinting ? PlayerSpeed * 2.1f : PlayerSpeed;
 				if(DirectionState == PlayerDirections.Left)
 				{
 					if(CanMoveLeft)
-					{
-						Position += QVec.Left * PlayerSpeed * speed;
-					}
+						b.LinearVelocity = new QVec(-speed, b.LinearVelocity.Y);
 				}
 				else
 				{
 					if(CanMoveRight)
-					{
-						Position += QVec.Right * PlayerSpeed * speed;
-					}
+						b.LinearVelocity = new QVec(speed, b.LinearVelocity.Y);
 				}
 			}
+
+
 			if(JumpingState == PlayerJumpingStates.Jumping)
 			{
-				//greater than 1 Y is falling
-				if(JumpTime > 0 && Body.LinearVelocity.Y < 1)
+				if(JumpTime > 0f && b.LinearVelocity.Y < 1)
 				{
-					Body.LinearVelocity = QVec.Up * JumpSpeed * 1.3f;
+					if(b.LinearVelocity.Y > -JumpSpeed)
+						b.LinearVelocity += new QVec(0, -JumpSpeed * 0.26f);
 					JumpTime -= delta;
 				}
 				else
 				{
 					JumpingState = PlayerJumpingStates.NotJumping;
-					MovementState = PlayerMovementStates.Idle;
 				}
 			}
 		}
 
 		void Move(QTime time)
 		{
-			//Position += QVec.Right * time.Delta * 8000;
-			//taking damage means that you cant move a split second
-			if(CombatState == PlayerCombatStates.TakingDamage && Accumulator.CheckAccum("TakingDamage", 0.25f, time))
+			if(Input.IsKeyHeld("a") && CanMoveLeft)
 			{
-				CombatState = PlayerCombatStates.None;
-				return;
+				Animator.Swap("Left");
+				DirectionState = PlayerDirections.Left;
+				MovementState = PlayerMovementStates.Moving;
 			}
 
-			if(Input.IsKeyPressed("w") || Input.IsKeyPressed("space"))
+			if(Input.IsKeyHeld("d") && CanMoveRight)
+			{
+				Animator.Swap("Right");
+				DirectionState = PlayerDirections.Right;
+				MovementState = PlayerMovementStates.Moving;
+			}
+
+			if((Input.IsKeyHeld("leftShift") ||
+			    Input.IsKeyHeld("rightshift")) &&
+			   MovementState == PlayerMovementStates.Moving)
+			{
+				MovementState = PlayerMovementStates.Sprinting;
+			}
+
+			if(Input.IsKeyReleased("a"))
+			{
+				Sprite.Source = LeftIdle;
+				MovementState = PlayerMovementStates.Idle;
+				DirectionState = PlayerDirections.Left;
+			}
+
+			if(Input.IsKeyReleased("d"))
+			{
+				Sprite.Source = RightIdle;
+				MovementState = PlayerMovementStates.Idle;
+				DirectionState = PlayerDirections.Right;
+			}
+
+			if(Input.IsKeyPressed("space") || Input.IsKeyPressed("w"))
 			{
 				JumpingState = PlayerJumpingStates.Jumping;
 			}
-			if(Input.IsKeyHeld("w") || Input.IsKeyHeld("space")) { }
-			if(Input.IsKeyReleased("w") || Input.IsKeyReleased("space"))
+
+			if(Input.IsKeyReleased("space") || Input.IsKeyReleased("w"))
 			{
 				if(JumpingState == PlayerJumpingStates.Jumping)
-					JumpTime = 0;
+					JumpTime = -1;
 				JumpingState = PlayerJumpingStates.NotJumping;
 			}
 
 			if(Input.IsKeyPressed("j"))
 			{
 				CombatState = PlayerCombatStates.Attacking;
-			}
-
-			if(Input.IsKeyHeld("A"))
-			{
-				Animator.Swap("Left");
-				if(CombatState == PlayerCombatStates.None)
-					DirectionState = PlayerDirections.Left;
-				MovementState = PlayerMovementStates.Moving;
-			}
-
-			if(Input.IsKeyHeld("D"))
-			{
-				Animator.Swap("Right");
-				if(CombatState == PlayerCombatStates.None)
-					DirectionState = PlayerDirections.Right;
-				MovementState = PlayerMovementStates.Moving;
-			}
-
-			/*
-				If the player is press left or right shift and they also pressed A or D
-			*/
-			if((Input.IsKeyHeld(QKeys.LeftShift) || Input.IsKeyHeld(QKeys.RightShift))
-			   && MovementState == PlayerMovementStates.Moving)
-				MovementState = PlayerMovementStates.Sprinting;
-
-			if(MovementState != PlayerMovementStates.Idle && CanMove)
-				Animator.Play(Sprite, time);
-
-			if(Input.IsKeyReleased(QKeys.A))
-			{
-				Sprite.Source = LeftIdle;
-				if(CombatState == PlayerCombatStates.None)
-					DirectionState = PlayerDirections.Left;
-				MovementState = PlayerMovementStates.Idle;
-			}
-
-			if(Input.IsKeyReleased(QKeys.D))
-			{
-				Sprite.Source = RightIdle;
-				if(CombatState == PlayerCombatStates.None)
-					DirectionState = PlayerDirections.Right;
 				MovementState = PlayerMovementStates.Idle;
 			}
 
 			if(CombatState == PlayerCombatStates.Attacking)
 			{
-				if(DirectionState == PlayerDirections.Left)
-					Animator.Swap("LeftAttack");
-				else
-					Animator.Swap("RightAttack");
+				Animator.Swap(DirectionState == PlayerDirections.Left ? "LeftAttack" : "RightAttack");
 				Animator.Play(Sprite, time);
 				if(Animator.Current.IsDone)
 				{
-					Animator.Current.Reset();
-					if(DirectionState == PlayerDirections.Left)
-						Sprite.Source = LeftIdle;
-					else
-						Sprite.Source = RightIdle;
 					CombatState = PlayerCombatStates.None;
-					MovementState = PlayerMovementStates.Idle;
+					Animator.Current.Reset();
+					Sprite.Source = DirectionState == PlayerDirections.Left ? LeftIdle : RightIdle;
 				}
+			}
+			else if(MovementState != PlayerMovementStates.Idle)
+			{
+				Animator.Play(Sprite, time);
 			}
 
 			Debug.AppendLine($"Velocity: {Body.LinearVelocity}");
@@ -337,6 +318,7 @@ namespace QEngine.Demos.PlatformingDemo
 			Debug.AppendLine($"DirectionState: {DirectionState}");
 			Debug.AppendLine($"MovementState: {MovementState}");
 			Debug.AppendLine($"CombatState: {CombatState}");
+			Debug.AppendLine($"Position: {Position}");
 		}
 
 		IEnumerator AttackDelay(QTime time)
@@ -352,12 +334,14 @@ namespace QEngine.Demos.PlatformingDemo
 
 		public void OnCollisionStay(QRigiBody other)
 		{
-			//we know something is touching when in this state
-			TouchingState = PlayerTouchingGroundStates.TouchingSomething;
+			TouchingState = PlayerTouchingGroundStates.TouchingGround;
 			if(other.Data() is DroppableItem potion)
 			{
-				Health++;
-				Scene.Destroy(potion);
+				if(Health != MaxHealth)
+				{
+					Health++;
+					Scene.Destroy(potion);
+				}
 			}
 			else if(other.Data() is BiomeBat bat)
 			{
@@ -378,10 +362,8 @@ namespace QEngine.Demos.PlatformingDemo
 					}
 				}
 			}
-			else if(other.Data() is BiomeFloor floor)
+			else if(other.Data() is BiomeFloor floor && JumpingState == PlayerJumpingStates.NotJumping)
 			{
-				//we know that the touching is ground
-				TouchingState = PlayerTouchingGroundStates.TouchingGround;
 				if(Position.Y < floor.Position.Y)
 				{
 					JumpTime = MaxJumpTime;
@@ -394,12 +376,6 @@ namespace QEngine.Demos.PlatformingDemo
 					JumpTime = MaxJumpTime;
 				}
 			}
-		}
-
-		public void OnCollisionExit(QRigiBody other)
-		{
-			//Because you might need to check if not touching anything
-			TouchingState = PlayerTouchingGroundStates.TouchingNothing;
 		}
 	}
 }

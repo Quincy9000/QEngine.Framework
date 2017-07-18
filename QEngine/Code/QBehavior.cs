@@ -42,12 +42,6 @@ namespace QEngine
 			set => Transform.Position = value;
 		}
 
-		public QVec Scale
-		{
-			get => Transform.Scale;
-			set => Transform.Scale = value;
-		}
-
 		public float Rotation
 		{
 			get => Transform.Rotation;

@@ -142,7 +142,7 @@ namespace QEngine
 			script.Parent.Scene = this;
 			script.Parent.Script = script;
 			script.IsDestroyed = false;
-			script.Transform.Reset(pos, QVec.One, rotation);
+			script.Transform.Reset(pos, rotation);
 			script.SetName();
 			CreatorQueue.Enqueue(script.Parent);
 			CreatorFlag = true;
