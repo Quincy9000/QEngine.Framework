@@ -8,7 +8,7 @@ namespace QEngine
 	/// <summary>
 	/// Debug tool that can display Text inside the game scene area
 	/// </summary>
-	public class QConsole : QBehavior, IQStart, IQUpdate, IQDrawGui
+	public class QConsole : QBehavior, IQLoad, IQStart, IQUpdate, IQDrawGui
 	{
 		/*Structs*/
 
@@ -29,7 +29,7 @@ namespace QEngine
 
 		public int Width { get; set; } = 40;
 
-		public int Height { get; set; } = 10;
+		public int Height { get; set; } = 30;
 
 		/// <summary>
 		/// How long until the text starts to fade
@@ -91,8 +91,14 @@ namespace QEngine
 			_startFade = 0;
 		}
 
-		public void OnStart(QGetContent content)
+		public void OnLoad(QAddContent add)
 		{
+			add.Font("Fonts/arial");
+		}
+
+		public void OnStart(QGetContent get)
+		{
+			Label = new QLabel(get.Font("arial"));
 			Clear();
 		}
 

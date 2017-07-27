@@ -2,6 +2,7 @@
 
 namespace QEngine
 {
+	[QComponent]
 	public abstract class QBehavior
 	{
 		/*Public*/
@@ -18,18 +19,6 @@ namespace QEngine
 
 		public QTransform Transform => Parent.Transform;
 
-		public QCamera Camera => Scene.Camera;
-
-		public QRect Window => Scene.Window;
-
-		public QCoroutine Coroutine => Scene.Coroutine;
-
-		public QDebug Debug => Scene.Debug;
-
-		public QAccum Accumulator => Scene.Accumulator;
-
-		public QWorld World => Scene.World;
-
 		/*Transforms*/
 
 		public QVec Position
@@ -43,7 +32,7 @@ namespace QEngine
 			get => Transform.Rotation;
 			set => Transform.Rotation = value;
 		}
-		
+
 		/*GetComponents*/
 
 		#region Components
@@ -63,10 +52,22 @@ namespace QEngine
 			return (T)(Scene.GameObjects.Objects.Find(u => u.Script.Id == id).Script);
 		}
 
-//		public T GetComponentFromScene<T>(string name)
-//		{
-//			return Scene.
-//		}
+		public T GetComponentFromScene<T>(string name)
+		{
+			return (T)Scene.Components[name];
+		}
+
+		public T GetComponentFromScene<T>()
+		{
+			foreach(var component in Scene.Components)
+			{
+				if(component.Value is T t)
+				{
+					return t;
+				}
+			}
+			return default(T);
+		}
 
 		#endregion
 

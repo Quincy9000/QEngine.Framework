@@ -59,6 +59,7 @@
     <Compile Include="Code\Assets\QTexture.cs" />
     <Compile Include="Code\Engine\QAppConfig.cs" />
     <Compile Include="Code\Engine\QApplication.cs" />
+    <Compile Include="Code\Engine\QBehavior.cs" />
     <Compile Include="Code\Engine\QContentManager.cs" />
     <Compile Include="Code\Engine\QEngine.cs" />
     <Compile Include="Code\Engine\QGameObjectManager.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Code\Engine\QScene.cs" />
     <Compile Include="Code\Engine\QSceneManager.cs" />
     <Compile Include="Code\Engine\QTransform.cs" />
+    <Compile Include="Code\Engine\QWindow.cs" />
     <Compile Include="Code\Engine\QWorld.cs" />
     <Compile Include="Code\Interfaces\IQDestroy.cs" />
     <Compile Include="Code\Interfaces\IQDrawGui.cs" />
@@ -317,6 +319,7 @@
     <Compile Include="Code\Physics\Utilities\PolygonUtils.cs" />
     <Compile Include="Code\Prefabs\QCharacterController.cs" />
     <Compile Include="Code\Primitives\QColor.cs" />
+    <Compile Include="Code\Primitives\QComponent.cs" />
     <Compile Include="Code\Primitives\QMat.cs" />
     <Compile Include="Code\Primitives\QQuad.cs" />
     <Compile Include="Code\Primitives\QTime.cs" />
@@ -332,7 +335,6 @@
     <Compile Include="Code\Rendering\QSpriteRenderer.cs" />
     <Compile Include="Code\Primitives\QVec.cs" />
     <Compile Include="Code\Scripts\QAccum.cs" />
-    <Compile Include="Code\Scripts\QBehavior.cs" />
     <Compile Include="Code\Scripts\QCamera.cs" />
     <Compile Include="Code\Scripts\QConsole.cs" />
     <Compile Include="Code\Scripts\QController.cs" />

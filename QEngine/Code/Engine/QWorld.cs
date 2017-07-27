@@ -167,7 +167,7 @@ namespace QEngine
 				for(int i = 0; i < fl.Count; i++)
 				{
 					QBehavior script = fl[i].Body.UserData as QBehavior;
-					var qbod = script?.World.Bodies.Find(bod => script.Id == bod.Id);
+					var qbod = script?.Scene.World.Bodies.Find(bod => script.Id == bod.Id);
 					if(qbod != null)
 						_hitListNogc.Add(qbod);
 				}
@@ -300,8 +300,8 @@ namespace QEngine
 				QBehavior qa = a.Fixture.Body.UserData as QBehavior;
 				QBehavior qb = b.Fixture.Body.UserData as QBehavior;
 				if(qa == null || qb == null) return;
-				QRigiBody bodya = qa.World.Bodies.Find(r => r.Id == qa.Id);
-				QRigiBody bodyb = qb.World.Bodies.Find(r => r.Id == qb.Id);
+				QRigiBody bodya = qa.Scene.World.Bodies.Find(r => r.Id == qa.Id);
+				QRigiBody bodyb = qb.Scene.World.Bodies.Find(r => r.Id == qb.Id);
 				if(bodya != null && bodyb != null)
 					OnCollision?.Invoke(bodya, bodyb);
 			};

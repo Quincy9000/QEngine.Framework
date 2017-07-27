@@ -10,8 +10,6 @@
 		public QFont Font { get; private set; }
 
 		public QLabel Label { get; set; }
-		
-		public QConsole Console { get; private set; }
 
 		public float FramesPerSecond => Fps.CurrentFramesPerSecond;
 
@@ -36,7 +34,6 @@
 		public void OnLoad(QAddContent add)
 		{
 			add.Font("Fonts/arial");
-			Instantiate(Console = new QConsole());
 			DebugLevel = 0;
 			Fps = new QFrameCounter();
 		}
@@ -44,7 +41,6 @@
 		public void OnStart(QGetContent get)
 		{
 			Font = get.Font("arial");
-			Console.Label = new QLabel(Font);
 			Label = new QLabel(Font);
 			Label.Visible = false;
 		}
@@ -56,8 +52,9 @@
 			{
 				Label.Visible = true;
 				Label.Append($"FrameDelay: {Lag}ms\nFPS: {FramesPerSecond}\n" +
-				                 $"TotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds");
-				Transform.Position = new QVec(Window.Left, Window.Bottom - Label.Measure(Label.Text).Y);
+				             $"TotalFrames: {TotalFrames}\nTime: {TotalSeconds} seconds");
+				Transform.Position =
+					new QVec(Scene.Window.Bounds.Left, Scene.Window.Bounds.Bottom - Label.Measure(Label.Text).Y);
 			}
 			else
 				Label.Visible = false;

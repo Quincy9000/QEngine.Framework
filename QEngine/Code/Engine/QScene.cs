@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using QEngine.Physics.Debug;
 
@@ -15,40 +17,54 @@ namespace QEngine
 
 		public string Name { get; }
 
-		internal QGameObjectManager GameObjects { get; set; }
-
-		internal QEngine Engine { get; set; }
-
-		internal QSpriteRenderer SpriteRenderer { get; set; }
-
-		internal QGuiRenderer GuiRenderer { get; set; }
-
 		internal QContentManager Content { get; set; }
-
-		internal QCoroutine Coroutine { get; private set; }
 
 		internal QController Controller { get; private set; }
 
-		internal QCamera Camera { get; private set; }
-
-		internal QDebug Debug { get; private set; }
-
-		internal QAccum Accumulator { get; private set; }
-
-		internal QWorld World { get; private set; }
-
-		internal QAtlas Atlas { get; private set; }
-
 		internal QDebugView DebugView { get; set; }
 
-		internal float State { get; set; }
+		internal Dictionary<string, object> Components { get; private set; }
 
 		internal Stopwatch FrameTime { get; set; }
 
-		internal QRect Window => Engine.GraphicsDevice.Viewport.Bounds;
+		[QComponent]
+		internal QGameObjectManager GameObjects { get; set; }
+
+		[QComponent]
+		internal QEngine Engine { get; set; }
+
+		[QComponent]
+		internal QSpriteRenderer SpriteRenderer { get; set; }
+
+		[QComponent]
+		internal QGuiRenderer GuiRenderer { get; set; }
+
+		[QComponent]
+		internal QCoroutine Coroutine { get; private set; }
+
+		[QComponent]
+		internal QCamera Camera { get; private set; }
+
+		[QComponent]
+		internal QDebug Debug { get; private set; }
+
+		[QComponent]
+		internal QAccum Accumulator { get; private set; }
+
+		[QComponent]
+		internal QWindow Window { get; set; }
+
+		[QComponent]
+		internal QWorld World { get; private set; }
+
+		[QComponent]
+		internal QConsole Console { get; private set; }
+
+		[QComponent]
+		internal QAtlas Atlas { get; private set; }
 
 		/*Privates*/
-
+		
 		Queue<QObject> CreatorQueue { get; set; }
 
 		Queue<QBehavior> DestroyQueue { get; set; }
@@ -179,6 +195,8 @@ namespace QEngine
 		internal void OnLoad()
 		{
 			QPrefs.Load().Wait();
+			Components = new Dictionary<string, object>();
+			Window = new QWindow(Engine.Window);
 			CreatorQueue = new Queue<QObject>();
 			DestroyQueue = new Queue<QBehavior>();
 			SpriteRenderer = new QSpriteRenderer(Engine);
@@ -198,6 +216,7 @@ namespace QEngine
 				loader.OnLoad(new QAddContent(Content));
 				QObject.DeleteObject(((QBehavior)(loader)).Parent);
 			}
+			Instantiate(Console = new QConsole());
 			Instantiate(Controller = new QController());
 			Instantiate(Debug = new QDebug());
 			Instantiate(Camera = new QCamera());
@@ -207,6 +226,15 @@ namespace QEngine
 			DebugView = new QDebugView(World.world);
 			DebugView.LoadContent(Engine.GraphicsDevice, Engine.Content);
 			Load();
+			foreach(var info in GetType().GetRuntimeProperties())
+			{
+				if(info.GetCustomAttribute(typeof(QComponent), false) != null)
+				{
+//					Console.WriteLine($"{info.Name}");
+//					System.Console.WriteLine($"{info.Name}");
+					Components.Add(info.Name, info.GetValue(this));
+				}
+			}
 		}
 
 		/// <summary>
@@ -227,9 +255,8 @@ namespace QEngine
 		{
 			FrameTime = Stopwatch.StartNew();
 			CheckQueue();
-			State = World.TryStep(time, GameObjects);
+			World.TryStep(time, GameObjects);
 			SpriteRenderer.Matrix = Camera.TransformMatrix;
-			SpriteRenderer.State = State;
 		}
 
 		/// <summary>

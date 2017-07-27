@@ -20,6 +20,17 @@ namespace QEngine
 		DontCare
 	}
 
+	[Flags]
+	public enum QOrientation
+	{
+		Default = 0,
+		LandscapeLeft = 1,
+		LandscapeRight = 2,
+		Portrait = 4,
+		PortraitDown = 8,
+		Unknown = 16,
+	}
+
 	public enum QCollisionDirection
 	{
 		/// <summary>

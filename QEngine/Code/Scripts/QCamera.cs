@@ -116,9 +116,9 @@ namespace QEngine
 				return
 					new QRect(
 						//Cameras is in middle so we - half width and height to get top left
-						Position - new QVec(Window.Width + 2, Window.Height + 2) / 2f / f,
+						Position - new QVec(Scene.Window.Width + 2, Scene.Window.Height + 2) / 2f / f,
 						//bottom right corner of the camera
-						new Vector2(Window.Width + 1, Window.Height + 1) / f);
+						new Vector2(Scene.Window.Width + 1, Scene.Window.Height + 1) / f);
 			}
 		}
 
