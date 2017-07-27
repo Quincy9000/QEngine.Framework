@@ -12,7 +12,7 @@
 
 		public QMusic Music(string m) => cm.GetMusic(m);
 
-		public QRect TextureSource(string n) => cm.MegaTexture[n];
+		public QRect TextureSource(string n) => cm.Atlas[n];
 
 		internal QGetContent(QContentManager cm)
 		{

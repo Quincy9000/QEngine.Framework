@@ -41,31 +41,31 @@ namespace QEngine.Demos.CircleSpawnDemo
 			Coroutine.Start(Thing());
 		}
 
-		public override void OnFixedUpdate(float time)
+		public override void OnUpdate(QTime time)
 		{
-			if(Input.IsKeyHeld(QKeys.W))
-				Transform.Position += QVec.Up * speed * time;
-			if(Input.IsKeyHeld(QKeys.A))
-				Transform.Position += QVec.Left * speed * time;
-			if(Input.IsKeyHeld(QKeys.S))
-				Transform.Position += QVec.Down * speed * time;
-			if(Input.IsKeyHeld(QKeys.D))
-				Transform.Position += QVec.Right * speed * time;
-			if(Input.IsKeyPressed(QKeys.Tab))
+			if(QInput.Held(QKeyStates.W))
+				Transform.Position += QVec.Up * speed * time.Delta;
+			if(QInput.Held(QKeyStates.A))
+				Transform.Position += QVec.Left * speed * time.Delta;
+			if(QInput.Held(QKeyStates.S))
+				Transform.Position += QVec.Down * speed * time.Delta;
+			if(QInput.Held(QKeyStates.D))
+				Transform.Position += QVec.Right * speed * time.Delta;
+			if(QInput.Pressed(QKeyStates.Tab))
 				Scene.ResetScene();
-			if(Input.IsKeyHeld(QKeys.Space) && Accumulator.CheckAccum("ball", 0.06f))
+			if(QInput.Held(QKeyStates.Space) && Accumulator.CheckAccum("ball", 0.06f))
 				Instantiate(new QDemoCircle());
-			if(Input.IsMouseScrolledUp())
+			if(QInput.IsMouseScrolledUp())
 				Camera.Zoom += Camera.Zoom * 0.1f;
-			if(Input.IsMouseScrolledDown())
+			if(QInput.IsMouseScrolledDown())
 				Camera.Zoom -= Camera.Zoom * 0.1f;
-			if(Input.IsForwardsMouseButtonDown())
+			if(QInput.IsForwardsMouseButtonPressed())
 				Console.WriteLine("forwardsMouseButtonDown");
-			if(Input.IsBackwardsMouseButtonDown())
+			if(QInput.IsBackwardsMouseButtonPressed())
 				Console.WriteLine("backwardsMouseButton");
-			if(Input.IsMiddleMouseButtonDown())
+			if(QInput.IsMiddleMouseButtonPressed())
 				Console.WriteLine("middleMouseButton");
-			Camera.Lerp(Transform.Position, 5, time);
+			Camera.Lerp(Transform.Position, 5, time.Delta);
 		}
 
 		IEnumerator Thing()

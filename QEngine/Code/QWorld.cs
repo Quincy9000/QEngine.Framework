@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using QEngine.Physics;
 using QEngine.Physics.Factories;
 using QEngine.Physics.Dynamics;
 
 namespace QEngine
 {
-	public class QWorldManager
+	public class QWorld
 	{
 		internal World world;
 
@@ -251,7 +250,7 @@ namespace QEngine
 			if(step)
 				ClearForces();
 			QGameObjectManager.For(m.LateUpdateObjects, l => l.OnLateUpdate(t));
-			return 0;//Interpolate(PhysicsAccumulator / StepSimluation);
+			return 0; //Interpolate(PhysicsAccumulator / StepSimluation);
 		}
 
 		float Interpolate(QPhysicsState alpha)
@@ -290,7 +289,7 @@ namespace QEngine
 
 		public const float DefaultGravity = 9.807f;
 
-		internal QWorldManager(float x = 0, float y = DefaultGravity)
+		internal QWorld(float x = 0, float y = DefaultGravity)
 		{
 			world = new World(new QVec(x, y));
 			world.Clear();
@@ -308,7 +307,7 @@ namespace QEngine
 			};
 		}
 
-		internal QWorldManager(QVec gravity) : this(gravity.X, gravity.Y) { }
+		internal QWorld(QVec gravity) : this(gravity.X, gravity.Y) { }
 	}
 }
 

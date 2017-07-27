@@ -65,8 +65,6 @@ namespace QEngine.Demos.PlatformingDemo
 
 		bool CanMoveRight = true;
 
-		bool CanMove => CanMoveLeft && CanMoveRight;
-
 		public int MaxHealth = 5;
 
 		public PlayerDirections DirectionState { get; private set; }
@@ -154,16 +152,16 @@ namespace QEngine.Demos.PlatformingDemo
 			if(Health == 0)
 				Scene.ResetScene();
 
-			if(Input.IsMouseScrolledUp())
+			if(QInput.IsMouseScrolledUp())
 				Camera.Zoom += Camera.Zoom * 0.1f;
 
-			if(Input.IsMouseScrolledDown())
+			if(QInput.IsMouseScrolledDown())
 				Camera.Zoom -= Camera.Zoom * 0.1f;
 
-			if(Input.IsKeyPressed(QKeys.Escape))
+			if(QInput.IsKeyPressed(QKeyStates.Escape))
 				Scene.ExitGame();
 
-			if(Input.IsKeyPressed("r"))
+			if(QInput.IsKeyPressed("r"))
 				Scene.ResetScene();
 
 			Move(time);
@@ -172,38 +170,6 @@ namespace QEngine.Demos.PlatformingDemo
 		public override void OnFixedUpdate(float delta)
 		{
 			var b = Body;
-			CanMoveLeft = true;
-			CanMoveRight = true;
-
-			if(World.WhatDidRaycastHit(b.Position, new QVec(-100, 0), out List<QRigiBody> rb1)) //left ray 
-			{
-				foreach(var qRigiBody in rb1)
-				{
-					if(qRigiBody.Script is BiomeWall || qRigiBody.Script is BiomeFloor)
-					{
-						if(DirectionState == PlayerDirections.Left)
-							Sprite.Source = LeftIdle;
-						else
-							Sprite.Source = RightIdle;
-						CanMoveLeft = false;
-					}
-				}
-			}
-
-			if(World.WhatDidRaycastHit(b.Position, new QVec(35, 0), out List<QRigiBody> rb2)) //right ray
-			{
-				foreach(var qRigiBody in rb2)
-				{
-					if(qRigiBody.Script is BiomeWall || qRigiBody.Script is BiomeFloor)
-					{
-						if(DirectionState == PlayerDirections.Left)
-							Sprite.Source = LeftIdle;
-						else
-							Sprite.Source = RightIdle;
-						CanMoveRight = false;
-					}
-				}
-			}
 
 			if(MovementState == PlayerMovementStates.Idle)
 				Body.LinearVelocity = new QVec(0, b.LinearVelocity.Y);
@@ -222,7 +188,6 @@ namespace QEngine.Demos.PlatformingDemo
 				}
 			}
 
-
 			if(JumpingState == PlayerJumpingStates.Jumping)
 			{
 				if(JumpTime > 0f && b.LinearVelocity.Y < 1)
@@ -240,54 +205,54 @@ namespace QEngine.Demos.PlatformingDemo
 
 		void Move(QTime time)
 		{
-			if(Input.IsKeyHeld("a") && CanMoveLeft)
+			if(QInput.Held("a") && CanMoveLeft)
 			{
 				Animator.Swap("Left");
 				DirectionState = PlayerDirections.Left;
 				MovementState = PlayerMovementStates.Moving;
 			}
 
-			if(Input.IsKeyHeld("d") && CanMoveRight)
+			if(QInput.Held("d") && CanMoveRight)
 			{
 				Animator.Swap("Right");
 				DirectionState = PlayerDirections.Right;
 				MovementState = PlayerMovementStates.Moving;
 			}
 
-			if((Input.IsKeyHeld("leftShift") ||
-			    Input.IsKeyHeld("rightshift")) &&
+			if((QInput.Held("leftShift") ||
+			    QInput.Held("rightshift")) &&
 			   MovementState == PlayerMovementStates.Moving)
 			{
 				MovementState = PlayerMovementStates.Sprinting;
 			}
 
-			if(Input.IsKeyReleased("a"))
+			if(QInput.Released("a"))
 			{
 				Sprite.Source = LeftIdle;
 				MovementState = PlayerMovementStates.Idle;
 				DirectionState = PlayerDirections.Left;
 			}
 
-			if(Input.IsKeyReleased("d"))
+			if(QInput.Released("d"))
 			{
 				Sprite.Source = RightIdle;
 				MovementState = PlayerMovementStates.Idle;
 				DirectionState = PlayerDirections.Right;
 			}
 
-			if(Input.IsKeyPressed("space") || Input.IsKeyPressed("w"))
+			if(QInput.Pressed("space") || QInput.Pressed("w"))
 			{
 				JumpingState = PlayerJumpingStates.Jumping;
 			}
 
-			if(Input.IsKeyReleased("space") || Input.IsKeyReleased("w"))
+			if(QInput.Released("space") || QInput.Released("w"))
 			{
 				if(JumpingState == PlayerJumpingStates.Jumping)
 					JumpTime = -1;
 				JumpingState = PlayerJumpingStates.NotJumping;
 			}
 
-			if(Input.IsKeyPressed("j"))
+			if(QInput.Pressed("j"))
 			{
 				CombatState = PlayerCombatStates.Attacking;
 				MovementState = PlayerMovementStates.Idle;
@@ -309,6 +274,8 @@ namespace QEngine.Demos.PlatformingDemo
 				Animator.Play(Sprite, time);
 			}
 
+			Debug.AppendLine($"CanMoveLeft: {CanMoveLeft}");
+			Debug.AppendLine($"CanMoveRight: {CanMoveRight}");
 			Debug.AppendLine($"Velocity: {Body.LinearVelocity}");
 			Debug.AppendLine($"Touching: {TouchingState}");
 			Debug.AppendLine($"CanMoveLeft: {CanMoveLeft}");
@@ -380,9 +347,9 @@ namespace QEngine.Demos.PlatformingDemo
 	}
 }
 
-//			if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccumGlobal("Spawner", 0.15f))
+//			if(QInput.IsLeftMouseButtonHeld() && Accumulator.CheckAccumGlobal("Spawner", 0.15f))
 //			{
-//				var mouseCamera = Camera.ScreenToWorld(Input.MousePosition());
+//				var mouseCamera = Camera.ScreenToWorld(QInput.MousePosition());
 //				var direction = QVec.MoveTowards(Position, mouseCamera);
 //				QVec t;
 //				if(mouseCamera.X > Position.X)
@@ -396,31 +363,31 @@ namespace QEngine.Demos.PlatformingDemo
 //					Instantiate(new Ball(40, direction * force), Position + t);
 //			}
 
-//			var mouse = Camera.ScreenToWorld(Input.MousePosition());
+//			var mouse = Camera.ScreenToWorld(QInput.MousePosition());
 //			var middle = QVec.Middle(Transform.Position, mouse);
 //			if(Camera.Bounds.Contains(mouse))
 //				Camera.Lerp(middle, cameraSpeed, time.Delta);
 //			else
 //				Camera.Lerp(Position, cameraSpeed, time.Delta);
 
-//			if(Input.IsKeyPressed("j"))
+//			if(QInput.IsKeyPressed("j"))
 //			{
 //				if(PlayerPlayerDirection == PlayerDirections.Left)
 //					Animator.Swap("LeftAttack");
 //				else
 //					Animator.Swap("RightAttack");
-//				Animator.Current.Loop = false;
+//				Animator.Current.Loop = false; 
 //				IsJumpDone = false;
 //				Attacking = true;
 //				Coroutine.Start(AttackDelay(time));
 //				return;
 //			}
 //			if(Attacking) return;
-//			if(IsJumpDone && Input.IsKeyPressed(QKeys.W) || Input.IsKeyPressed(QKeys.Space))
+//			if(IsJumpDone && QInput.IsKeyPressed(QKeys.W) || QInput.IsKeyPressed(QKeys.Space))
 //			{
 //				IsJumpDone = false;
 //			}
-//			if(CanJump && !IsJumpDone && (Input.IsKeyHeld(QKeys.W) || Input.IsKeyHeld(QKeys.Space)))
+//			if(CanJump && !IsJumpDone && (QInput.IsKeyHeld(QKeys.W) || QInput.IsKeyHeld(QKeys.Space)))
 //			{
 //				JumpGas -= time.Delta;
 //
@@ -429,7 +396,7 @@ namespace QEngine.Demos.PlatformingDemo
 //				if(JumpGas < 0)
 //					IsJumpDone = true;
 //			}
-//			if(Input.IsKeyReleased("W") || Input.IsKeyReleased("Space"))
+//			if(QInput.IsKeyReleased("W") || QInput.IsKeyReleased("Space"))
 //			{
 //				if(!IsJumpDone)
 //					JumpGas = -1;

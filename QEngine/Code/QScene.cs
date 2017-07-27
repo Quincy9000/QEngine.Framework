@@ -28,7 +28,7 @@ namespace QEngine
 
 		internal QCoroutine Coroutine { get; private set; }
 
-		internal QControls Input { get; private set; }
+		internal QController Input { get; private set; }
 
 		internal QCamera Camera { get; private set; }
 
@@ -38,15 +38,15 @@ namespace QEngine
 
 		internal QAccum Accumulator { get; private set; }
 
-		internal QWorldManager World { get; private set; }
+		internal QWorld World { get; private set; }
 
-		internal QMegaTexture MegaTexture { get; private set; }
-
-		internal Stopwatch FrameTime { get; set; }
+		internal QAtlas Atlas { get; private set; }
 
 		internal QDebugView DebugView { get; set; }
-		
+
 		internal QPhysicsState State { get; set; }
+		
+		internal Stopwatch FrameTime { get; set; }
 
 		/*Privates*/
 
@@ -126,7 +126,7 @@ namespace QEngine
 					if(o.Script is IQLoad l)
 						l.OnLoad(new QAddContent(Content));
 				});
-				MegaTexture = Content.MegaTexture;
+				Atlas = Content.Atlas;
 				//OnStart can potentially set flag to true
 				QGameObjectManager.For(temp, o =>
 				{
@@ -195,7 +195,7 @@ namespace QEngine
 			GuiRenderer = new QGuiRenderer(Engine);
 			Content = new QContentManager(Engine);
 			GameObjects = new QGameObjectManager();
-			World = new QWorldManager();
+			World = new QWorld();
 			List<IQLoad> Loaders = new List<IQLoad>();
 			//Use this method to load textures before the scene starts to compile all of them
 			//so that the megatexture only has to be created once per scene so that there
@@ -208,7 +208,7 @@ namespace QEngine
 				loader.OnLoad(new QAddContent(Content));
 				QObject.DeleteObject(((QBehavior)(loader)).Parent);
 			}
-			Instantiate(Input = new QControls());
+			Instantiate(Input = new QController());
 			Instantiate(Debug = new QDebug());
 			Instantiate(Camera = new QCamera());
 			Instantiate(Console = new QConsole());

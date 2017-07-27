@@ -28,7 +28,7 @@
 		/// </summary>
 		public float Height => Source.Height * Scale.Y;
 
-		internal QMegaTexture Texture => Script.Scene.MegaTexture;
+		internal QAtlas Texture => Script.Scene.Atlas;
 
 		internal QBehavior Script { get; }
 

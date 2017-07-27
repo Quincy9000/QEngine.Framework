@@ -14,8 +14,6 @@ namespace QEngine
 
 		public void ExitGame() => Scene.Engine.Exit();
 
-		public QControls Input => Scene.Input;
-
 		public QScene Scene => Parent.Scene;
 
 		public QTransform Transform => Parent.Transform;
@@ -32,7 +30,7 @@ namespace QEngine
 
 		public QAccum Accumulator => Scene.Accumulator;
 
-		public QWorldManager World => Scene.World;
+		public QWorld World => Scene.World;
 
 		/*Transforms*/
 

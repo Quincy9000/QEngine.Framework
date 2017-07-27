@@ -45,7 +45,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 			Health = MaxHealth;
 
-			Frames = Scene.MegaTexture["BryanStuff1"].Split(32, 32);
+			Frames = Scene.Atlas["BryanStuff1"].Split(32, 32);
 
 			player = GetComponent<Player>("Player");
 

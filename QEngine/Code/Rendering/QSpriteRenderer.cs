@@ -164,7 +164,7 @@ namespace QEngine
 		public void Draw(QVec position, QRect source, QColor color, float rotation, QVec origin, QVec scale,
 			QSpriteEffects effect, float layer)
 		{
-			sb.Draw(Engine.Manager.CurrentScene.MegaTexture,
+			sb.Draw(Engine.Manager.CurrentScene.Atlas,
 				position,
 				source,
 				color,

@@ -7,23 +7,23 @@ namespace QEngine.Demos.Physics
 	{
 		public override void OnUpdate(QTime delta)
 		{
-//			if(Input.IsKeyHeld(QKeys.Space))
+//			if(QInput.IsKeyHeld(QKeys.Space))
 //				World.Gravity = new QVec(0, -10);
 //			else
 //				World.Gravity = new QVec(0, QWorldManager.DefaultGravity);
-			if(Input.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.03f))
+			if(QInput.IsLeftMouseButtonHeld() && Accumulator.CheckAccum("Spawner", 0.03f))
 //			{
 //				var size = 40;
 //				if(QRandom.Number(0, 1) == 0)
-//					Instantiate(new Block(size, size), Camera.ScreenToWorld(Input.MousePosition()));
+//					Instantiate(new Block(size, size), Camera.ScreenToWorld(QInput.MousePosition()));
 //				else
-//					Instantiate(new Ball(size), Camera.ScreenToWorld(Input.MousePosition()));
+//					Instantiate(new Ball(size), Camera.ScreenToWorld(QInput.MousePosition()));
 //			}
-			if(Input.IsMouseScrolledUp())
+			if(QInput.IsMouseScrolledUp())
 				Camera.Zoom += Camera.Zoom * 0.1f;
-			if(Input.IsMouseScrolledDown())
+			if(QInput.IsMouseScrolledDown())
 				Camera.Zoom -= Camera.Zoom * 0.1f;
-			if(Input.IsKeyPressed(QKeys.Escape))
+			if(QInput.IsKeyPressed(QKeyStates.Escape))
 				Scene.ResetScene();
 		}
 	}

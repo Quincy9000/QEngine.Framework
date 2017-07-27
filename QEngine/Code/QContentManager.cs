@@ -15,9 +15,9 @@ namespace QEngine
 	{
 		internal QEngine Engine { get; }
 
-		QMegaTexture megaTexture;
+		QAtlas _atlas;
 
-		internal QMegaTexture MegaTexture
+		internal QAtlas Atlas
 		{
 			get
 			{
@@ -26,7 +26,7 @@ namespace QEngine
 					CreateMega();
 					IsMegaDirty = false;
 				}
-				return megaTexture;
+				return _atlas;
 			}
 		}
 
@@ -84,9 +84,9 @@ namespace QEngine
 			}
 			render.End();
 			render.gd.SetRenderTarget(null);
-			if(megaTexture != null)
-				((Texture2D)megaTexture.Texture).Dispose();
-			megaTexture = new QMegaTexture(target, rects);
+			if(_atlas != null)
+				((Texture2D)_atlas.Texture).Dispose();
+			_atlas = new QAtlas(target, rects);
 			//megaTexture.Texture.SaveAsPng("here.png");
 		}
 

@@ -53,7 +53,7 @@
   <ItemGroup>
     <Compile Include="Code\Assets\QEffect.cs" />
     <Compile Include="Code\Assets\QFont.cs" />
-    <Compile Include="Code\Assets\QMegaTexture.cs" />
+    <Compile Include="Code\Assets\QAtlas.cs" />
     <Compile Include="Code\Assets\QMusic.cs" />
     <Compile Include="Code\Assets\QSound.cs" />
     <Compile Include="Code\Assets\QTexture.cs" />
@@ -343,7 +343,8 @@
     <Compile Include="Code\QAppConfig.cs" />
     <Compile Include="Code\QApplication.cs" />
     <Compile Include="Code\QBehavior.cs" />
-    <Compile Include="Code\QControls.cs" />
+    <Compile Include="Code\QController.cs" />
+    <Compile Include="Code\QInput.cs" />
     <Compile Include="Code\QMapTools.cs" />
     <Compile Include="Code\QRigiBody.cs" />
     <Compile Include="Code\QCamera.cs" />
@@ -361,7 +362,7 @@
     <Compile Include="Code\QLabel.cs" />
     <Compile Include="Code\QPrefs.cs" />
     <Compile Include="Code\QRandom.cs" />
-    <Compile Include="Code\QWorldManager.cs" />
+    <Compile Include="Code\QWorld.cs" />
     <Compile Include="Code\Rendering\QGuiRenderer.cs" />
     <Compile Include="Code\QObject.cs" />
     <Compile Include="Code\Primitives\QRect.cs" />

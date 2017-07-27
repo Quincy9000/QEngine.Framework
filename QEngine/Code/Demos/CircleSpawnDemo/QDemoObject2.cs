@@ -6,13 +6,13 @@ namespace QEngine.Demos.CircleSpawnDemo
 	{
 		public override void OnFixedUpdate(float time)
 		{
-			if(Input.IsKeyPressed(QKeys.R))
+			if(QInput.IsKeyPressed(QKeyStates.R))
 				Scene.SpriteRenderer.ClearColor = QColor.Red;
-			else if(Input.IsKeyPressed(QKeys.B))
+			else if(QInput.IsKeyPressed(QKeyStates.B))
 				Scene.SpriteRenderer.ClearColor = QColor.Blue;
-			else if(Input.IsKeyPressed(QKeys.G))
+			else if(QInput.IsKeyPressed(QKeyStates.G))
 				Scene.SpriteRenderer.ClearColor = QColor.Green;
-			else if(Input.IsKeyPressed(QKeys.Escape))
+			else if(QInput.IsKeyPressed(QKeyStates.Escape))
 				ExitGame();
 		}
 

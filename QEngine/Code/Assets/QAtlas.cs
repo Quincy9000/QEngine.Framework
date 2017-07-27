@@ -6,17 +6,17 @@ namespace QEngine
 	/// <summary>
 	/// Texture Atlas
 	/// </summary>
-	public class QMegaTexture
+	public class QAtlas
 	{
-		internal QMegaTexture(QTexture texture, Dictionary<string, QRect> rects)
+		internal QAtlas(QTexture texture, Dictionary<string, QRect> rects)
 		{
 			Texture = texture;
 			Rectangles = rects;
 		}
 
-		public static implicit operator QTexture(QMegaTexture m) => m.Texture;
+		public static implicit operator QTexture(QAtlas m) => m.Texture;
 
-		public static implicit operator Texture2D(QMegaTexture m) => m.Texture;
+		public static implicit operator Texture2D(QAtlas m) => m.Texture;
 
 		internal QTexture Texture { get; set; }
 
