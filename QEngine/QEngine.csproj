@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{05DBD8D9-7A22-4739-A8BC-78E4D356C70C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>QEngine</RootNamespace>
     <AssemblyName>QEngine</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
@@ -57,36 +57,17 @@
     <Compile Include="Code\Assets\QMusic.cs" />
     <Compile Include="Code\Assets\QSound.cs" />
     <Compile Include="Code\Assets\QTexture.cs" />
-    <Compile Include="Code\Debug\QDebugView.cs" />
-    <Compile Include="Code\Debug\QPrimitiveBatch.cs" />
-    <Compile Include="Code\Demos\Assets.cs" />
-    <Compile Include="Code\Demos\Physics\Ball.cs" />
-    <Compile Include="Code\Demos\Physics\Block.cs" />
-    <Compile Include="Code\Demos\Physics\BlockCreator.cs" />
-    <Compile Include="Code\Demos\Physics\Platform.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\BiomeBackgroundRendering.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\BiomeBat.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\BiomeFloor.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\BiomeLevel.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\BiomeWall.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\DroppableItem.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\HealthBar.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\Player.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\PlayerAttackCollider.cs" />
-    <Compile Include="Code\Demos\PlatformingDemo\PlayerCamera.cs" />
-    <Compile Include="Code\Demos\QDemo.cs" />
-    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoCircle.cs" />
-    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoCreator.cs" />
-    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoObject2.cs" />
-    <Compile Include="Code\Demos\CircleSpawnDemo\QDemoObject.cs" />
-    <Compile Include="Code\Demos\QSnake\Fruit.cs" />
-    <Compile Include="Code\Demos\QSnake\GameController.cs" />
-    <Compile Include="Code\Demos\QSnake\SnakeBody.cs" />
-    <Compile Include="Code\Demos\QSnake\Snakehead.cs" />
-    <Compile Include="Code\Demos\Scenes\PhysicsScene.cs" />
-    <Compile Include="Code\Demos\Scenes\Platformer.cs" />
-    <Compile Include="Code\Demos\Scenes\QDemoScene.cs" />
-    <Compile Include="Code\Demos\Scenes\QSnakeScene.cs" />
+    <Compile Include="Code\Engine\QAppConfig.cs" />
+    <Compile Include="Code\Engine\QApplication.cs" />
+    <Compile Include="Code\Engine\QContentManager.cs" />
+    <Compile Include="Code\Engine\QEngine.cs" />
+    <Compile Include="Code\Engine\QGameObjectManager.cs" />
+    <Compile Include="Code\Engine\QObject.cs" />
+    <Compile Include="Code\Engine\QRigiBody.cs" />
+    <Compile Include="Code\Engine\QScene.cs" />
+    <Compile Include="Code\Engine\QSceneManager.cs" />
+    <Compile Include="Code\Engine\QTransform.cs" />
+    <Compile Include="Code\Engine\QWorld.cs" />
     <Compile Include="Code\Interfaces\IQDestroy.cs" />
     <Compile Include="Code\Interfaces\IQDrawGui.cs" />
     <Compile Include="Code\Interfaces\IQDrawSprite.cs" />
@@ -94,6 +75,7 @@
     <Compile Include="Code\Interfaces\IQLoad.cs" />
     <Compile Include="Code\Interfaces\IQObject.cs" />
     <Compile Include="Code\Interfaces\IQPhysics.cs" />
+    <Compile Include="Code\Interfaces\IQScene.cs" />
     <Compile Include="Code\Interfaces\IQStart.cs" />
     <Compile Include="Code\Interfaces\IQUnload.cs" />
     <Compile Include="Code\Interfaces\IQFixedUpdate.cs" />
@@ -159,6 +141,8 @@
     <Compile Include="Code\Physics\Collision\TOI\TOIInput.cs" />
     <Compile Include="Code\Physics\Collision\TOI\TOIOutput.cs" />
     <Compile Include="Code\Physics\Collision\TOI\TOIOutputState.cs" />
+    <Compile Include="Code\Physics\Debug\QDebugView.cs" />
+    <Compile Include="Code\Physics\Debug\QPrimitiveBatch.cs" />
     <Compile Include="Code\Physics\Dynamics\Body.cs" />
     <Compile Include="Code\Physics\Dynamics\BodyFlags.cs" />
     <Compile Include="Code\Physics\Dynamics\BodyType.cs" />
@@ -334,46 +318,34 @@
     <Compile Include="Code\Prefabs\QCharacterController.cs" />
     <Compile Include="Code\Primitives\QColor.cs" />
     <Compile Include="Code\Primitives\QMat.cs" />
-    <Compile Include="Code\Primitives\QPhysicsState.cs" />
     <Compile Include="Code\Primitives\QQuad.cs" />
     <Compile Include="Code\Primitives\QTime.cs" />
-    <Compile Include="Code\QAccum.cs" />
     <Compile Include="Code\Animation\QAnimation.cs" />
     <Compile Include="Code\Animation\QAnimator.cs" />
-    <Compile Include="Code\QAppConfig.cs" />
-    <Compile Include="Code\QApplication.cs" />
-    <Compile Include="Code\QBehavior.cs" />
-    <Compile Include="Code\QController.cs" />
-    <Compile Include="Code\QInput.cs" />
-    <Compile Include="Code\QMapTools.cs" />
-    <Compile Include="Code\QRigiBody.cs" />
-    <Compile Include="Code\QCamera.cs" />
-    <Compile Include="Code\QConsole.cs" />
-    <Compile Include="Code\QContentManager.cs" />
-    <Compile Include="Code\QCoroutine.cs" />
-    <Compile Include="Code\QDebug.cs" />
-    <Compile Include="Code\QEngine.cs" />
     <Compile Include="Code\Primitives\QNums.cs" />
-    <Compile Include="Code\QExtentions.cs" />
-    <Compile Include="Code\QFrameCounter.cs" />
-    <Compile Include="Code\QGameObjectManager.cs" />
-    <Compile Include="Code\QGetContent.cs" />
-    <Compile Include="Code\QAddContent.cs" />
-    <Compile Include="Code\QLabel.cs" />
-    <Compile Include="Code\QPrefs.cs" />
-    <Compile Include="Code\QRandom.cs" />
-    <Compile Include="Code\QWorld.cs" />
     <Compile Include="Code\Rendering\QGuiRenderer.cs" />
-    <Compile Include="Code\QObject.cs" />
     <Compile Include="Code\Primitives\QRect.cs" />
     <Compile Include="Code\Rendering\QImage.cs" />
     <Compile Include="Code\Rendering\QRenderer.cs" />
-    <Compile Include="Code\QScene.cs" />
-    <Compile Include="Code\QSceneManager.cs" />
     <Compile Include="Code\Rendering\QSprite.cs" />
     <Compile Include="Code\Rendering\QSpriteRenderer.cs" />
-    <Compile Include="Code\QTransform.cs" />
     <Compile Include="Code\Primitives\QVec.cs" />
+    <Compile Include="Code\Scripts\QAccum.cs" />
+    <Compile Include="Code\Scripts\QBehavior.cs" />
+    <Compile Include="Code\Scripts\QCamera.cs" />
+    <Compile Include="Code\Scripts\QConsole.cs" />
+    <Compile Include="Code\Scripts\QController.cs" />
+    <Compile Include="Code\Scripts\QCoroutine.cs" />
+    <Compile Include="Code\Scripts\QDebug.cs" />
+    <Compile Include="Code\Scripts\QLabel.cs" />
+    <Compile Include="Code\Tools\QAddContent.cs" />
+    <Compile Include="Code\Tools\QExtentions.cs" />
+    <Compile Include="Code\Tools\QFrameCounter.cs" />
+    <Compile Include="Code\Tools\QGetContent.cs" />
+    <Compile Include="Code\Tools\QInput.cs" />
+    <Compile Include="Code\Tools\QMapTools.cs" />
+    <Compile Include="Code\Tools\QPrefs.cs" />
+    <Compile Include="Code\Tools\QRandom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

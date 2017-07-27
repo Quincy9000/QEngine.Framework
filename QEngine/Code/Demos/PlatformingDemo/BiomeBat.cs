@@ -47,7 +47,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 			Frames = Scene.Atlas["BryanStuff1"].Split(32, 32);
 
-			player = GetComponent<Player>("Player");
+			player = GetComponentFromScripts<Player>("Player");
 
 			Sprite = new QSprite(this, Frames[28]);
 			Sprite.Scale = new QVec(4);

@@ -200,7 +200,7 @@ namespace QEngine
 		/// Will try to update physics if its been a certain amount of time
 		/// </summary>
 		/// <param name="time"></param>
-		internal QPhysicsState TryStep(QTime time, QGameObjectManager m)
+		internal float TryStep(QTime time, QGameObjectManager m)
 		{
 			return Step(time, m);
 		}
@@ -216,7 +216,7 @@ namespace QEngine
 		/// </summary>
 		/// <param name="t"></param>
 		/// <param name="m"></param>
-		QPhysicsState Step(QTime t, QGameObjectManager m)
+		float Step(QTime t, QGameObjectManager m)
 		{
 //			for(int i = 0; i < Bodies.Count; i++)
 //			{
@@ -253,7 +253,7 @@ namespace QEngine
 			return 0; //Interpolate(PhysicsAccumulator / StepSimluation);
 		}
 
-		float Interpolate(QPhysicsState alpha)
+		float Interpolate(float alpha)
 		{
 			float a = alpha;
 			for(int i = 0; i < Bodies.Count; i++)

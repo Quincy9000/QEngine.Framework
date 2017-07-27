@@ -16,7 +16,7 @@ namespace QEngine
 
 		internal QEngine Engine;
 
-		internal QPhysicsState State;
+		internal float State;
 
 		public QColor ClearColor { get; set; } = QColor.White;
 

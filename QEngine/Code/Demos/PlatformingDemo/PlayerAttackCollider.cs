@@ -24,7 +24,7 @@
 			Body.IsSensor = true;
 			Body.OnCollisionStay += OnCollisionStay;
 
-			p = GetComponent<Player>();
+			p = GetComponentFromScripts<Player>();
 		}
 
 		public void OnUpdate(QTime time)

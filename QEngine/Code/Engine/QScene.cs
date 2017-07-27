@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
-using QEngine.Debug;
-using QEngine.Physics.Utilities;
+using QEngine.Physics.Debug;
 
 namespace QEngine
 {
 	/// <summary>
 	/// Base class for all scenes, inherit this to create a scene in qengine
 	/// </summary>
-	public abstract class QScene
+	public class QScene : IQScene
 	{
 		/*Internal Variables*/
 
-		internal string Name { get; }
+		public string Name { get; }
 
 		internal QGameObjectManager GameObjects { get; set; }
 
@@ -44,9 +43,11 @@ namespace QEngine
 
 		internal QDebugView DebugView { get; set; }
 
-		internal QPhysicsState State { get; set; }
-		
+		internal float State { get; set; }
+
 		internal Stopwatch FrameTime { get; set; }
+
+		internal QRect Window => Engine.GraphicsDevice.Viewport.Bounds;
 
 		/*Privates*/
 
@@ -54,22 +55,15 @@ namespace QEngine
 
 		Queue<QBehavior> DestroyQueue { get; set; }
 
-		bool CreatorFlag = false;
+		bool CreatorFlag { get; set; }
 
 		/*Public Methods*/
 
-		/// <summary>
-		/// Reloads the current scene
-		/// </summary>
 		public void ResetScene()
 		{
 			Engine.Manager.CallToResetScene = true;
 		}
 
-		/// <summary>
-		/// Changes to a scene that exists
-		/// </summary>
-		/// <param name="s"></param>
 		public void ChangeScene(string s)
 		{
 			Engine.Manager.CallToChangeScene = true;
@@ -80,8 +74,6 @@ namespace QEngine
 		{
 			Engine.Manager.CallToExitGame = true;
 		}
-
-		public QRect Window => Engine.GraphicsDevice.Viewport.Bounds;
 
 		/*Protected Virtuals*/
 
@@ -135,7 +127,7 @@ namespace QEngine
 				});
 			}
 		}
-		
+
 		public void Instantiate(QBehavior script, QVec pos = default(QVec), float rotation = 0)
 		{
 			script.Parent = QObject.NewObject();
@@ -171,7 +163,7 @@ namespace QEngine
 			script.Transform.Reset();
 			QObject.DeleteObject(script.Parent);
 		}
-		
+
 		/// <summary>
 		/// Removes all the items from the destroy queue
 		/// </summary>
@@ -287,9 +279,21 @@ namespace QEngine
 
 		/*ctors*/
 
+		/// <summary>
+		/// Inherit QScene to make games and add your behavior and scripts.
+		/// </summary>
+		/// <param name="name"></param>
 		protected QScene(string name)
 		{
 			Name = name;
+		}
+
+		/// <summary>
+		/// Creates blank scene, do not use this ctor to make games.
+		/// </summary>
+		internal QScene()
+		{
+			Name = "DemoScene";
 		}
 	}
 }

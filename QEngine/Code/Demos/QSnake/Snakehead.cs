@@ -45,7 +45,7 @@ namespace QEngine.Demos.QSnake
 			CurrentDir = SnakeDirection.Down;
 			Coroutine.Start(SnakeMove());
 
-			fruit = GetComponent<Fruit>("Fruit");
+			fruit = GetComponentFromScripts<Fruit>("Fruit");
 			Scene.SpriteRenderer.ClearColor = QColor.Black;
 		}
 

@@ -19,7 +19,7 @@ namespace QEngine.Demos
 				Fullscreen = false,
 				Vsync = false,
 				MouseVisible = true,
-			}).Run(new Platformer());
+			}).Run();
 		}
 	}
 }

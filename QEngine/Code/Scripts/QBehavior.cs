@@ -45,21 +45,32 @@ namespace QEngine
 			get => Transform.Rotation;
 			set => Transform.Rotation = value;
 		}
+		
+		/*GetComponents*/
 
-		public T GetComponent<T>(string name) where T : QBehavior
+		#region Components
+
+		public T GetComponentFromScripts<T>(string name) where T : QBehavior
 		{
 			return (T)(Scene.GameObjects.Objects.Find(u => u.Script.Name == name).Script);
-		}		
-		
-		public T GetComponent<T>() where T : QBehavior
+		}
+
+		public T GetComponentFromScripts<T>() where T : QBehavior
 		{
 			return (T)(Scene.GameObjects.Objects.Find(u => u.Script is T).Script);
 		}
 
-		public T GetComponent<T>(Guid id) where T : QBehavior
+		public T GetComponentFromScripts<T>(Guid id) where T : QBehavior
 		{
 			return (T)(Scene.GameObjects.Objects.Find(u => u.Script.Id == id).Script);
 		}
+
+//		public T GetComponentFromScene<T>(string name)
+//		{
+//			return Scene.
+//		}
+
+		#endregion
 
 		public void Instantiate(QBehavior b, QVec v = default(QVec)) => Scene.Instantiate(b, v);
 

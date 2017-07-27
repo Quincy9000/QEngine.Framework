@@ -1,8 +1,4 @@
-﻿using QEngine.Demos;
-using QEngine.Demos.CircleSpawnDemo;
-using QEngine.Demos.Scenes;
-
-namespace QEngine
+﻿namespace QEngine
 {
 	public class QApplication
 	{
@@ -16,7 +12,7 @@ namespace QEngine
 		{
 			if(scenes.Length > 0)
 			{
-				foreach (var qScene in scenes)
+				foreach(var qScene in scenes)
 				{
 					qScene.Engine = Engine;
 					Engine.Manager.AddScene(qScene);
@@ -24,12 +20,12 @@ namespace QEngine
 			}
 			else
 			{
-				var s = new QDemoScene();
+				var s = new QScene();
 				s.Engine = Engine;
 				Engine.Manager.AddScene(s);
 			}
-			Engine.Run();
-			Engine.Dispose();
+			using(Engine)
+				Engine.Run();
 		}
 	}
 }
