@@ -115,7 +115,7 @@ namespace QEngine
 	}
 
 	[Flags]
-	public enum QSpriteEffects
+	public enum QRenderEffects
 	{
 		None = 0,
 		FlipHorizontally = 1,

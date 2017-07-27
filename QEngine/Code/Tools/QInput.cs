@@ -122,12 +122,12 @@ namespace QEngine
 			}
 		}
 
-		public static bool IsKeyHeld(QKeyStates keyState)
+		static bool IsKeyHeld(QKeyStates keyState)
 		{
 			return CurrentKeyState.IsKeyDown((Keys)keyState);
 		}
 
-		public static bool IsKeyHeld(string key)
+		static bool IsKeyHeld(string key)
 		{
 			if(Enum.TryParse(key, true, out QKeyStates k))
 			{
@@ -136,12 +136,12 @@ namespace QEngine
 			return false;
 		}
 
-		public static bool IsKeyPressed(QKeyStates keyState)
+		static bool IsKeyPressed(QKeyStates keyState)
 		{
 			return CurrentKeyState.IsKeyDown((Keys)keyState) && PreviousKeyState.IsKeyUp((Keys)keyState);
 		}
 
-		public static bool IsKeyPressed(string key)
+		static bool IsKeyPressed(string key)
 		{
 			if(Enum.TryParse(key, true, out QKeyStates k))
 			{
@@ -150,12 +150,12 @@ namespace QEngine
 			return false;
 		}
 
-		public static bool IsKeyReleased(QKeyStates keyState)
+		static bool IsKeyReleased(QKeyStates keyState)
 		{
 			return CurrentKeyState.IsKeyUp((Keys)keyState) && PreviousKeyState.IsKeyDown((Keys)keyState);
 		}
 
-		public static bool IsKeyReleased(string key)
+		static bool IsKeyReleased(string key)
 		{
 			if(Enum.TryParse(key, true, out QKeyStates k))
 			{
@@ -164,55 +164,55 @@ namespace QEngine
 			return false;
 		}
 
-		public static bool IsAnyKeyDown()
+		static bool IsAnyKeyDown()
 		{
 			return CurrentKeyState.GetPressedKeys().Length > 0 && PreviousKeyState.GetPressedKeys().Length == 0;
 		}
 
-		public static bool IsAnyKeyUp()
+		static bool IsAnyKeyUp()
 		{
 			return CurrentKeyState.GetPressedKeys().Length == 0 && PreviousKeyState.GetPressedKeys().Length > 0;
 		}
 
-		public static bool IsAnyKeyHeld()
+		static bool IsAnyKeyHeld()
 		{
 			return CurrentKeyState.GetPressedKeys().Length > 0 && PreviousKeyState.GetPressedKeys().Length > 0;
 		}
 
-		public static bool IsNoKey()
+		static bool IsNoKey()
 		{
 			return CurrentKeyState.GetPressedKeys().Length == 0 && PreviousKeyState.GetPressedKeys().Length == 0;
 		}
 
-		public static bool IsMouseScrolledUp()
+		static bool IsMouseScrolledUp()
 		{
 			return CurrentMouseState.ScrollWheelValue > PreviousMouseState.ScrollWheelValue;
 		}
 
-		public static bool IsMouseScrolledDown()
+		static bool IsMouseScrolledDown()
 		{
 			return CurrentMouseState.ScrollWheelValue < PreviousMouseState.ScrollWheelValue;
 		}
 
-		public static QVec MousePosition()
+		static QVec MousePosition()
 		{
 			return CurrentMouseState.Position;
 		}
 
 		/*LeftMouseButton*/
 
-		public static bool IsLeftMouseButtonPressed()
+		static bool IsLeftMouseButtonPressed()
 		{
 			return CurrentMouseState.LeftButton == ButtonState.Pressed &&
 			       PreviousMouseState.LeftButton == ButtonState.Released;
 		}
 
-		public static bool IsLeftMouseButtonHeld()
+		static bool IsLeftMouseButtonHeld()
 		{
 			return CurrentMouseState.LeftButton == ButtonState.Pressed;
 		}
 
-		public static bool IsLeftMouseButtonReleased()
+		static bool IsLeftMouseButtonReleased()
 		{
 			return CurrentMouseState.LeftButton == ButtonState.Released &&
 			       CurrentMouseState.LeftButton == ButtonState.Pressed;
@@ -220,18 +220,18 @@ namespace QEngine
 
 		/*RightMouseButton*/
 
-		public static bool IsRightMouseButtonPressed()
+		static bool IsRightMouseButtonPressed()
 		{
 			return CurrentMouseState.RightButton == ButtonState.Pressed &&
 			       PreviousMouseState.RightButton == ButtonState.Released;
 		}
 
-		public static bool IsRightMouseButtonHeld()
+		static bool IsRightMouseButtonHeld()
 		{
 			return CurrentMouseState.RightButton == ButtonState.Pressed;
 		}
 
-		public static bool IsRightMouseButtonReleased()
+		static bool IsRightMouseButtonReleased()
 		{
 			return CurrentMouseState.RightButton == ButtonState.Released &&
 			       CurrentMouseState.RightButton == ButtonState.Pressed;
@@ -239,18 +239,18 @@ namespace QEngine
 
 		/*MiddleMouseButton*/
 
-		public static bool IsMiddleMouseButtonPressed()
+		static bool IsMiddleMouseButtonPressed()
 		{
 			return CurrentMouseState.MiddleButton == ButtonState.Pressed &&
 			       PreviousMouseState.MiddleButton == ButtonState.Released;
 		}
 
-		public static bool IsMiddleMouseButtonHeld()
+		static bool IsMiddleMouseButtonHeld()
 		{
 			return CurrentMouseState.MiddleButton == ButtonState.Pressed;
 		}
 
-		public static bool IsMiddleMouseButtonReleased()
+		static bool IsMiddleMouseButtonReleased()
 		{
 			return CurrentMouseState.MiddleButton == ButtonState.Released &&
 			       CurrentMouseState.MiddleButton == ButtonState.Pressed;
@@ -258,18 +258,18 @@ namespace QEngine
 
 		/*BackwardsMouseButton*/
 
-		public static bool IsBackwardsMouseButtonPressed()
+		static bool IsBackwardsMouseButtonPressed()
 		{
 			return CurrentMouseState.XButton1 == ButtonState.Pressed &&
 			       PreviousMouseState.XButton1 == ButtonState.Released;
 		}
 
-		public static bool IsBackwardsMouseButtonHeld()
+		static bool IsBackwardsMouseButtonHeld()
 		{
 			return CurrentMouseState.XButton1 == ButtonState.Pressed;
 		}
 
-		public static bool IsBackwardsMouseButtonReleased()
+		static bool IsBackwardsMouseButtonReleased()
 		{
 			return CurrentMouseState.XButton1 == ButtonState.Released &&
 			       CurrentMouseState.XButton1 == ButtonState.Pressed;
@@ -277,18 +277,18 @@ namespace QEngine
 
 		/*ForwardsMouseButton*/
 
-		public static bool IsForwardsMouseButtonPressed()
+		static bool IsForwardsMouseButtonPressed()
 		{
 			return CurrentMouseState.XButton2 == ButtonState.Pressed &&
 			       PreviousMouseState.XButton2 == ButtonState.Released;
 		}
 
-		public static bool IsForwardsMouseButtonHeld()
+		static bool IsForwardsMouseButtonHeld()
 		{
 			return CurrentMouseState.XButton2 == ButtonState.Pressed;
 		}
 
-		public static bool IsForwardsMouseButtonReleased()
+		static bool IsForwardsMouseButtonReleased()
 		{
 			return CurrentMouseState.XButton2 == ButtonState.Released &&
 			       CurrentMouseState.XButton2 == ButtonState.Pressed;
@@ -296,7 +296,7 @@ namespace QEngine
 
 		/*MouseMoved*/
 
-		public static bool IsMouseMoving()
+		static bool IsMouseMoving()
 		{
 			return CurrentMouseState.Position != PreviousMouseState.Position;
 		}

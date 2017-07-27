@@ -98,7 +98,7 @@ namespace QEngine
 		/// <param name="tr"></param>
 		public void Draw(QTexture texture, QSprite sprite, QTransform tr)
 		{
-			if(!sprite.IsVisible) return;
+			if(!sprite.Visible) return;
 			sb.Draw(texture,
 				(tr.Position + sprite.Offset),
 				sprite.Source,
@@ -117,7 +117,7 @@ namespace QEngine
 		/// <param name="transform"></param>
 		public void Draw(QSprite sprite, QTransform transform)
 		{
-			if(!sprite.IsVisible) return;
+			if(!sprite.Visible) return;
 			sb.Draw(sprite.Texture,
 				(transform.Position + sprite.Offset),
 				sprite.Source,
@@ -138,7 +138,7 @@ namespace QEngine
 		/// <param name="pos"></param>
 		public void Draw(QRect source, QSprite sprite, QTransform t, QVec pos)
 		{
-			if(!sprite.IsVisible) return;
+			if(!sprite.Visible) return;
 			sb.Draw(sprite.Texture,
 				pos,
 				source,
@@ -162,7 +162,7 @@ namespace QEngine
 		/// <param name="effect"></param>
 		/// <param name="layer"></param>
 		public void Draw(QVec position, QRect source, QColor color, float rotation, QVec origin, QVec scale,
-			QSpriteEffects effect, float layer)
+			QRenderEffects effect, float layer)
 		{
 			sb.Draw(Engine.Manager.CurrentScene.Atlas,
 				position,
@@ -183,7 +183,7 @@ namespace QEngine
 		/// <param name="position"></param>
 		public void Draw(QSprite sprite, QTransform transform, QVec position)
 		{
-			if(!sprite.IsVisible) return;
+			if(!sprite.Visible) return;
 			sb.Draw(sprite.Texture,
 				position + sprite.Offset,
 				sprite.Source,

@@ -58,7 +58,7 @@
 			}
 			else
 				Label.Visible = false;
-			if(QInput.IsKeyPressed(QKeyStates.F12))
+			if(QInput.Pressed(QKeyStates.F12))
 			{
 				DebugLevel++;
 				if(DebugLevel == 3)

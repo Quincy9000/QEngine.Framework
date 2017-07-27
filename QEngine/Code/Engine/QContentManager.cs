@@ -47,6 +47,7 @@ namespace QEngine
 			try
 			{
 				IsMegaDirty = true;
+				var s = contentManager.RootDirectory;
 				return contentManager.Load<T>(path);
 			}
 			catch(Exception)

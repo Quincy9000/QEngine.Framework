@@ -6,7 +6,7 @@
 
 		public QApplication(QAppConfig conf) => Engine = new QEngine(conf);
 
-		public QApplication() => Engine = new QEngine();
+		public QApplication() => Engine = new QEngine(new QAppConfig());
 
 		public void Run(params QScene[] scenes)
 		{

@@ -3,7 +3,7 @@
 namespace QEngine
 {
 	/// <summary>
-	/// QEffect is the class that loads the shader from monogame pipelien
+	/// QEffect is the class that loads the shader from monogame pipeline
 	/// </summary>
 	public class QEffect
 	{
