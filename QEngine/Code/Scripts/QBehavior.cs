@@ -20,8 +20,6 @@ namespace QEngine
 
 		public QCamera Camera => Scene.Camera;
 
-		public QConsole Console => Scene.Console;
-
 		public QRect Window => Scene.Window;
 
 		public QCoroutine Coroutine => Scene.Coroutine;

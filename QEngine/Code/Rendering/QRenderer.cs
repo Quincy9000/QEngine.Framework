@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using OpenGL;
+﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace QEngine
 {

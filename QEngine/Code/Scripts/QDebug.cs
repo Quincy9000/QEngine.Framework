@@ -1,7 +1,7 @@
 ﻿namespace QEngine
 {
 	/// <summary>
-	/// Debuger that displays Fps
+	/// Debugger to display all kinds of information
 	/// </summary>
 	public sealed class QDebug : QBehavior, IQLoad, IQStart, IQLateUpdate, IQDrawGui
 	{
@@ -10,6 +10,8 @@
 		public QFont Font { get; private set; }
 
 		public QLabel Label { get; set; }
+		
+		public QConsole Console { get; private set; }
 
 		public float FramesPerSecond => Fps.CurrentFramesPerSecond;
 
@@ -34,6 +36,7 @@
 		public void OnLoad(QAddContent add)
 		{
 			add.Font("Fonts/arial");
+			Instantiate(Console = new QConsole());
 			DebugLevel = 0;
 			Fps = new QFrameCounter();
 		}

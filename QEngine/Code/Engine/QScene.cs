@@ -27,13 +27,11 @@ namespace QEngine
 
 		internal QCoroutine Coroutine { get; private set; }
 
-		internal QController Input { get; private set; }
+		internal QController Controller { get; private set; }
 
 		internal QCamera Camera { get; private set; }
 
 		internal QDebug Debug { get; private set; }
-
-		internal QConsole Console { get; private set; }
 
 		internal QAccum Accumulator { get; private set; }
 
@@ -200,10 +198,9 @@ namespace QEngine
 				loader.OnLoad(new QAddContent(Content));
 				QObject.DeleteObject(((QBehavior)(loader)).Parent);
 			}
-			Instantiate(Input = new QController());
+			Instantiate(Controller = new QController());
 			Instantiate(Debug = new QDebug());
 			Instantiate(Camera = new QCamera());
-			Instantiate(Console = new QConsole());
 			Instantiate(Coroutine = new QCoroutine());
 			Instantiate(Accumulator = new QAccum());
 			CheckQueue();

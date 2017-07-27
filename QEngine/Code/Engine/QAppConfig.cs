@@ -24,7 +24,10 @@ namespace QEngine
 
 		public string Title = "QGame";
 
-		public string AssetDirectory = "Assets";
+		/// <summary>
+		/// Always use this as the default directory
+		/// </summary>
+		public readonly string AssetDirectory = "Assets";
 
 		public QAppConfig(Assembly a = null)
 		{

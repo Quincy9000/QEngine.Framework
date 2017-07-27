@@ -116,11 +116,6 @@ namespace QEngine
 				sb.DrawString(label.Font, label.Text, pos, label.Color * fade, t.Rotation, QVec.Zero, label.Scale, SpriteEffects.None, label.Layer);
 		}
 
-		internal override void End()
-		{
-			base.End();
-		}
-
 		internal QGuiRenderer(QEngine e) : base(e)
 		{
 			Filter = QFilteringState.Point;
