@@ -78,7 +78,7 @@ namespace QEngine
 
 		public QEffect Effect { get; set; } = null;
 
-		public QMat Matrix { get; set; } = QMat.Identity;
+		public QMatrix Matrix { get; set; } = QMatrix.Identity;
 
 		internal override void Begin()
 		{

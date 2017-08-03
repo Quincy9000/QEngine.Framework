@@ -47,7 +47,7 @@ namespace QEngine.Physics
         /// tools by removing the overhead of the checks, but you will need to handle checks
         /// yourself where it is needed.
         /// </summary>
-        public const bool SkipSanityChecks = false; //default: false
+        public const bool SkipSanityChecks = true; //default: false
 
         /// <summary>
         /// Maximum number of sub-steps per contact in continuous physics simulation.

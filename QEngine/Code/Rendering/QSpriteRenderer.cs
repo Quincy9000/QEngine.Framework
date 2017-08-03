@@ -79,7 +79,7 @@ namespace QEngine
 
 		public QEffect Effect { get; set; } = new QEffect(null);
 
-		public QMat Matrix { get; set; } = QMat.Identity;
+		public QMatrix Matrix { get; set; } = QMatrix.Identity;
 
 		/// <summary>
 		/// Clears the screen and begins a new draw batch

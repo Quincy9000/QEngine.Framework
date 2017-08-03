@@ -11,7 +11,7 @@ namespace QEngine
 
 		internal Guid Id => Script.Id;
 
-		internal QVec Position
+		public QVec Position
 		{
 			get => ((QVec)body.Position).ToDis();
 			set
@@ -45,7 +45,7 @@ namespace QEngine
 		/// <summary>
 		/// Set or get the rotation that the body is, in radians, 2Pi = 360 degree etc
 		/// </summary>
-		internal float Rotation
+		public float Rotation
 		{
 			get => body.Rotation;
 			set => body.Rotation = value;

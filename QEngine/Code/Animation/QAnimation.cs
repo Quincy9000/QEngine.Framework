@@ -189,7 +189,7 @@ namespace QEngine
 			}
 			return false;
 		}
-		
+
 		public static bool operator !=(QAnimation left, QAnimation right)
 		{
 			return !(left == right);

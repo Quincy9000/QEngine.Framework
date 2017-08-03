@@ -6,11 +6,11 @@ namespace QEngine
 	{
 		bool _isDirty = true;
 
-		QMat _transformMatrix;
+		QMatrix _transformMatrix;
 
 		float _zoom = 1f;
 
-		public QMat TransformMatrix
+		public QMatrix TransformMatrix
 		{
 			get
 			{

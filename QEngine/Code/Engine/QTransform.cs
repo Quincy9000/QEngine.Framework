@@ -29,10 +29,10 @@ namespace QEngine
 			}
 		}
 
-		internal QVec Position
+		public QVec Position
 		{
 //			get => position;//body?.Position ?? position; //
-			get => body?.Position ?? position; //
+			get => body?.Position ?? position;
 			set
 			{
 				IsDirty = true;
@@ -42,10 +42,10 @@ namespace QEngine
 			}
 		}
 
-		internal float Rotation
+		public float Rotation
 		{
 //			get => rotation;//body?.Rotation ?? rotation; //
-			get => body?.Rotation ?? rotation; //
+			get => body?.Rotation ?? rotation;
 			set
 			{
 				IsDirty = true;

@@ -204,9 +204,9 @@ namespace QEngine
 		/// Will try to update physics if its been a certain amount of time
 		/// </summary>
 		/// <param name="time"></param>
-		internal float TryStep(QTime time, QGameObjectManager m)
+		internal void TryStep(QTime time, QGameObjectManager m)
 		{
-			return Step(time, m);
+			Step(time, m);
 		}
 
 		float PhysicsAccumulator { get; set; }
@@ -217,35 +217,16 @@ namespace QEngine
 		/// Moves all the bodies to the most recent transform 
 		/// then simulates and then moves the transforms to the correct position 
 		/// where the body was moved, simulation time
+		/// https://gafferongames.com/post/fix_your_timestep/
 		/// </summary>
 		/// <param name="t"></param>
 		/// <param name="m"></param>
 		float Step(QTime t, QGameObjectManager m)
 		{
-//			for(int i = 0; i < Bodies.Count; i++)
-//			{
-//				QRigiBody b = Bodies[i];
-//				if(b.Script.Transform.IsDirty)
-//				{
-//					b.Position = b.Script.Transform.Position;
-//					b.Rotation = b.Script.Transform.Rotation;
-//				}
-//			}
 			bool step = false;
 			PhysicsAccumulator += t.Delta;
-			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(t));
 			while(PhysicsAccumulator >= StepSimluation)
 			{
-				//previous = current
-//				for(int i = 0; i < Bodies.Count; i++)
-//				{
-//					QRigiBody b = Bodies[i];
-//					if(b.IsDynamic)
-//					{
-//						b.PreviousPosition = b.Position;
-//						b.PreviousRotation = b.Rotation;
-//					}
-//				}
 				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(StepSimluation));
 				world.Step(StepSimluation);
 				PhysicsAccumulator -= StepSimluation;
@@ -253,23 +234,23 @@ namespace QEngine
 			}
 			if(step)
 				ClearForces();
+			QGameObjectManager.For(m.UpdateObjects, u => u.OnUpdate(t));
 			QGameObjectManager.For(m.LateUpdateObjects, l => l.OnLateUpdate(t));
-			return 0; //Interpolate(PhysicsAccumulator / StepSimluation);
+			return 0;//Interpolate(PhysicsAccumulator / StepSimluation);
 		}
 
 		float Interpolate(float alpha)
 		{
-			float a = alpha;
 			for(int i = 0; i < Bodies.Count; i++)
 			{
 				QRigidBody body = Bodies[i];
 				if(body.IsDynamic)
 				{
-					body.Script.Transform.position = body.Position * a + body.Script.Transform.position * (1.0f - a);
-					body.Script.Transform.rotation = body.Rotation * a + body.Script.Transform.rotation * (1.0f - a);
+					body.Script.Transform.position = body.Position * alpha + body.Script.Transform.position * (1.0f - alpha);
+					body.Script.Transform.rotation = body.Rotation * alpha + body.Script.Transform.rotation * (1.0f - alpha);
 				}
 			}
-			return a;
+			return alpha;
 		}
 
 		/// <summary>

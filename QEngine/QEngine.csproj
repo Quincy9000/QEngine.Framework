@@ -85,6 +85,7 @@
     <Compile Include="Code\Interfaces\IQLoad.cs" />
     <Compile Include="Code\Interfaces\IQObject.cs" />
     <Compile Include="Code\Interfaces\IQPhysics.cs" />
+    <Compile Include="Code\Interfaces\IQRenderable.cs" />
     <Compile Include="Code\Interfaces\IQScene.cs" />
     <Compile Include="Code\Interfaces\IQStart.cs" />
     <Compile Include="Code\Interfaces\IQUnload.cs" />
@@ -328,13 +329,12 @@
     <Compile Include="Code\Prefabs\QCharacterController.cs" />
     <Compile Include="Code\Primitives\QColor.cs" />
     <Compile Include="Code\Primitives\QComponent.cs" />
-    <Compile Include="Code\Primitives\QMat.cs" />
+    <Compile Include="Code\Primitives\QMatrix.cs" />
     <Compile Include="Code\Primitives\QQuad.cs" />
     <Compile Include="Code\Primitives\QTime.cs" />
     <Compile Include="Code\Animation\QAnimation.cs" />
     <Compile Include="Code\Animation\QAnimator.cs" />
     <Compile Include="Code\Primitives\QNums.cs" />
-    <Compile Include="Code\Rendering\IQRenderable.cs" />
     <Compile Include="Code\Rendering\QGuiRenderer.cs" />
     <Compile Include="Code\Primitives\QRect.cs" />
     <Compile Include="Code\Rendering\QImage.cs" />

@@ -16,7 +16,7 @@ namespace QEngine
 
 		public bool MouseVisible = true;
 
-		public bool Vsync = true;
+		public bool Vsync = false;
 
 		public bool FixedTimeStep = false;
 

@@ -186,7 +186,7 @@ namespace QEngine
             return Vector2.DistanceSquared(first.pos, second.pos);
         }
 
-        public static QVec Transform(QVec v, QMat m)
+        public static QVec Transform(QVec v, QMatrix m)
         {
             return Vector2.Transform(v, m);
         }

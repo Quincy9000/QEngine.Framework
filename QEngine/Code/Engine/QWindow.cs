@@ -8,7 +8,7 @@ namespace QEngine
 
 		readonly QEngine _engine;
 
-		public QRect Bounds => _window.ClientBounds;
+		public QRect Bounds => _engine.GraphicsDevice.Viewport.Bounds;
 
 		public int Width => Bounds.Width;
 
