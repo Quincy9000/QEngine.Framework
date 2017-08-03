@@ -4,7 +4,7 @@ namespace QEngine.Demos.Physics
 {
 	class Ball : QCharacterController
 	{
-		QRigiBody body;
+		QRigidBody body;
 
 		QVec DirectionOfMovement;
 
@@ -27,7 +27,7 @@ namespace QEngine.Demos.Physics
 		{
 			Sprite = new QSprite(this, get.TextureSource(Name));
 			Sprite.Color = QRandom.Color();
-			body = World.CreateCircle(this, Radius);
+			body = Physics.CreateCircle(this, Radius);
 			body.ApplyForce(DirectionOfMovement);
 			body.IsBullet = true;
 		}

@@ -55,15 +55,15 @@ namespace QEngine.Demos.CircleSpawnDemo
 				Scene.ResetScene();
 			if(QInput.Held(QKeyStates.Space) && Accumulator.CheckAccum("ball", 0.06f))
 				Instantiate(new QDemoCircle());
-			if(QInput.IsMouseScrolledUp())
+			if(QInput.Pressed(QMouseStates.Up))
 				Camera.Zoom += Camera.Zoom * 0.1f;
-			if(QInput.IsMouseScrolledDown())
+			if(QInput.Pressed(QMouseStates.Down))
 				Camera.Zoom -= Camera.Zoom * 0.1f;
-			if(QInput.IsForwardsMouseButtonPressed())
+			if(QInput.Pressed(QMouseStates.Forward))
 				Console.WriteLine("forwardsMouseButtonDown");
-			if(QInput.IsBackwardsMouseButtonPressed())
+			if(QInput.Pressed(QMouseStates.Backward))
 				Console.WriteLine("backwardsMouseButton");
-			if(QInput.IsMiddleMouseButtonPressed())
+			if(QInput.Pressed(QMouseStates.Middle))
 				Console.WriteLine("middleMouseButton");
 			Camera.Lerp(Transform.Position, 5, time.Delta);
 		}

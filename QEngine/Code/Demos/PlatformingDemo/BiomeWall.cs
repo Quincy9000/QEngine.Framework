@@ -9,7 +9,7 @@ namespace QEngine.Demos.PlatformingDemo
 	{
 		QSprite sprite;
 
-		QRigiBody body;
+		QRigidBody body;
 
 		QVec toSize;
 
@@ -18,7 +18,7 @@ namespace QEngine.Demos.PlatformingDemo
 			var floorTiles = get.TextureSource("cavern_biome").Split(16, 16);
 			sprite = new QSprite(this, floorTiles[1]);
 			sprite.Scale = QVec.One * 4.01f;
-			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
+			body = Physics.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
 			body.Friction = 0.2f;
 			body.IsCCD = false;
 		}

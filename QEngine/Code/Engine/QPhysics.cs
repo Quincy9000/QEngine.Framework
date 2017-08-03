@@ -4,18 +4,18 @@ using QEngine.Physics.Dynamics;
 
 namespace QEngine
 {
-	public class QWorld
+	public class QPhysics
 	{
 		internal World world;
 
-		internal List<QRigiBody> Bodies { get; set; } = new List<QRigiBody>();
+		internal List<QRigidBody> Bodies { get; set; } = new List<QRigidBody>();
 
 		/// <summary>
 		/// Gets called when two rigibodies are about to collide
 		/// </summary>
 		/// <param name="a"></param>
 		/// <param name="b"></param>
-		public delegate void NearCollision(QRigiBody a, QRigiBody b);
+		public delegate void NearCollision(QRigidBody a, QRigidBody b);
 
 		/// <summary>
 		/// General collision event that isnt tied to specific objects, must check yourself
@@ -32,13 +32,13 @@ namespace QEngine
 		/// <param name="density"></param>
 		/// <param name="bodyType"></param>
 		/// <returns></returns>
-		public QRigiBody CreateRectangle(QBehavior script, float w = 10, float h = 10, float density = 1,
+		public QRigidBody CreateRectangle(QBehavior script, float w = 10, float h = 10, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
-			QRigiBody body = Bodies.Find(bd => script.Id == bd.Id);
+			QRigidBody body = FindBody(script);
 			if(body != null)
 				return body;
-			body = new QRigiBody(script,
+			body = new QRigidBody(script,
 				BodyFactory.CreateRectangle(world,
 					w.ToSim(),
 					h.ToSim(),
@@ -47,9 +47,7 @@ namespace QEngine
 					script.Transform.Rotation,
 					(BodyType)bodyType,
 					script));
-			script.Transform.Body = body;
-			Bodies.Add(body);
-			return body;
+			return AddBody(script, body);
 		}
 
 //		public QRigiBody CreateRoundedRect(QBehavior script, float w = 10, float h = 10, float density = 1, QBodyType bodyType = QBodyType.Dynamic)
@@ -70,14 +68,14 @@ namespace QEngine
 		/// <param name="density"></param>
 		/// <param name="bodyType"></param>
 		/// <returns></returns>
-		public QRigiBody CreateCircle(QBehavior script, float radius = 10, float density = 1,
+		public QRigidBody CreateCircle(QBehavior script, float radius = 10, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
 			//if the body already exists we just return that one
-			QRigiBody body = Bodies.Find(bd => script.Id == bd.Id);
+			QRigidBody body = FindBody(script);
 			if(body != null)
 				return body;
-			body = new QRigiBody(
+			body = new QRigidBody(
 				script,
 				BodyFactory.CreateCircle(world,
 					radius.ToSim(),
@@ -85,9 +83,7 @@ namespace QEngine
 					script.Transform.Position.ToSim(),
 					(BodyType)bodyType,
 					script));
-			script.Transform.Body = body;
-			Bodies.Add(body);
-			return body;
+			return AddBody(script, body);
 		}
 
 		/// <summary>
@@ -97,16 +93,14 @@ namespace QEngine
 		/// <param name="start"></param>
 		/// <param name="end"></param>
 		/// <returns></returns>
-		public QRigiBody CreateEdge(QBehavior script, QVec start, QVec end)
+		public QRigidBody CreateEdge(QBehavior script, QVec start, QVec end)
 		{
 			//if the body already exists we just return that one
-			QRigiBody body = Bodies.Find(bd => script.Id == bd.Id);
+			QRigidBody body = FindBody(script);
 			if(body != null)
 				return body;
-			body = new QRigiBody(script, BodyFactory.CreateEdge(world, start.ToSim(), end.ToSim(), script));
-			script.Transform.Body = body;
-			Bodies.Add(body);
-			return body;
+			body = new QRigidBody(script, BodyFactory.CreateEdge(world, start.ToSim(), end.ToSim(), script));
+			return AddBody(script, body);
 		}
 
 		/// <summary>
@@ -119,14 +113,14 @@ namespace QEngine
 		/// <param name="density"></param>
 		/// <param name="bodyType"></param>
 		/// <returns></returns>
-		public QRigiBody CreateCapsule(QBehavior script, float height = 10f, float radius = 5f, float density = 1,
+		public QRigidBody CreateCapsule(QBehavior script, float height = 10f, float radius = 5f, float density = 1,
 			QBodyType bodyType = QBodyType.Dynamic)
 		{
 			//if the body already exists we just return that one
-			QRigiBody body = Bodies.Find(bd => script.Id == bd.Id);
+			QRigidBody body = FindBody(script);
 			if(body != null)
 				return body;
-			body = new QRigiBody(script,
+			body = new QRigidBody(script,
 				BodyFactory.CreateCapsule(world,
 					height.ToSim(),
 					radius.ToSim(),
@@ -135,6 +129,16 @@ namespace QEngine
 					script.Transform.Rotation,
 					(BodyType)bodyType,
 					script));
+			return AddBody(script, body);
+		}
+
+		QRigidBody FindBody(QBehavior script)
+		{
+			return Bodies.Find(bd => script.Id == bd.Id);
+		}
+
+		QRigidBody AddBody(QBehavior script, QRigidBody body)
+		{
 			script.Transform.Body = body;
 			Bodies.Add(body);
 			return body;
@@ -142,7 +146,7 @@ namespace QEngine
 
 		/*Trying to see if using linked list is faster than creating new lists for each ray cast*/
 		//LinkedList<QRigiBody> hitListNOGC = new LinkedList<QRigiBody>();
-		readonly List<QRigiBody> _hitListNogc = new List<QRigiBody>(10);
+		readonly List<QRigidBody> _hitListNogc = new List<QRigidBody>(10);
 
 		/// <summary>
 		/// returns true if it hits a body and outs the first body that it hits
@@ -151,11 +155,12 @@ namespace QEngine
 		/// <param name="b"></param>
 		/// <param name="hit"></param>
 		/// <returns></returns>
-		public bool WhatDidRaycastHit(QVec a, QVec b, out List<QRigiBody> hit)
+		public bool WhatDidRaycastHit(QVec a, QVec b, out List<QRigidBody> hit)
 		{
 			var aSim = a.ToSim();
 			var bSim = b.ToSim();
 			var fl = world.RayCast(aSim, aSim + bSim);
+			hit = null;
 			if(fl.Count > 0)
 			{
 				//List<QRigiBody> qbodies = new List<QRigiBody>();
@@ -167,14 +172,13 @@ namespace QEngine
 				for(int i = 0; i < fl.Count; i++)
 				{
 					QBehavior script = fl[i].Body.UserData as QBehavior;
-					var qbod = script?.Scene.World.Bodies.Find(bod => script.Id == bod.Id);
+					var qbod = script?.Scene.Physics.Bodies.Find(bod => script.Id == bod.Id);
 					if(qbod != null)
 						_hitListNogc.Add(qbod);
 				}
 				hit = _hitListNogc;
 				return true;
 			}
-			hit = null;
 			return false;
 		}
 
@@ -258,7 +262,7 @@ namespace QEngine
 			float a = alpha;
 			for(int i = 0; i < Bodies.Count; i++)
 			{
-				QRigiBody body = Bodies[i];
+				QRigidBody body = Bodies[i];
 				if(body.IsDynamic)
 				{
 					body.Script.Transform.position = body.Position * a + body.Script.Transform.position * (1.0f - a);
@@ -281,7 +285,7 @@ namespace QEngine
 			world.Clear();
 		}
 
-		public void RemoveBody(QRigiBody body)
+		public void RemoveBody(QRigidBody body)
 		{
 			Bodies.Remove(body);
 			world.RemoveBody(body.body);
@@ -289,25 +293,24 @@ namespace QEngine
 
 		public const float DefaultGravity = 9.807f;
 
-		internal QWorld(float x = 0, float y = DefaultGravity)
+		internal QPhysics(float x = 0, float y = DefaultGravity)
 		{
 			world = new World(new QVec(x, y));
 			world.Clear();
-			world.Step(100);
 			world.ContactManager.OnBroadphaseCollision += (ref FixtureProxy a, ref FixtureProxy b) =>
 			{
 				//Finds the bodies if they have parent, and then passes them to the collision event
 				QBehavior qa = a.Fixture.Body.UserData as QBehavior;
 				QBehavior qb = b.Fixture.Body.UserData as QBehavior;
 				if(qa == null || qb == null) return;
-				QRigiBody bodya = qa.Scene.World.Bodies.Find(r => r.Id == qa.Id);
-				QRigiBody bodyb = qb.Scene.World.Bodies.Find(r => r.Id == qb.Id);
+				QRigidBody bodya = qa.Scene.Physics.Bodies.Find(r => r.Id == qa.Id);
+				QRigidBody bodyb = qb.Scene.Physics.Bodies.Find(r => r.Id == qb.Id);
 				if(bodya != null && bodyb != null)
 					OnCollision?.Invoke(bodya, bodyb);
 			};
 		}
 
-		internal QWorld(QVec gravity) : this(gravity.X, gravity.Y) { }
+		internal QPhysics(QVec gravity) : this(gravity.X, gravity.Y) { }
 	}
 }
 

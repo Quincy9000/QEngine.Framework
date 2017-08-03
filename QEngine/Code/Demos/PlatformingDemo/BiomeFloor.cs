@@ -12,7 +12,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		QSprite mushroomSprite;
 
-		QRigiBody body;
+		QRigidBody body;
 
 		QVec toSize;
 
@@ -27,7 +27,7 @@ namespace QEngine.Demos.PlatformingDemo
 				mushroomSprite.Scale = QVec.One * 4f;
 			}
 			sprite.Scale = QVec.One * 4f;
-			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
+			body = Physics.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
 			body.Friction = 0.1f;
 			body.IsCCD = true;
 			body.Restitution = 0f;

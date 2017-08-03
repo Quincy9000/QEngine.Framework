@@ -21,7 +21,7 @@
 		{
 			Heart = get.TextureSource("BryanStuff1").Split(32, 32)[21];
 			EmptyHeart = get.TextureSource("BryanStuff1").Split(32, 32)[22];
-			p = GetComponentFromScripts<Player>("Player");
+			p = GetBehavior<Player>();
 			GuiHeart = new QImage(this, Heart);
 			GuiEmptyHeart = new QImage(this, EmptyHeart);
 			GuiHeart.Scale = new QVec(4);

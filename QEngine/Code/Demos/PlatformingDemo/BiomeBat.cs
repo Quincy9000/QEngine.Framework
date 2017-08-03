@@ -15,7 +15,7 @@ namespace QEngine.Demos.PlatformingDemo
 
 		Player player;
 
-		QRigiBody body;
+		QRigidBody body;
 
 		QSprite Sprite;
 
@@ -47,16 +47,16 @@ namespace QEngine.Demos.PlatformingDemo
 
 			Frames = Scene.Atlas["BryanStuff1"].Split(32, 32);
 
-			player = GetComponentFromScripts<Player>("Player");
+			player = GetBehavior<Player>("Player");
 
 			Sprite = new QSprite(this, Frames[28]);
 			Sprite.Scale = new QVec(4);
-			Sprite.Effect = QSpriteEffects.FlipVertically;
+			Sprite.Effect = QRenderEffects.FlipVertically;
 			Sprite.Source = Frames[30];
 
 			BatFlap = new QAnimation(Frames, 0.1f, 28, 30);
 
-			body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 3f, 5);
+			body = Physics.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 3f, 5);
 			body.IgnoreGravity = true;
 			body.FixedRotation = true;
 			body.LinearDamping = 10f;
@@ -88,9 +88,9 @@ namespace QEngine.Demos.PlatformingDemo
 			if(distanceFromPlayer < 800) // && player.Transform.Position.Y > Transform.Position.Y)
 			{
 				if(player.Position.X > Position.X)
-					Sprite.Effect = QSpriteEffects.FlipHorizontally;
+					Sprite.Effect = QRenderEffects.FlipHorizontally;
 				else
-					Sprite.Effect = QSpriteEffects.None;
+					Sprite.Effect = QRenderEffects.None;
 				Position += QVec.MoveTowards(Position, player.Position) * time.Delta * s;
 				Sprite.Source = BatFlap.Play(time.Delta);
 			}
@@ -100,22 +100,22 @@ namespace QEngine.Demos.PlatformingDemo
 				if(QVec.Distance(Transform.Position, spawnerPosition) > 1)
 				{
 					if(spawnerPosition.X > Position.X)
-						Sprite.Effect = QSpriteEffects.FlipHorizontally;
+						Sprite.Effect = QRenderEffects.FlipHorizontally;
 					else
-						Sprite.Effect = QSpriteEffects.None;
+						Sprite.Effect = QRenderEffects.None;
 					Position += QVec.MoveTowards(Position, spawnerPosition) * time.Delta * Speed;
 					Sprite.Source = BatFlap.Play(time.Delta);
 				}
 				else if(distanceFromPlayer > 1000)
 				{
 					//closes eyes
-					Sprite.Effect = QSpriteEffects.FlipVertically;
+					Sprite.Effect = QRenderEffects.FlipVertically;
 					Sprite.Source = Frames[30];
 				}
 				else if(distanceFromPlayer < 1000)
 				{
 					//opens eyes
-					Sprite.Effect = QSpriteEffects.FlipVertically;
+					Sprite.Effect = QRenderEffects.FlipVertically;
 					Sprite.Source = Frames[28];
 				}
 			}

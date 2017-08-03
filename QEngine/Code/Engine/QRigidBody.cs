@@ -3,7 +3,7 @@ using QEngine.Physics.Dynamics;
 
 namespace QEngine
 {
-	public class QRigiBody
+	public class QRigidBody
 	{
 		internal Body body;
 
@@ -21,11 +21,11 @@ namespace QEngine
 			}
 		}
 
-		public delegate void EnterCollision(QRigiBody other);
+		public delegate void EnterCollision(QRigidBody other);
 
-		public delegate void WhileCollision(QRigiBody other);
+		public delegate void WhileCollision(QRigidBody other);
 
-		public delegate void ExitCollision(QRigiBody other);
+		public delegate void ExitCollision(QRigidBody other);
 
 		/// <summary>
 		/// Fires only once on the start of two bodies colliding
@@ -79,6 +79,9 @@ namespace QEngine
 			set => body.FixedRotation = value;
 		}
 
+		/// <summary>
+		/// Mass of body in kilo
+		/// </summary>
 		public float Mass
 		{
 			get => body.Mass;
@@ -175,7 +178,7 @@ namespace QEngine
 		/// <param name="a"></param>
 		/// <param name="b"></param>
 		/// <returns></returns>
-		public static QCollisionDirection Direction(QRigiBody a, QRigiBody b)
+		public static QCollisionDirection Direction(QRigidBody a, QRigidBody b)
 		{
 			QVec dir = (a.Script.Position - b.Script.Position).Normalize();
 			QCollisionDirection d;
@@ -211,13 +214,13 @@ namespace QEngine
 			set => body.IgnoreCCD = !value;
 		}
 
-		internal QRigiBody(QBehavior sc, Body bo)
+		internal QRigidBody(QBehavior sc, Body bo)
 		{
 			Script = sc;
 			body = bo;
 			sc.OnDestroyEvent += () =>
 			{
-				sc.Scene.World.RemoveBody(this);
+				sc.Scene.Physics.RemoveBody(this);
 				OnCollisionEnter = null;
 				OnCollisionStay = null;
 				OnCollisionExit = null;
@@ -231,7 +234,7 @@ namespace QEngine
 					QBehavior script = (QBehavior)b.Body.UserData;
 					if(script == null) return;
 
-					var bodySearch = script.Scene.World.Bodies.Find(r => r.Id == script.Id);
+					var bodySearch = script.Scene.Physics.Bodies.Find(r => r.Id == script.Id);
 					if(bodySearch != null)
 						OnCollisionEnter.Invoke(bodySearch);
 				}
@@ -244,7 +247,7 @@ namespace QEngine
 					QBehavior script = (QBehavior)b.Body.UserData;
 					if(script == null) return;
 
-					var bodySearch = script.Scene.World.Bodies.Find(r => r.Id == script.Id);
+					var bodySearch = script.Scene.Physics.Bodies.Find(r => r.Id == script.Id);
 					if(bodySearch != null)
 						OnCollisionStay.Invoke(bodySearch);
 				}
@@ -256,7 +259,7 @@ namespace QEngine
 					QBehavior script = (QBehavior)b.Body.UserData;
 					if(script == null) return;
 
-					var bodySearch = script.Scene.World.Bodies.Find(r => r.Id == script.Id);
+					var bodySearch = script.Scene.Physics.Bodies.Find(r => r.Id == script.Id);
 					if(bodySearch != null)
 						OnCollisionExit.Invoke(bodySearch);
 				}

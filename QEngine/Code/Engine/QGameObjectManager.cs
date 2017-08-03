@@ -150,7 +150,7 @@ namespace QEngine
 //			}
 //		}
 
-		public QGameObjectManager()
+		public QGameObjectManager(QEngine e)
 		{
 			Objects = new List<QObject>();
 			LoadObjects = new List<IQLoad>();

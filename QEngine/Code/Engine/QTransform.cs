@@ -8,16 +8,16 @@ namespace QEngine
 
 		internal QVec position;
 
-		internal float rotation = 0;
+		internal float rotation;
 
 		/// <summary>
 		/// if the transform is dirty we update the body and transform
 		/// </summary>
 		internal bool IsDirty;
 
-		QRigiBody body;
+		QRigidBody body;
 
-		internal QRigiBody Body
+		internal QRigidBody Body
 		{
 			get => body;
 			set
@@ -31,6 +31,7 @@ namespace QEngine
 
 		internal QVec Position
 		{
+//			get => position;//body?.Position ?? position; //
 			get => body?.Position ?? position; //
 			set
 			{
@@ -43,6 +44,7 @@ namespace QEngine
 
 		internal float Rotation
 		{
+//			get => rotation;//body?.Rotation ?? rotation; //
 			get => body?.Rotation ?? rotation; //
 			set
 			{
@@ -83,9 +85,9 @@ namespace QEngine
 			return this == t;
 		}
 
-		internal QTransform(QObject parent)
+		internal QTransform(QObject p)
 		{
-			this.parent = parent;
+			parent = p;
 			Reset();
 		}
 	}

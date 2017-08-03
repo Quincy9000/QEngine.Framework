@@ -6,7 +6,7 @@
 		
 		public void OnStart(QGetContent get)
 		{
-			p = GetComponentFromScripts<Player>();
+			p = GetBehavior<Player>();
 		}
 		
 		public void OnLateUpdate(QTime time)

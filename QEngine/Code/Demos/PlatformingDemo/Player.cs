@@ -43,7 +43,7 @@ namespace QEngine.Demos.PlatformingDemo
 	{
 		QAnimator Animator;
 
-		QRigiBody Body;
+		QRigidBody Body;
 
 		QMusic spaceJam;
 
@@ -105,7 +105,7 @@ namespace QEngine.Demos.PlatformingDemo
 			Health = MaxHealth;
 
 			Scene.SpriteRenderer.Filter = QFilteringState.Point;
-			World.Gravity = new QVec(0, 30);
+			Physics.Gravity = new QVec(0, 30);
 			var frames = get.TextureSource("BryanSpriteSheet").Split(32, 32);
 			var attackFrames = get.TextureSource("SwordAttack2").Split(32, 32);
 			Sprite = new QSprite(this, frames[0]);
@@ -113,7 +113,7 @@ namespace QEngine.Demos.PlatformingDemo
 			LeftIdle = frames[2];
 			RightIdle = frames[0];
 
-			Body = World.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
+			Body = Physics.CreateCapsule(this, Sprite.Height / 3f + 15, Sprite.Width / 6f, 10);
 			//Body = World.CreateRectangle(this, Sprite.Width / 3f, Sprite.Height / 1.3f, 10);
 			//Body = World.CreateRoundedRect(this, Sprite.Width /3f + 20, Sprite.Height / 1.2f, 10);
 
@@ -152,16 +152,16 @@ namespace QEngine.Demos.PlatformingDemo
 			if(Health == 0)
 				Scene.ResetScene();
 
-			if(QInput.IsMouseScrolledUp())
+			if(QInput.Pressed(QMouseStates.Up))
 				Camera.Zoom += Camera.Zoom * 0.1f;
 
-			if(QInput.IsMouseScrolledDown())
+			if(QInput.Pressed(QMouseStates.Down))
 				Camera.Zoom -= Camera.Zoom * 0.1f;
 
-			if(QInput.IsKeyPressed(QKeyStates.Escape))
+			if(QInput.Pressed(QKeyStates.Escape))
 				Scene.ExitGame();
 
-			if(QInput.IsKeyPressed("r"))
+			if(QInput.Pressed("r"))
 				Scene.ResetScene();
 
 			Move(time);
@@ -299,7 +299,7 @@ namespace QEngine.Demos.PlatformingDemo
 			spriteRenderer.Draw(Sprite, Transform);
 		}
 
-		public void OnCollisionStay(QRigiBody other)
+		public void OnCollisionStay(QRigidBody other)
 		{
 			TouchingState = PlayerTouchingGroundStates.TouchingGround;
 			if(other.Data() is DroppableItem potion)

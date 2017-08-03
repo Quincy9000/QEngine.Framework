@@ -4,7 +4,7 @@
 	{
 		QSprite Sprite;
 
-		QRigiBody Body;
+		QRigidBody Body;
 
 		float PotionRadius = 11;
 
@@ -18,7 +18,7 @@
 			Sprite = new QSprite(this, get.TextureSource("BryanStuff1").Split(32, 32)[7]);
 			Sprite.Offset += new QVec(2, 0);
 			Sprite.Scale = QVec.One * 2;
-			Body = World.CreateCircle(this, PotionRadius, 5);
+			Body = Physics.CreateCircle(this, PotionRadius, 5);
 		}
 
 		public void OnDrawSprite(QSpriteRenderer renderer)

@@ -8,10 +8,10 @@ namespace QEngine.Demos.QSnake
 
 		public override void OnFixedUpdate(float time)
 		{
-			if(QInput.IsKeyPressed(QKeyStates.Escape))
-				ExitGame();
-			if(QInput.IsKeyPressed(QKeyStates.R))
-				Scene.ResetScene();
+			if(QInput.Pressed(QKeyStates.Escape))
+				Window.Exit();
+			if(QInput.Pressed(QKeyStates.R))
+				Window.Reset();
 		}
 	}
 }

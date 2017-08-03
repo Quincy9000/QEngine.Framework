@@ -6,11 +6,29 @@ namespace QEngine
 	{
 		readonly GameWindow _window;
 
+		readonly QEngine _engine;
+
 		public QRect Bounds => _window.ClientBounds;
 
 		public int Width => Bounds.Width;
 
 		public int Height => Bounds.Height;
+
+		/// <summary>
+		/// Exit Game
+		/// </summary>
+		public void Exit() => _engine.Manager.CurrentScene.ExitGame();
+
+		/// <summary>
+		/// Change the current scene
+		/// </summary>
+		/// <param name="name"></param>
+		public void Change(string name) => _engine.Manager.CurrentScene.ChangeScene(name);
+
+		/// <summary>
+		/// Reset the current Scene
+		/// </summary>
+		public void Reset() => _engine.Manager.CurrentScene.ResetScene();
 
 		public QVec Position
 		{
@@ -44,8 +62,10 @@ namespace QEngine
 			set => _window.AllowUserResizing = value;
 		}
 
-		public static implicit operator QWindow(GameWindow w) => new QWindow(w);
-		public static implicit operator GameWindow(QWindow w) => w._window;
-		internal QWindow(GameWindow g) => _window = g;
+		internal QWindow(QEngine e)
+		{
+			_window = e.Window;
+			_engine = e;
+		}
 	}
 }

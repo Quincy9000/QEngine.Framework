@@ -4,7 +4,7 @@
 	{
 		QSprite Sprite;
 
-		QRigiBody Body;
+		QRigidBody Body;
 
 		Player p;
 
@@ -20,11 +20,11 @@
 			Sprite = new QSprite(this, get.TextureSource(Name));
 			Sprite.Color = QColor.Black;
 
-			Body = World.CreateCircle(this, Radius, 1, QBodyType.Static);
+			Body = Physics.CreateCircle(this, Radius, 1, QBodyType.Static);
 			Body.IsSensor = true;
 			Body.OnCollisionStay += OnCollisionStay;
 
-			p = GetComponentFromScripts<Player>();
+			p = GetBehavior<Player>();
 		}
 
 		public void OnUpdate(QTime time)
@@ -40,7 +40,7 @@
 			//spriteRenderer.Draw(Sprite, Transform);
 		}
 
-		void OnCollisionStay(QRigiBody other)
+		void OnCollisionStay(QRigidBody other)
 		{
 			if(other.Script is BiomeBat bat)
 			{

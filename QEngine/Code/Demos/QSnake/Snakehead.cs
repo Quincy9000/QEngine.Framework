@@ -45,7 +45,7 @@ namespace QEngine.Demos.QSnake
 			CurrentDir = SnakeDirection.Down;
 			Coroutine.Start(SnakeMove());
 
-			fruit = GetComponentFromScripts<Fruit>("Fruit");
+			fruit = GetBehavior<Fruit>("Fruit");
 			Scene.SpriteRenderer.ClearColor = QColor.Black;
 		}
 
@@ -69,13 +69,13 @@ namespace QEngine.Demos.QSnake
 					Scene.Destroy(this);
 				//Bodies[i + 1].PreviousPosition = Bodies[i].PreviousPosition;
 			}
-			if(QInput.IsKeyHeld(QKeyStates.W))
+			if(QInput.Held(QKeyStates.W))
 				CurrentDir = SnakeDirection.Up;
-			if(QInput.IsKeyHeld(QKeyStates.S))
+			if(QInput.Held(QKeyStates.S))
 				CurrentDir = SnakeDirection.Down;
-			if(QInput.IsKeyHeld(QKeyStates.A))
+			if(QInput.Held(QKeyStates.A))
 				CurrentDir = SnakeDirection.Left;
-			if(QInput.IsKeyPressed(QKeyStates.D))
+			if(QInput.Pressed(QKeyStates.D))
 				CurrentDir = SnakeDirection.Right;
 
 			if(!Camera.IsInCameraView(Transform.Position))

@@ -4,7 +4,7 @@ namespace QEngine.Demos.Physics
 {
 	class Block : QCharacterController
 	{
-		QRigiBody body;
+		QRigidBody body;
 
 		public float Width { get; }
 
@@ -30,7 +30,7 @@ namespace QEngine.Demos.Physics
 		{
 			sprite = new QSprite(this, get.TextureSource(Name));
 			sprite.Color = QRandom.Color();
-			body = World.CreateRectangle(this, Width, Height);
+			body = Physics.CreateRectangle(this, Width, Height);
 			body.ApplyForce(DirectionOfMovement);
 			body.IsBullet = true;
 		}

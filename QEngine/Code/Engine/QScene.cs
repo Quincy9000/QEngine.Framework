@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -21,50 +20,38 @@ namespace QEngine
 
 		internal QController Controller { get; private set; }
 
-		internal QDebugView DebugView { get; set; }
+		internal QCamera Camera { get; private set; }
 
-		internal Dictionary<string, object> Components { get; private set; }
+		internal QDebug Debug { get; private set; }
+
+		internal QConsole Console { get; private set; }
+
+		internal QDebugView DebugView { get; set; }
 
 		internal Stopwatch FrameTime { get; set; }
 
-		[QComponent]
 		internal QGameObjectManager GameObjects { get; set; }
 
-		[QComponent]
 		internal QEngine Engine { get; set; }
 
-		[QComponent]
-		internal QSpriteRenderer SpriteRenderer { get; set; }
+		/*Components*/
 
-		[QComponent]
-		internal QGuiRenderer GuiRenderer { get; set; }
+		public QSpriteRenderer SpriteRenderer { get; internal set; }
 
-		[QComponent]
-		internal QCoroutine Coroutine { get; private set; }
+		public QGuiRenderer GuiRenderer { get; internal set; }
 
-		[QComponent]
-		internal QCamera Camera { get; private set; }
+		public QCoroutine Coroutine { get; internal set; }
 
-		[QComponent]
-		internal QDebug Debug { get; private set; }
+		public QAccum Accumulator { get; internal set; }
 
-		[QComponent]
-		internal QAccum Accumulator { get; private set; }
+		public QWindow Window { get; internal set; }
 
-		[QComponent]
-		internal QWindow Window { get; set; }
+		public QPhysics Physics { get; internal set; }
 
-		[QComponent]
-		internal QWorld World { get; private set; }
-
-		[QComponent]
-		internal QConsole Console { get; private set; }
-
-		[QComponent]
-		internal QAtlas Atlas { get; private set; }
+		public QAtlas Atlas { get; internal set; }
 
 		/*Privates*/
-		
+
 		Queue<QObject> CreatorQueue { get; set; }
 
 		Queue<QBehavior> DestroyQueue { get; set; }
@@ -195,15 +182,14 @@ namespace QEngine
 		internal void OnLoad()
 		{
 			QPrefs.Load().Wait();
-			Components = new Dictionary<string, object>();
-			Window = new QWindow(Engine.Window);
 			CreatorQueue = new Queue<QObject>();
 			DestroyQueue = new Queue<QBehavior>();
+			Window = new QWindow(Engine);
 			SpriteRenderer = new QSpriteRenderer(Engine);
 			GuiRenderer = new QGuiRenderer(Engine);
 			Content = new QContentManager(Engine);
-			GameObjects = new QGameObjectManager();
-			World = new QWorld();
+			GameObjects = new QGameObjectManager(Engine);
+			Physics = new QPhysics();
 			List<IQLoad> Loaders = new List<IQLoad>();
 			//Use this method to load textures before the scene starts to compile all of them
 			//so that the megatexture only has to be created once per scene so that there
@@ -223,18 +209,9 @@ namespace QEngine
 			Instantiate(Coroutine = new QCoroutine());
 			Instantiate(Accumulator = new QAccum());
 			CheckQueue();
-			DebugView = new QDebugView(World.world);
+			DebugView = new QDebugView(Physics.world);
 			DebugView.LoadContent(Engine.GraphicsDevice, Engine.Content);
 			Load();
-			foreach(var info in GetType().GetRuntimeProperties())
-			{
-				if(info.GetCustomAttribute(typeof(QComponent), false) != null)
-				{
-//					Console.WriteLine($"{info.Name}");
-//					System.Console.WriteLine($"{info.Name}");
-					Components.Add(info.Name, info.GetValue(this));
-				}
-			}
 		}
 
 		/// <summary>
@@ -255,7 +232,7 @@ namespace QEngine
 		{
 			FrameTime = Stopwatch.StartNew();
 			CheckQueue();
-			World.TryStep(time, GameObjects);
+			Physics.TryStep(time, GameObjects);
 			SpriteRenderer.Matrix = Camera.TransformMatrix;
 		}
 
@@ -295,7 +272,7 @@ namespace QEngine
 		{
 			QGameObjectManager.For(GameObjects.Objects, d => Destroy(d.Script));
 			QGameObjectManager.For(GameObjects.UnloadObjects, u => u.OnUnload());
-			World.Clear();
+			Physics.Clear();
 			Unload();
 			Content.Unload();
 			QPrefs.Save().Wait();

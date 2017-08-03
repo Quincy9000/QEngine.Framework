@@ -9,7 +9,7 @@ namespace QEngine.Demos.Physics
 	{
 		QSprite sprite;
 
-		QRigiBody body;
+		QRigidBody body;
 
 		QVec toSize;
 
@@ -26,7 +26,7 @@ namespace QEngine.Demos.Physics
 
 			sprite = new QSprite(this, Name);
 			sprite.Color = new QColor(R(), R(), R());
-			body = World.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
+			body = Physics.CreateRectangle(this, sprite.Width, sprite.Height, 1, QBodyType.Static);
 			body.Friction = 0.2f;
 			body.IsCCD = false;
 		}
