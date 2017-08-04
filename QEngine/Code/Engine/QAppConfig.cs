@@ -12,6 +12,8 @@ namespace QEngine
 
 		public bool Fullscreen = false;
 
+		public bool Borderless = false;
+
 		public bool Multisampling = false;
 
 		public bool MouseVisible = true;

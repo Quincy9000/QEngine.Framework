@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.Remoting.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,15 +12,18 @@ namespace QEngine
 
 		internal QSceneManager Manager { get; }
 
-		internal SpriteBatch SpriteBatch;
-		
+		internal SpriteBatch SpriteBatch { get; private set; }
+
 		internal QAppConfig Configuration { get; }
+
+		public const bool IsHighQuality = true;
 
 		internal QEngine(QAppConfig conf = null)
 		{
 			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
 			DeviceManager = new GraphicsDeviceManager(this);
 			Manager = new QSceneManager();
+			DeviceManager.GraphicsProfile = IsHighQuality ? GraphicsProfile.HiDef : GraphicsProfile.Reach;
 			if(conf != null)
 			{
 				Configuration = conf;
@@ -30,6 +34,7 @@ namespace QEngine
 				DeviceManager.SynchronizeWithVerticalRetrace = conf.Vsync;
 				IsMouseVisible = conf.MouseVisible;
 				Window.Title = conf.Title;
+				Window.IsBorderless = conf.Borderless;
 				Content.RootDirectory = conf.AssetDirectory;
 				IsFixedTimeStep = conf.FixedTimeStep;
 				TargetElapsedTime = TimeSpan.FromSeconds(conf.TimeStep);

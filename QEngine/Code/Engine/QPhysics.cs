@@ -225,7 +225,7 @@ namespace QEngine
 		{
 			bool step = false;
 			PhysicsAccumulator += t.Delta;
-			while(PhysicsAccumulator >= StepSimluation)
+			while(PhysicsAccumulator > StepSimluation)
 			{
 				QGameObjectManager.For(m.FixedUpdateObjects, u => u.OnFixedUpdate(StepSimluation));
 				world.Step(StepSimluation);

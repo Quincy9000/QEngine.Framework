@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -58,19 +59,38 @@ namespace QEngine
 
 		internal void CreateMega()
 		{
-			var width = 0;
-			var height = 0;
+			const int HighQualityWidth = 4096;
+			const int HightQualityHeight = 4096;
+			const int LowQualityWidth = 2048;
+			const int LowQualityHeight = 2048;
+
+			//if were on high def we can use 4096 as the max texture size
+			if(QEngine.IsHighQuality)
+			{
+				CreateMega(HighQualityWidth, HightQualityHeight);
+			}
+			else
+			{
+				CreateMega(LowQualityWidth, LowQualityHeight);
+			}
+		}
+
+		void CreateMega(int w, int h)
+		{
+			int MaxWidth = w;
+			int MaxHeight = h;
+			var maxTextureHeight = 0;
 			foreach(var t in Textures.Values)
 			{
-				width += t.Width + 1;
-				if(t.Height > height)
-					height = t.Height;
+//				width += t.Width + 1;
+				if(t.Height > maxTextureHeight)
+					maxTextureHeight = t.Height;
 			}
-			if(width == 0 || height == 0)
-				return;
+//			if(width == 0 || height == 0)
+//				return;
 			var render = new QSpriteRenderer(Engine);
 			var pos = QVec.Zero;
-			var target = new RenderTarget2D(render.gd, width, height);
+			var target = new RenderTarget2D(render.gd, MaxWidth, MaxHeight);
 			var rects = new Dictionary<string, QRect>();
 			render.gd.SetRenderTarget(target);
 			render.ClearColor = QColor.Transparent;
@@ -78,17 +98,25 @@ namespace QEngine
 			var textures = Textures.ToList();
 			for(int i = 0; i < textures.Count; i++)
 			{
-				QTexture t = textures[i].Value;
-				render.Draw(t, pos, QColor.White);
-				rects.Add(textures[i].Key, new QRect(pos, t.Bounds.Size));
-				pos.X += t.Width + 1;
+				KeyValuePair<string, QTexture> t = textures[i];
+				//If the texture flows over the width limit
+				//we move down a row of the biggets texture height
+				if(pos.X + t.Value.Width > MaxWidth)
+				{
+					pos.Y += maxTextureHeight;
+					pos.X = 0;
+				}
+				//draw the image then move over to the right
+				render.Draw(t.Value, pos, QColor.White);
+				rects.Add(t.Key, new QRect(pos, t.Value.Bounds.Size));
+				pos.X += t.Value.Width + 1;
 			}
 			render.End();
 			render.gd.SetRenderTarget(null);
 			if(_atlas != null)
 				((Texture2D)_atlas.Texture).Dispose();
 			_atlas = new QAtlas(target, rects);
-			//megaTexture.Texture.SaveAsPng("here.png");
+			_atlas.Texture.SaveAsJpeg("here.jpg");
 		}
 
 		public bool AddTexture(string name, string path)

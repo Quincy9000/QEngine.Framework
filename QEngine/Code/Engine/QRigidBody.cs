@@ -7,18 +7,27 @@ namespace QEngine
 	{
 		internal Body body;
 
-		public QBehavior Script { get; }
-
 		internal Guid Id => Script.Id;
+
+		public QBehavior Script { get; }
 
 		public QVec Position
 		{
 			get => ((QVec)body.Position).ToDis();
 			set
 			{
-				Awake = true;
 				body.Position = value.ToSim();
+				Awake = true;
 			}
+		}
+
+		/// <summary>
+		/// Set or get the rotation that the body is, in radians, 2Pi = 360 degree etc
+		/// </summary>
+		public float Rotation
+		{
+			get => body.Rotation;
+			set => body.Rotation = value;
 		}
 
 		public delegate void EnterCollision(QRigidBody other);
@@ -41,15 +50,6 @@ namespace QEngine
 		/// Fires when two bodies stop colliding
 		/// </summary>
 		public event ExitCollision OnCollisionExit;
-
-		/// <summary>
-		/// Set or get the rotation that the body is, in radians, 2Pi = 360 degree etc
-		/// </summary>
-		public float Rotation
-		{
-			get => body.Rotation;
-			set => body.Rotation = value;
-		}
 
 		/// <summary>
 		/// Direction and speed of the bodies movement
@@ -103,6 +103,15 @@ namespace QEngine
 		public void ApplyForce(QVec force)
 		{
 			body.ApplyForce(force);
+		}
+
+		/// <summary>
+		/// Applies force instantly to a body
+		/// </summary>
+		/// <param name="force"></param>
+		public void ApplyImpulse(QVec force)
+		{
+			body.ApplyLinearImpulse(force);
 		}
 
 		public bool Enabled
