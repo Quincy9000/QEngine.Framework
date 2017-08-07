@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Threading;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -68,6 +70,7 @@ namespace QEngine
 			if(QEngine.IsHighQuality)
 			{
 				CreateMega(HighQualityWidth, HightQualityHeight);
+//				CreateMega(512, 512); //used to test when there is little space for an atlas WORKS!
 			}
 			else
 			{
@@ -75,48 +78,134 @@ namespace QEngine
 			}
 		}
 
-		void CreateMega(int w, int h)
+		void CreateMega(int MaxWidth, int MaxHeight)
 		{
-			int MaxWidth = w;
-			int MaxHeight = h;
-			var maxTextureHeight = 0;
+			int totalWidth = 0;
+			int biggetsHeight = 0;
+			//find totalwidth and biggets height
 			foreach(var t in Textures.Values)
 			{
-//				width += t.Width + 1;
-				if(t.Height > maxTextureHeight)
-					maxTextureHeight = t.Height;
+				totalWidth += t.Width + 1;
+				if(t.Height > biggetsHeight)
+					biggetsHeight = t.Height;
 			}
-//			if(width == 0 || height == 0)
-//				return;
-			var render = new QSpriteRenderer(Engine);
-			var pos = QVec.Zero;
-			var target = new RenderTarget2D(render.gd, MaxWidth, MaxHeight);
-			var rects = new Dictionary<string, QRect>();
-			render.gd.SetRenderTarget(target);
-			render.ClearColor = QColor.Transparent;
-			render.Begin();
-			var textures = Textures.ToList();
-			for(int i = 0; i < textures.Count; i++)
+			//if the width of all textures is less than maxwidth we only need one line
+			if(totalWidth < MaxWidth)
 			{
-				KeyValuePair<string, QTexture> t = textures[i];
-				//If the texture flows over the width limit
-				//we move down a row of the biggets texture height
-				if(pos.X + t.Value.Width > MaxWidth)
+				if(totalWidth == 0 || biggetsHeight == 0)
+					return;
+				var target = new RenderTarget2D(Engine.GraphicsDevice, totalWidth, biggetsHeight);
+				Engine.GraphicsDevice.SetRenderTargets(target);
+				var render = new QSpriteRenderer(Engine);
+				var rects = new Dictionary<string, QRect>();
+				var pos = QVec.Zero;
+				render.ClearColor = QColor.Transparent;
+				render.Begin();
+				var textures = Textures.ToList();
+				for(int i = 0; i < textures.Count; i++)
 				{
-					pos.Y += maxTextureHeight;
-					pos.X = 0;
+					var t = textures[i];
+					render.Draw(t.Value, pos, QColor.White);
+					rects.Add(t.Key, new QRect(pos, t.Value.Bounds.Size));
+					pos.X += t.Value.Width + 1;
 				}
-				//draw the image then move over to the right
-				render.Draw(t.Value, pos, QColor.White);
-				rects.Add(t.Key, new QRect(pos, t.Value.Bounds.Size));
-				pos.X += t.Value.Width + 1;
+				render.End();
+				render.gd.SetRenderTarget(null);
+				if(_atlas != null)
+					((Texture2D)_atlas.Texture).Dispose();
+				_atlas = new QAtlas(target, rects);
+				Thread.Sleep(100);
+				_atlas.Texture.SaveAsPng("here.jpg");
 			}
-			render.End();
-			render.gd.SetRenderTarget(null);
-			if(_atlas != null)
-				((Texture2D)_atlas.Texture).Dispose();
-			_atlas = new QAtlas(target, rects);
-			_atlas.Texture.SaveAsJpeg("here.jpg");
+			//else we need to use more than one row 
+			else
+			{
+				//should give us the number of times we need to "grow the texture downwards"
+				int rowsNeeded = (int)Math.Round((double)totalWidth / MaxHeight);
+				var target = new RenderTarget2D(Engine.GraphicsDevice, MaxWidth, rowsNeeded * biggetsHeight);
+				Engine.GraphicsDevice.SetRenderTargets(target);
+				var render = new QSpriteRenderer(Engine);
+				var rects = new Dictionary<string, QRect>();
+				var pos = QVec.Zero;
+				render.ClearColor = QColor.Transparent;
+				render.Begin();
+				var textures = Textures.ToList();
+				for(int i = 0; i < textures.Count; i++)
+				{
+					var t = textures[i];
+					if(pos.X + t.Value.Width > MaxWidth)
+					{
+						pos.Y += biggetsHeight;
+						pos.X = 0;
+					}
+					render.Draw(t.Value, pos, QColor.White);
+					rects.Add(t.Key, new QRect(pos, t.Value.Bounds.Size));
+					pos.X += t.Value.Width + 1;
+				}
+				render.End();
+				render.gd.SetRenderTarget(null);
+				if(_atlas != null)
+					((Texture2D)_atlas.Texture).Dispose();
+				_atlas = new QAtlas(target, rects);
+				Thread.Sleep(100);
+				_atlas.Texture.SaveAsPng("here.jpg");
+			}
+//			int MaxWidth = w;
+//			int MaxHeight = h;
+//			int TotalWidth = 0;
+//			int TotalHeight = 0;
+//			int maxTextureHeight = 0;
+//			//this loop just finds the biggest height,
+//			//so we know how far to go down in the next row for now overlap
+//			foreach(var t in Textures.Values)
+//			{
+//				if(t.Height > maxTextureHeight)
+//					maxTextureHeight = t.Height;
+//				TotalWidth += t.Width + 1;
+//				TotalHeight += t.Height + 1;
+//			}
+//			if(TotalWidth == 0 || TotalHeight == 0)
+//				return;
+//			int TimesSplitWidthSplit = TotalWidth / MaxWidth;
+//			var render = new QSpriteRenderer(Engine);
+//			var pos = QVec.Zero;
+//			//if the current width is less than the max, use the current else use max
+//			RenderTarget2D target;
+//			if(TotalWidth < MaxWidth)
+//			{
+//				target = new RenderTarget2D(render.gd, TotalWidth, TotalHeight);
+//			}
+//			else
+//			{
+//				target = new RenderTarget2D(render.gd, MaxWidth, TimesSplitWidthSplit);
+//			}
+//			var rects = new Dictionary<string, QRect>();
+//			render.gd.SetRenderTarget(target);
+//			render.ClearColor = QColor.Transparent;
+//			render.Begin();
+//			var textures = Textures.ToList();
+//			for(int i = 0; i < textures.Count; i++)
+//			{
+//				KeyValuePair<string, QTexture> t = textures[i];
+//				//If the texture flows over the width limit
+//				//we move down a row of the biggets texture height
+//				if(pos.X + t.Value.Width > MaxWidth)
+//				{
+//					pos.Y += maxTextureHeight;
+//					pos.X = 0;
+//				}
+//				//draw the image then move over to the right
+//				render.Draw(t.Value, pos, QColor.White);
+//				rects.Add(t.Key, new QRect(pos, t.Value.Bounds.Size));
+//				pos.X += t.Value.Width + 1;
+//			}
+//			render.End();
+//			render.gd.SetRenderTarget(null);
+//			if(_atlas != null)
+//				((Texture2D)_atlas.Texture).Dispose();
+//			_atlas = new QAtlas(target, rects);
+//			Thread.Sleep(100);
+//			_atlas.Texture.SaveAsPng("here.jpg");
 		}
 
 		public bool AddTexture(string name, string path)
