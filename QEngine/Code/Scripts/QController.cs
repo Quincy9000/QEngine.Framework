@@ -5,7 +5,7 @@ namespace QEngine
 {
 	public sealed class QController : QBehavior, IQStart, IQUpdate
 	{
-		public void OnStart(QGetContent get)
+		public void OnStart(QRetrieveContent retrieve)
 		{
 			GetControls();
 		}

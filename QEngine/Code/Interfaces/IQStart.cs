@@ -2,6 +2,6 @@
 {
 	public interface IQStart : IQObject
 	{
-		void OnStart(QGetContent get);
+		void OnStart(QRetrieveContent retrieve);
 	}
 }

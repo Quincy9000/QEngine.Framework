@@ -1,6 +1,6 @@
 ﻿namespace QEngine
 {
-	public class QGetContent
+	public class QRetrieveContent
 	{
 		QContentManager cm;
 
@@ -14,7 +14,7 @@
 
 		public QRect TextureSource(string n) => cm.Atlas[n];
 
-		internal QGetContent(QContentManager cm)
+		internal QRetrieveContent(QContentManager cm)
 		{
 			this.cm = cm;
 		}

@@ -117,14 +117,14 @@ namespace QEngine
 				QGameObjectManager.For(temp, o =>
 				{
 					if(o.Script is IQLoad l)
-						l.OnLoad(new QAddContent(Content));
+						l.OnLoad(new QLoadContent(Content));
 				});
 				Atlas = Content.Atlas;
 				//OnStart can potentially set flag to true
 				QGameObjectManager.For(temp, o =>
 				{
 					if(o.Script is IQStart s)
-						s.OnStart(new QGetContent(Content));
+						s.OnStart(new QRetrieveContent(Content));
 				});
 			}
 		}
@@ -199,7 +199,7 @@ namespace QEngine
 			{
 				((QBehavior)loader).SetName();
 				((QBehavior)loader).Parent = QObject.NewObject();
-				loader.OnLoad(new QAddContent(Content));
+				loader.OnLoad(new QLoadContent(Content));
 				QObject.DeleteObject(((QBehavior)(loader)).Parent);
 			}
 			Instantiate(Console = new QConsole());

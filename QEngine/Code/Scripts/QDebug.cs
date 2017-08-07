@@ -31,16 +31,16 @@
 			Label.AppendLine(msg);
 		}
 
-		public void OnLoad(QAddContent add)
+		public void OnLoad(QLoadContent load)
 		{
-			add.Font("Fonts/arial");
+			load.Font("Fonts/arial");
 			DebugLevel = 0;
 			Fps = new QFrameCounter();
 		}
 
-		public void OnStart(QGetContent get)
+		public void OnStart(QRetrieveContent retrieve)
 		{
-			Font = get.Font("arial");
+			Font = retrieve.Font("arial");
 			Label = new QLabel(Font);
 			Label.Visible = false;
 		}

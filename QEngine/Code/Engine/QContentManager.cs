@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
@@ -62,24 +63,24 @@ namespace QEngine
 		internal void CreateMega()
 		{
 			//settings for the widths of the textureAtlas
-			const int HighQualityWidth = 4096;
-			const int HightQualityHeight = 4096;
-			const int LowQualityWidth = 2048;
-			const int LowQualityHeight = 2048;
+			const int highQualityWidth = 4096;
+			const int hightQualityHeight = 4096;
+			const int lowQualityWidth = 2048;
+			const int lowQualityHeight = 2048;
 
 			//if were on high def we can use 4096 as the max texture size
 			if(QEngine.IsHighQuality)
 			{
-				CreateMega(HighQualityWidth, HightQualityHeight);
+				CreateMega(highQualityWidth, hightQualityHeight);
 //				CreateMega(512, 512); //used to test when there is little space for an atlas WORKS!
 			}
 			else
 			{
-				CreateMega(LowQualityWidth, LowQualityHeight);
+				CreateMega(lowQualityWidth, lowQualityHeight);
 			}
 		}
 
-		void CreateMega(int MaxWidth, int MaxHeight)
+		void CreateMega(int maxWidth, int maxHeight)
 		{
 			int totalWidth = 0;
 			int biggestHeight = 0;
@@ -92,21 +93,21 @@ namespace QEngine
 					biggestHeight = t.Height;
 			}
 			//if the width of all textures is less than maxwidth we only need one line
-			if(totalWidth < MaxWidth)
+			if(totalWidth < maxWidth)
 			{
 				if(totalWidth == 0 || biggestHeight == 0)
 					return;
 				var target = new RenderTarget2D(Engine.GraphicsDevice, totalWidth, biggestHeight);
-				RenderAtlas(target, biggestHeight, MaxWidth);
+				RenderAtlas(target, biggestHeight, maxWidth);
 			}
 			//else we need to use more than one row 
 			else
 			{
 				//should give us the number of times we need to "grow the texture downwards"
-				int rowsNeeded = (int)Math.Round((double)totalWidth / MaxHeight);
-				//take biggets textureHeight and mult by rows needed
-				var target = new RenderTarget2D(Engine.GraphicsDevice, MaxWidth, rowsNeeded * biggestHeight);
-				RenderAtlas(target, biggestHeight, MaxWidth);
+				int rowsNeeded = (int)Math.Round((double)totalWidth / maxHeight);
+				//take biggest textureHeight and mult by rows needed
+				var target = new RenderTarget2D(Engine.GraphicsDevice, maxWidth, rowsNeeded * biggestHeight);
+				RenderAtlas(target, biggestHeight, maxWidth);
 			}
 		}
 
@@ -115,11 +116,11 @@ namespace QEngine
 		/// </summary>
 		/// <param name="target"></param>
 		/// <param name="biggetsHeight"></param>
-		/// <param name="MaxWidth"></param>
-		void RenderAtlas(RenderTarget2D target, int biggetsHeight, int MaxWidth)
+		/// <param name="maxWidth"></param>
+		void RenderAtlas(RenderTarget2D target, int biggetsHeight, int maxWidth)
 		{
 			//slows down code but useful for debugging
-			const bool TakePictureOfAtlas = false;
+			const bool takePictureOfAtlas = true;
 			Engine.GraphicsDevice.SetRenderTargets(target);
 			var render = new QSpriteRenderer(Engine);
 			var rects = new Dictionary<string, QRect>();
@@ -130,7 +131,7 @@ namespace QEngine
 			for(int i = 0; i < textures.Count; i++)
 			{
 				var t = textures[i];
-				if(pos.X + t.Value.Width > MaxWidth)
+				if(pos.X + t.Value.Width > maxWidth)
 				{
 					pos.Y += biggetsHeight;
 					pos.X = 0;
@@ -144,8 +145,8 @@ namespace QEngine
 			if(_atlas != null)
 				((Texture2D)_atlas.Texture).Dispose();
 			_atlas = new QAtlas(target, rects);
-			if(TakePictureOfAtlas)
-				_atlas.Texture.SaveAsPng("here.jpg");
+			if(takePictureOfAtlas)
+				_atlas.Texture.SaveAsPng("here.png");
 		}
 
 		public bool AddTexture(string name, string path)

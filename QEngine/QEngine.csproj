@@ -57,7 +57,7 @@
     <Compile Include="Code\Assets\QMusic.cs" />
     <Compile Include="Code\Assets\QSound.cs" />
     <Compile Include="Code\Assets\QTexture.cs" />
-    <Compile Include="Code\Engine\QAddContent.cs" />
+    <Compile Include="Code\Engine\QLoadContent.cs" />
     <Compile Include="Code\Engine\QAppConfig.cs" />
     <Compile Include="Code\Engine\QApplication.cs" />
     <Compile Include="Code\Engine\QBehavior.cs" />
@@ -66,7 +66,7 @@
     <Compile Include="Code\Engine\QExtentions.cs" />
     <Compile Include="Code\Engine\QFrameCounter.cs" />
     <Compile Include="Code\Engine\QGameObjectManager.cs" />
-    <Compile Include="Code\Engine\QGetContent.cs" />
+    <Compile Include="Code\Engine\QRetrieveContent.cs" />
     <Compile Include="Code\Engine\QInput.cs" />
     <Compile Include="Code\Engine\QMapTools.cs" />
     <Compile Include="Code\Engine\QObject.cs" />

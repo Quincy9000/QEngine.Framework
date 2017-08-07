@@ -77,7 +77,7 @@ namespace QEngine
 			return tiles;
 		}
 
-		public static List<QTilePos> CreateSpriteLayer(QGetContent content, string nameOfTexture, QVec startingPos, QVec scale, TileMapper layer)
+		public static List<QTilePos> CreateSpriteLayer(QRetrieveContent content, string nameOfTexture, QVec startingPos, QVec scale, TileMapper layer)
 		{
 			var t = content.Texture(nameOfTexture);
 			var colors = t.GetPixels();
@@ -85,7 +85,7 @@ namespace QEngine
 			return CompileLayer(c, startingPos, scale, layer);
 		}
 
-		public static void SpawnObjects(QGetContent content, string nameOfTexture, QVec startingPos, QVec scale, ObjectCreator spawner)
+		public static void SpawnObjects(QRetrieveContent content, string nameOfTexture, QVec startingPos, QVec scale, ObjectCreator spawner)
 		{
 			var t = content.Texture(nameOfTexture);
 			var colors = t.GetPixels();

@@ -91,14 +91,14 @@ namespace QEngine
 			_startFade = 0;
 		}
 
-		public void OnLoad(QAddContent add)
+		public void OnLoad(QLoadContent load)
 		{
-			add.Font("Fonts/arial");
+			load.Font("Fonts/arial");
 		}
 
-		public void OnStart(QGetContent get)
+		public void OnStart(QRetrieveContent retrieve)
 		{
-			Label = new QLabel(get.Font("arial"));
+			Label = new QLabel(retrieve.Font("arial"));
 			Clear();
 		}
 

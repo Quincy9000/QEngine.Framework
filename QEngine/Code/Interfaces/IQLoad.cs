@@ -2,6 +2,6 @@
 {
 	public interface IQLoad : IQObject
 	{
-		void OnLoad(QAddContent add);
+		void OnLoad(QLoadContent load);
 	}
 }

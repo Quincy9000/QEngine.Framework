@@ -2,9 +2,9 @@
 {
     public class QCharacterController : QBehavior, IQLoad, IQStart, IQFixedUpdate, IQUpdate, IQLateUpdate, IQDrawSprite, IQDrawGui, IQDestroy, IQUnload
     {
-        public virtual void OnLoad(QAddContent add) { }
+        public virtual void OnLoad(QLoadContent load) { }
 
-        public virtual void OnStart(QGetContent get) { }
+        public virtual void OnStart(QRetrieveContent retrieve) { }
 
         public virtual void OnFixedUpdate(float delta) { }
 

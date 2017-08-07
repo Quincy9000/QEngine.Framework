@@ -98,8 +98,8 @@ namespace QEngine
 		/// <summary>
 		/// Set the default zoom value
 		/// </summary>
-		/// <param name="get"></param>
-		public void OnStart(QGetContent get)
+		/// <param name="retrieve"></param>
+		public void OnStart(QRetrieveContent retrieve)
 		{
 			Zoom = DefaultZoom;
 		}

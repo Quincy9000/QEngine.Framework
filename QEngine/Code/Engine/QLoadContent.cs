@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace QEngine
 {
-	public class QAddContent
+	public class QLoadContent
 	{
 		readonly QContentManager cm;
 
@@ -206,7 +206,7 @@ namespace QEngine
 			cm.AddCustomTexture(name, t);
 		}
 
-		internal QAddContent(QContentManager cm)
+		internal QLoadContent(QContentManager cm)
 		{
 			this.cm = cm;
 		}
