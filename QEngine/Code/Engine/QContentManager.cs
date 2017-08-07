@@ -82,29 +82,31 @@ namespace QEngine
 		void CreateMega(int MaxWidth, int MaxHeight)
 		{
 			int totalWidth = 0;
-			int biggetsHeight = 0;
-			//find totalwidth and biggets height
+			int biggestHeight = 0;
+			//find totalwidth and biggest height
 			foreach(var t in Textures.Values)
 			{
+				//+1 because we want a pixel between textures so that theres no overlap
 				totalWidth += t.Width + 1;
-				if(t.Height > biggetsHeight)
-					biggetsHeight = t.Height;
+				if(t.Height > biggestHeight)
+					biggestHeight = t.Height;
 			}
 			//if the width of all textures is less than maxwidth we only need one line
 			if(totalWidth < MaxWidth)
 			{
-				if(totalWidth == 0 || biggetsHeight == 0)
+				if(totalWidth == 0 || biggestHeight == 0)
 					return;
-				var target = new RenderTarget2D(Engine.GraphicsDevice, totalWidth, biggetsHeight);
-				RenderAtlas(target, biggetsHeight, MaxWidth);
+				var target = new RenderTarget2D(Engine.GraphicsDevice, totalWidth, biggestHeight);
+				RenderAtlas(target, biggestHeight, MaxWidth);
 			}
 			//else we need to use more than one row 
 			else
 			{
 				//should give us the number of times we need to "grow the texture downwards"
 				int rowsNeeded = (int)Math.Round((double)totalWidth / MaxHeight);
-				var target = new RenderTarget2D(Engine.GraphicsDevice, MaxWidth, rowsNeeded * biggetsHeight);
-				RenderAtlas(target, biggetsHeight, MaxWidth);
+				//take biggets textureHeight and mult by rows needed
+				var target = new RenderTarget2D(Engine.GraphicsDevice, MaxWidth, rowsNeeded * biggestHeight);
+				RenderAtlas(target, biggestHeight, MaxWidth);
 			}
 		}
 
@@ -116,6 +118,7 @@ namespace QEngine
 		/// <param name="MaxWidth"></param>
 		void RenderAtlas(RenderTarget2D target, int biggetsHeight, int MaxWidth)
 		{
+			//slows down code but useful for debugging
 			const bool TakePictureOfAtlas = false;
 			Engine.GraphicsDevice.SetRenderTargets(target);
 			var render = new QSpriteRenderer(Engine);
