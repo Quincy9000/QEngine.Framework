@@ -3,5 +3,8 @@
 	/// <summary>
 	/// Script that inherits this, will have a physics object attached to it
 	/// </summary>
-	public interface IQPhysics : IQObject { }
+	public interface IQPhysics
+	{
+		QBody Body { get; set; }
+	}
 }

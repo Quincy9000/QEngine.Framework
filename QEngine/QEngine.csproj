@@ -40,6 +40,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\QGames\ProjectScorpio\packages\MonoGame.Framework.Portable.3.6.0.1625\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Framework.Content.Pipeline, Version=3.6.0.1625, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\QGames\ProjectScorpio\packages\MonoGame.Framework.Content.Pipeline.Portable.3.6.0.1625\lib\portable-net45+win8+wpa81\MonoGame.Framework.Content.Pipeline.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -51,42 +57,62 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\Animation\QFrame.cs" />
+    <Compile Include="Code\Assets\QContentManager.cs" />
     <Compile Include="Code\Assets\QEffect.cs" />
     <Compile Include="Code\Assets\QFont.cs" />
-    <Compile Include="Code\Assets\QAtlas.cs" />
+    <Compile Include="Code\Assets\QGetContent.cs" />
+    <Compile Include="Code\Assets\QLoadContent.cs" />
+    <Compile Include="Code\Assets\QTextureAtlas.cs" />
     <Compile Include="Code\Assets\QMusic.cs" />
     <Compile Include="Code\Assets\QSound.cs" />
     <Compile Include="Code\Assets\QTexture.cs" />
-    <Compile Include="Code\Engine\QLoadContent.cs" />
-    <Compile Include="Code\Engine\QAppConfig.cs" />
-    <Compile Include="Code\Engine\QApplication.cs" />
-    <Compile Include="Code\Engine\QBehavior.cs" />
-    <Compile Include="Code\Engine\QContentManager.cs" />
-    <Compile Include="Code\Engine\QEngine.cs" />
-    <Compile Include="Code\Engine\QExtentions.cs" />
-    <Compile Include="Code\Engine\QFrameCounter.cs" />
-    <Compile Include="Code\Engine\QGameObjectManager.cs" />
-    <Compile Include="Code\Engine\QRetrieveContent.cs" />
-    <Compile Include="Code\Engine\QInput.cs" />
-    <Compile Include="Code\Engine\QMapTools.cs" />
-    <Compile Include="Code\Engine\QObject.cs" />
-    <Compile Include="Code\Engine\QPrefs.cs" />
-    <Compile Include="Code\Engine\QRandom.cs" />
-    <Compile Include="Code\Engine\QRigidBody.cs" />
-    <Compile Include="Code\Engine\QScene.cs" />
-    <Compile Include="Code\Engine\QSceneManager.cs" />
-    <Compile Include="Code\Engine\QTransform.cs" />
-    <Compile Include="Code\Engine\QWindow.cs" />
-    <Compile Include="Code\Engine\QPhysics.cs" />
+    <Compile Include="Code\Structure\QAccumulator.cs" />
+    <Compile Include="Code\Structure\QAppConfig.cs" />
+    <Compile Include="Code\Structure\QApplication.cs" />
+    <Compile Include="Code\Structure\QBehavior.cs" />
+    <Compile Include="Code\Structure\QCamera.cs" />
+    <Compile Include="Code\Structure\QConsole.cs" />
+    <Compile Include="Code\Structure\QCoroutine.cs" />
+    <Compile Include="Code\Structure\QDebug.cs" />
+    <Compile Include="Code\Structure\QEngine.cs" />
+    <Compile Include="Code\Structure\QExtentions.cs" />
+    <Compile Include="Code\Structure\QEntityManager.cs" />
+    <Compile Include="Code\Structure\QLabel.cs" />
+    <Compile Include="Code\Structure\QLog.cs" />
+    <Compile Include="Code\Structure\QInput.cs" />
+    <Compile Include="Code\Structure\QMapTools.cs" />
+    <Compile Include="Code\Structure\QMath.cs" />
+    <Compile Include="Code\Structure\QEntity.cs" />
+    <Compile Include="Code\Structure\QPrefs.cs" />
+    <Compile Include="Code\Structure\QRandom.cs" />
+    <Compile Include="Code\Structure\QBody.cs" />
+    <Compile Include="Code\Structure\QTime.cs" />
+    <Compile Include="Code\Structure\QWorld.cs" />
+    <Compile Include="Code\Structure\QWorldManager.cs" />
+    <Compile Include="Code\Structure\QTransform.cs" />
+    <Compile Include="Code\Structure\QWindow.cs" />
+    <Compile Include="Code\Structure\QPhysics.cs" />
+    <Compile Include="Code\Enums\QBodyTypes.cs" />
+    <Compile Include="Code\Enums\QCollisionCategories.cs" />
+    <Compile Include="Code\Enums\QCollisionDirections.cs" />
+    <Compile Include="Code\Enums\QFilterStates.cs" />
+    <Compile Include="Code\Enums\QKeyStates.cs" />
+    <Compile Include="Code\Enums\QMouseStates.cs" />
+    <Compile Include="Code\Enums\QRenderEffects.cs" />
+    <Compile Include="Code\Enums\QSortOrders.cs" />
+    <Compile Include="Code\Enums\QSoundStates.cs" />
+    <Compile Include="Code\Enums\QSpriteEffects.cs" />
+    <Compile Include="Code\Enums\QViewportOrientations.cs" />
+    <Compile Include="Code\Exceptions\QException.cs" />
+    <Compile Include="Code\Exceptions\QMissingContentException.cs" />
     <Compile Include="Code\Interfaces\IQDestroy.cs" />
-    <Compile Include="Code\Interfaces\IQDrawGui.cs" />
-    <Compile Include="Code\Interfaces\IQDrawSprite.cs" />
+    <Compile Include="Code\Interfaces\IQGui.cs" />
+    <Compile Include="Code\Interfaces\IQSprite.cs" />
     <Compile Include="Code\Interfaces\IQLateUpdate.cs" />
     <Compile Include="Code\Interfaces\IQLoad.cs" />
-    <Compile Include="Code\Interfaces\IQObject.cs" />
     <Compile Include="Code\Interfaces\IQPhysics.cs" />
     <Compile Include="Code\Interfaces\IQRenderable.cs" />
-    <Compile Include="Code\Interfaces\IQScene.cs" />
     <Compile Include="Code\Interfaces\IQStart.cs" />
     <Compile Include="Code\Interfaces\IQUnload.cs" />
     <Compile Include="Code\Interfaces\IQFixedUpdate.cs" />
@@ -326,29 +352,23 @@
     <Compile Include="Code\Physics\Utilities\LineUtils.cs" />
     <Compile Include="Code\Physics\Utilities\MathUtils.cs" />
     <Compile Include="Code\Physics\Utilities\PolygonUtils.cs" />
+    <Compile Include="Code\Pipeline\QConsoleLogger.cs" />
+    <Compile Include="Code\Pipeline\QBuildContent.cs" />
+    <Compile Include="Code\Pipeline\QCommandLineParser.cs" />
+    <Compile Include="Code\Pipeline\QImporter.cs" />
+    <Compile Include="Code\Pipeline\QSourceFileCollection.cs" />
     <Compile Include="Code\Prefabs\QCharacterController.cs" />
-    <Compile Include="Code\Primitives\QColor.cs" />
-    <Compile Include="Code\Primitives\QComponent.cs" />
-    <Compile Include="Code\Primitives\QMatrix.cs" />
-    <Compile Include="Code\Primitives\QQuad.cs" />
-    <Compile Include="Code\Primitives\QTime.cs" />
+    <Compile Include="Code\ValueTypes\QColor.cs" />
+    <Compile Include="Code\ValueTypes\QMatrix.cs" />
     <Compile Include="Code\Animation\QAnimation.cs" />
     <Compile Include="Code\Animation\QAnimator.cs" />
-    <Compile Include="Code\Primitives\QNums.cs" />
     <Compile Include="Code\Rendering\QGuiRenderer.cs" />
-    <Compile Include="Code\Primitives\QRect.cs" />
+    <Compile Include="Code\ValueTypes\QRectangle.cs" />
     <Compile Include="Code\Rendering\QImage.cs" />
     <Compile Include="Code\Rendering\QRenderer.cs" />
     <Compile Include="Code\Rendering\QSprite.cs" />
     <Compile Include="Code\Rendering\QSpriteRenderer.cs" />
-    <Compile Include="Code\Primitives\QVec.cs" />
-    <Compile Include="Code\Scripts\QAccum.cs" />
-    <Compile Include="Code\Scripts\QCamera.cs" />
-    <Compile Include="Code\Scripts\QConsole.cs" />
-    <Compile Include="Code\Scripts\QController.cs" />
-    <Compile Include="Code\Scripts\QCoroutine.cs" />
-    <Compile Include="Code\Scripts\QDebug.cs" />
-    <Compile Include="Code\Scripts\QLabel.cs" />
+    <Compile Include="Code\ValueTypes\QVector2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -381,6 +401,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="C:\Program Files %28x86%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\SDL2.dll">

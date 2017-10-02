@@ -1,7 +1,7 @@
 ﻿namespace QEngine
 {
-	public interface IQStart : IQObject
+	public interface IQStart
 	{
-		void OnStart(QRetrieveContent retrieve);
+		void OnStart(QGetContent get);
 	}
 }

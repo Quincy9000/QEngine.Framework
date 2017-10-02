@@ -1,6 +1,6 @@
 ﻿namespace QEngine
 {
-	public interface IQDestroy : IQObject
+	public interface IQDestroy
 	{
 		void OnDestroy();
 	}

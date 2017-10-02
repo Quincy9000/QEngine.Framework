@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using Microsoft.Xna.Framework.Audio;
 
 namespace QEngine

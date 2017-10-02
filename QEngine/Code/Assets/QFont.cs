@@ -12,9 +12,9 @@ namespace QEngine
 
 		public float Spacing => font.Spacing;
 
-		public QVec MeasureString(string s) => font.MeasureString(s);
+		public QVector2 MeasureString(string s) => font.MeasureString(s);
 
-		public QVec MeasureString(StringBuilder s) => font.MeasureString(s);
+		public QVector2 MeasureString(StringBuilder s) => font.MeasureString(s);
 
 		public int LineSpacing => font.LineSpacing;
 

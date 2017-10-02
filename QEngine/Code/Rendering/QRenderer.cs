@@ -2,6 +2,9 @@
 
 namespace QEngine
 {
+	/// <summary>
+	/// Base renderer class
+	/// </summary>
 	public abstract class QRenderer
 	{
 		internal SpriteBatch sb { get; }
@@ -47,7 +50,7 @@ namespace QEngine
 //			//sb.FillRectangle(t.Position.X, t.Position.Y, width, height, color, t.Rotation);
 //		}
 
-		internal virtual void Draw(QTexture t, QVec pos, QColor c)
+		internal virtual void Draw(QTexture t, QVector2 pos, QColor c)
 		{
 			sb.Draw(t, pos, c);
 		}
@@ -69,7 +72,7 @@ namespace QEngine
 
 		internal QRenderer(QEngine e)
 		{
-			sb = e.SpriteBatch;
+			sb = e.MonoSpriteBatch;
 			Engine = e;
 			basicEffect = new BasicEffect(sb.GraphicsDevice);
 		}

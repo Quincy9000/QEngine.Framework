@@ -5,33 +5,33 @@ namespace QEngine
 {
 	public class QSpriteRenderer : QRenderer
 	{
-		public QSortOrder Order
+		public QSortOrders Order
 		{
 			get
 			{
 				switch(sortMode)
 				{
 					case SpriteSortMode.Deferred:
-						return QSortOrder.DontCare;
+						return QSortOrders.DontCare;
 					case SpriteSortMode.FrontToBack:
-						return QSortOrder.StartAtOne;
+						return QSortOrders.StartAtOne;
 					case SpriteSortMode.BackToFront:
-						return QSortOrder.StartAtZero;
+						return QSortOrders.StartAtZero;
 					default:
-						return QSortOrder.DontCare;
+						return QSortOrders.DontCare;
 				}
 			}
 			set
 			{
 				switch(value)
 				{
-					case QSortOrder.DontCare:
+					case QSortOrders.DontCare:
 						sortMode = SpriteSortMode.Deferred;
 						break;
-					case QSortOrder.StartAtOne:
+					case QSortOrders.StartAtOne:
 						sortMode = SpriteSortMode.FrontToBack;
 						break;
-					case QSortOrder.StartAtZero:
+					case QSortOrders.StartAtZero:
 						sortMode = SpriteSortMode.BackToFront;
 						break;
 					default:
@@ -41,24 +41,24 @@ namespace QEngine
 			}
 		}
 
-		public QFilteringState Filter
+		public QFilterStates Filter
 		{
 			get => filterState;
 			set
 			{
 				switch(value)
 				{
-					case QFilteringState.Ansiotrophic:
+					case QFilterStates.Ansiotrophic:
 					{
 						samplerState = SamplerState.AnisotropicClamp;
 						break;
 					}
-					case QFilteringState.Linear:
+					case QFilterStates.Linear:
 					{
 						samplerState = SamplerState.LinearClamp;
 						break;
 					}
-					case QFilteringState.Point:
+					case QFilterStates.Point:
 					{
 						samplerState = SamplerState.PointClamp;
 						break;
@@ -71,7 +71,7 @@ namespace QEngine
 			}
 		}
 
-		protected QFilteringState filterState;
+		protected QFilterStates filterState;
 
 		protected SpriteSortMode sortMode;
 
@@ -136,7 +136,7 @@ namespace QEngine
 		/// <param name="sprite"></param>
 		/// <param name="t"></param>
 		/// <param name="pos"></param>
-		public void Draw(QRect source, QSprite sprite, QTransform t, QVec pos)
+		public void Draw(QRectangle source, QSprite sprite, QTransform t, QVector2 pos)
 		{
 			if(!sprite.Visible) return;
 			sb.Draw(sprite.Texture,
@@ -161,10 +161,10 @@ namespace QEngine
 		/// <param name="scale"></param>
 		/// <param name="effect"></param>
 		/// <param name="layer"></param>
-		public void Draw(QVec position, QRect source, QColor color, float rotation, QVec origin, QVec scale,
+		public void Draw(QVector2 position, QRectangle source, QColor color, float rotation, QVector2 origin, QVector2 scale,
 			QRenderEffects effect, float layer)
 		{
-			sb.Draw(Engine.Manager.CurrentScene.Atlas,
+			sb.Draw(Engine.Manager.CurrentWorld.TextureAtlas,
 				position,
 				source,
 				color,
@@ -181,7 +181,7 @@ namespace QEngine
 		/// <param name="sprite"></param>
 		/// <param name="transform"></param>
 		/// <param name="position"></param>
-		public void Draw(QSprite sprite, QTransform transform, QVec position)
+		public void Draw(QSprite sprite, QTransform transform, QVector2 position)
 		{
 			if(!sprite.Visible) return;
 			sb.Draw(sprite.Texture,

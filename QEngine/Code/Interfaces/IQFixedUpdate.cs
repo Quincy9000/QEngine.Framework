@@ -1,7 +1,7 @@
 ﻿namespace QEngine
 {
-	public interface IQFixedUpdate : IQObject
+	public interface IQFixedUpdate
 	{
-		void OnFixedUpdate(float time);
+		void OnFixedUpdate();
 	}
 }

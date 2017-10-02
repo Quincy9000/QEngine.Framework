@@ -4,15 +4,15 @@
 	{
 		QBehavior Script { get; }
 		
-		QVec Offset { get; set; }
+		QVector2 Offset { get; set; }
 
-		QVec Origin { get; set; }
+		QVector2 Origin { get; set; }
 
-		QRect Source { get; set; }
+		QRectangle Source { get; set; }
 
 		QColor Color { get; set; }
 
-		QVec Scale { get; set; }
+		QVector2 Scale { get; set; }
 
 		float Layer { get; set; }
 

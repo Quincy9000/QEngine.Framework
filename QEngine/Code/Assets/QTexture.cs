@@ -1,42 +1,45 @@
 ﻿using System;
 using System.IO;
+using System.Xml.Linq;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace QEngine
 {
 	public class QTexture : IDisposable
 	{
-		Texture2D texture;
+		readonly Texture2D _texture;
 
-		public string Name => texture.Name;
+		internal QContentManager Manager { get; }
 
-		public QRect Bounds => texture.Bounds;
+		public string Name => _texture.Name;
 
-		public int Width => texture.Width;
+		public QRectangle Bounds => _texture.Bounds;
 
-		public int Height => texture.Height;
+		public int Width => _texture.Width;
+
+		public int Height => _texture.Height;
 
 		public QColor[] GetPixels()
 		{
 			var c = new QColor[Width * Height];
-			texture.GetData(c);
+			_texture.GetData(c);
 			return c;
 		}
 
-		public QTexture GetPartialTexture(QRect source)
+		public QTexture GetPartialTexture(QRectangle source)
 		{
-			Texture2D t = new Texture2D(texture.GraphicsDevice, source.Width, source.Height);
+			Texture2D t = new Texture2D(_texture.GraphicsDevice, source.Width, source.Height);
 			QColor[] colors = new QColor[t.Width * t.Height];
-			texture.GetData(0, source, colors, 0, colors.Length);
+			_texture.GetData(0, source, colors, 0, colors.Length);
 			t.SetData(0, source, colors, 0, colors.Length);
-			return t;
+			return new QTexture(Manager, t);
 		}
 
 		public void SaveAsPng(string path)
 		{
 			using(var file = new FileStream(path, FileMode.OpenOrCreate))
 			{
-				texture.SaveAsPng(file, texture.Width, texture.Height);
+				_texture.SaveAsPng(file, _texture.Width, _texture.Height);
 			}
 		}
 
@@ -44,22 +47,22 @@ namespace QEngine
 		{
 			using(var file = new FileStream(path, FileMode.OpenOrCreate))
 			{
-				texture.SaveAsJpeg(file, texture.Width, texture.Height);
+				_texture.SaveAsJpeg(file, _texture.Width, _texture.Height);
 			}
 		}
 
-		public static implicit operator Texture2D(QTexture t) => t.texture;
-
-		public static implicit operator QTexture(Texture2D t) => new QTexture(t);
+		public static implicit operator Texture2D(QTexture t) => t._texture;
 
 		public void Dispose()
 		{
-			texture.Dispose();
+			_texture.Dispose();
 		}
 
-		internal QTexture(Texture2D t)
+		internal QTexture(QContentManager manager, Texture2D t)
 		{
-			texture = t;
+			_texture = t;
+			Manager = manager;
+			Manager.LoadCustomTexture(Name, t);
 		}
 	}
 }

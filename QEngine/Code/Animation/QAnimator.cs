@@ -10,21 +10,22 @@ namespace QEngine
 	{
 		Dictionary<string, QAnimation> Animations { get; }
 
-		public QAnimation Current { get; private set; }
+		public QAnimation CurrentFrame { get; private set; }
 
-		public string CurrentName { get; private set; }
+		public string CurrentFrameName { get; private set; }
 
 		/// <summary>
-		/// Returns true if successfully added animation, sets currentAnimation to this one
+		/// Adds the frame and sets it as the first frame in the animation
+		/// returns false if the animation already exists
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="a"></param>
 		/// <returns></returns>
-		public bool AddAnimation(string name, QAnimation a)
+		public bool AddAsFirstFrame(string name, QAnimation a)
 		{
 			if(!Animations.ContainsKey(name))
 			{
-				Current = a;
+				CurrentFrame = a;
 				Animations.Add(name, a);
 				return true;
 			}
@@ -35,9 +36,9 @@ namespace QEngine
 		///	Plays Current, checks if new play is available
 		/// </summary>
 		/// <returns></returns>
-		public void Play(QSprite s, QTime time)
+		public void Play(QSprite s)
 		{
-			s.Source = Current.Play(time.Delta);
+			s.Source = CurrentFrame.Play(QTime.Delta);
 		}
 
 		/// <summary>
@@ -46,7 +47,7 @@ namespace QEngine
 		/// <returns></returns>
 		public void Play(QSprite s, float time)
 		{
-			s.Source = Current.Play(time);
+			s.Source = CurrentFrame.Play(time);
 		}
 
 		/// <summary>
@@ -76,12 +77,12 @@ namespace QEngine
 		{
 			if(Animations.TryGetValue(n, out QAnimation a))
 			{
-				if(Current == a)
+				if(CurrentFrame == a)
 				{
 					return false;
 				}
-				Current = a;
-				CurrentName = n;
+				CurrentFrame = a;
+				CurrentFrameName = n;
 				return true;
 			}
 			return false;
@@ -90,6 +91,16 @@ namespace QEngine
 		public QAnimator()
 		{
 			Animations = new Dictionary<string, QAnimation>();
+		}
+
+		/// <summary>
+		/// Add one animation to the animator
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="firstFrame"></param>
+		public QAnimator(string name, QAnimation firstFrame) : this()
+		{
+			AddAsFirstFrame(name, firstFrame);
 		}
 	}
 }

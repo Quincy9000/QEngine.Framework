@@ -4,33 +4,33 @@ namespace QEngine
 {
 	public class QGuiRenderer : QRenderer
 	{
-		public QSortOrder Order
+		public QSortOrders Order
 		{
 			get
 			{
 				switch(sortMode)
 				{
 					case SpriteSortMode.Deferred:
-						return QSortOrder.DontCare;
+						return QSortOrders.DontCare;
 					case SpriteSortMode.FrontToBack:
-						return QSortOrder.StartAtOne;
+						return QSortOrders.StartAtOne;
 					case SpriteSortMode.BackToFront:
-						return QSortOrder.StartAtZero;
+						return QSortOrders.StartAtZero;
 					default:
-						return QSortOrder.DontCare;
+						return QSortOrders.DontCare;
 				}
 			}
 			set
 			{
 				switch(value)
 				{
-					case QSortOrder.DontCare:
+					case QSortOrders.DontCare:
 						sortMode = SpriteSortMode.Deferred;
 						break;
-					case QSortOrder.StartAtOne:
+					case QSortOrders.StartAtOne:
 						sortMode = SpriteSortMode.FrontToBack;
 						break;
-					case QSortOrder.StartAtZero:
+					case QSortOrders.StartAtZero:
 						sortMode = SpriteSortMode.BackToFront;
 						break;
 					default:
@@ -40,24 +40,24 @@ namespace QEngine
 			}
 		}
 
-		public QFilteringState Filter
+		public QFilterStates Filter
 		{
 			get => filterState;
 			set
 			{
 				switch(value)
 				{
-					case QFilteringState.Ansiotrophic:
+					case QFilterStates.Ansiotrophic:
 					{
 						samplerState = SamplerState.AnisotropicClamp;
 						break;
 					}
-					case QFilteringState.Linear:
+					case QFilterStates.Linear:
 					{
 						samplerState = SamplerState.LinearClamp;
 						break;
 					}
-					case QFilteringState.Point:
+					case QFilterStates.Point:
 					{
 						samplerState = SamplerState.PointClamp;
 						break;
@@ -70,7 +70,7 @@ namespace QEngine
 			}
 		}
 
-		protected QFilteringState filterState;
+		protected QFilterStates filterState;
 
 		protected SpriteSortMode sortMode;
 
@@ -93,33 +93,39 @@ namespace QEngine
 			sb.Draw(i.Texture, t.Position + i.Offset, i.Source, i.Color, t.Rotation, i.Origin, i.Scale, SpriteEffects.None, i.Layer);
 		}
 
-		public void DrawImage(QImage i, QTransform t, QVec pos)
+		public void DrawImage(QImage i, QTransform t, QVector2 pos)
 		{
 			sb.Draw(i.Texture, pos + i.Offset, i.Source, i.Color, t.Rotation, i.Origin, i.Scale, SpriteEffects.None, i.Layer);
+		}
+
+		public void DrawString(QLabel label)
+		{
+			if(label.Visible)
+				sb.DrawString(label.Font, label.Text, label.Position, label.Color, label.Rotation, QVector2.Zero, label.Scale, SpriteEffects.None, label.Layer);
 		}
 
 		public void DrawString(QLabel label, QTransform pos)
 		{
 			if(label.Visible)
-				sb.DrawString(label.Font, label.Text, pos.Position, label.Color, pos.Rotation, QVec.Zero, label.Scale, SpriteEffects.None, label.Layer);
+				sb.DrawString(label.Font, label.Text, pos.Position, label.Color, pos.Rotation, QVector2.Zero, label.Scale, SpriteEffects.None, label.Layer);
 		}
 
-		public void DrawString(QLabel label, QVec pos, QTransform t)
+		public void DrawString(QLabel label, QVector2 pos, QTransform t)
 		{
 			if(label.Visible)
-				sb.DrawString(label.Font, label.Text, pos, label.Color, t.Rotation, QVec.Zero, label.Scale, SpriteEffects.None, label.Layer);
+				sb.DrawString(label.Font, label.Text, pos, label.Color, t.Rotation, QVector2.Zero, label.Scale, SpriteEffects.None, label.Layer);
 		}
 
-		public void DrawString(QLabel label, QVec pos, QTransform t, float fade)
+		public void DrawString(QLabel label, QVector2 pos, QTransform t, float fade)
 		{
 			if(label.Visible)
-				sb.DrawString(label.Font, label.Text, pos, label.Color * fade, t.Rotation, QVec.Zero, label.Scale, SpriteEffects.None, label.Layer);
+				sb.DrawString(label.Font, label.Text, pos, label.Color * fade, t.Rotation, QVector2.Zero, label.Scale, SpriteEffects.None, label.Layer);
 		}
 
 		internal QGuiRenderer(QEngine e) : base(e)
 		{
-			Filter = QFilteringState.Point;
-			Order = QSortOrder.StartAtZero;
+			Filter = QFilterStates.Point;
+			Order = QSortOrders.StartAtZero;
 		}
 	}
 }

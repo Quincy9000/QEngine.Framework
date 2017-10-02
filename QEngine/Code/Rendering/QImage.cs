@@ -6,24 +6,22 @@
 	public class QImage : IQRenderable
 	{
 		public QBehavior Script { get; }
-		public QVec Offset { get; set; } = QVec.Zero;
-		public QVec Origin { get; set; } = QVec.Zero;
-		public QRect Source { get; set; } = QRect.Empty;
+		public QVector2 Offset { get; set; } = QVector2.Zero;
+		public QVector2 Origin { get; set; } = QVector2.Zero;
+		public QRectangle Source { get; set; } = QRectangle.Empty;
 		public QColor Color { get; set; } = QColor.White;
-		public QVec Scale { get; set; } = QVec.One;
+		public QVector2 Scale { get; set; } = QVector2.One;
 		public float Layer { get; set; } = 0;
 		public bool Visible { get; set; } = true;
 		public QRenderEffects Effect { get; set; } = QRenderEffects.None;
 
-		internal QAtlas Texture => Script.Scene.Atlas;
-
 		public QImage(QBehavior s, string textureName) : this(s)
 		{
-			Source = s.Scene.Atlas[textureName];
+			Source = s.World.TextureAtlas[textureName];
 			Origin = Source.Center;
 		}
 
-		public QImage(QBehavior s, QRect source) : this(s)
+		public QImage(QBehavior s, QRectangle source) : this(s)
 		{
 			Source = source;
 			Origin = Source.Center;

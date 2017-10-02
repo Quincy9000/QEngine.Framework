@@ -1,6 +1,6 @@
 ﻿namespace QEngine
 {
-	public interface IQLoad : IQObject
+	public interface IQLoad
 	{
 		void OnLoad(QLoadContent load);
 	}

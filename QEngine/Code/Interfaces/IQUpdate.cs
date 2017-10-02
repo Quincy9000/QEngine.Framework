@@ -1,7 +1,7 @@
 ﻿namespace QEngine
 {
-    public interface IQUpdate : IQObject
+    public interface IQUpdate
     {
-        void OnUpdate(QTime time);
+        void OnUpdate();
     }
 }

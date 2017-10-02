@@ -2,15 +2,15 @@
 {
 	public class QSprite : IQRenderable
 	{
-		public QVec Offset { get; set; } = QVec.Zero;
+		public QVector2 Offset { get; set; } = QVector2.Zero;
 
-		public QVec Origin { get; set; } = QVec.Zero;
+		public QVector2 Origin { get; set; } = QVector2.Zero;
 
-		public QRect Source { get; set; } = QRect.Empty;
+		public QRectangle Source { get; set; } = QRectangle.Empty;
 
 		public QColor Color { get; set; } = QColor.White;
 
-		public QVec Scale { get; set; } = QVec.One;
+		public QVector2 Scale { get; set; } = QVector2.One;
 
 		public float Layer { get; set; } = 0.5f;
 
@@ -22,7 +22,7 @@
 
 		public float Height => Source.Height * Scale.Y;
 
-		internal QAtlas Texture => Script.Scene.Atlas;
+		internal QTextureAtlas Texture => Script.World.TextureAtlas;
 
 		public QBehavior Script { get; }
 
@@ -32,7 +32,7 @@
 			Origin = Source.Center;
 		}
 
-		public QSprite(QBehavior s, QRect source) : this(s)
+		public QSprite(QBehavior s, QRectangle source) : this(s)
 		{
 			Source = source;
 			Origin = Source.Center;
@@ -41,8 +41,8 @@
 		public QSprite(QBehavior script)
 		{
 			Script = script;
-			Source = QRect.Empty;
-			Origin = QVec.Zero;
+			Source = QRectangle.Empty;
+			Origin = QVector2.Zero;
 		}
 	}
 }
