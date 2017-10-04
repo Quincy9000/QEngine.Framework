@@ -149,31 +149,31 @@ namespace QEngine
 				(SpriteEffects)sprite.Effect,
 				sprite.Layer);
 		}
-
-		/// <summary>
-		/// Custom draw method using built in megatexture, so you need to use a textureSource from QGetContent
-		/// </summary>
-		/// <param name="position"></param>
-		/// <param name="source"></param>
-		/// <param name="color"></param>
-		/// <param name="rotation"></param>
-		/// <param name="origin"></param>
-		/// <param name="scale"></param>
-		/// <param name="effect"></param>
-		/// <param name="layer"></param>
-		public void Draw(QVector2 position, QRectangle source, QColor color, float rotation, QVector2 origin, QVector2 scale,
-			QRenderEffects effect, float layer)
-		{
-			sb.Draw(Engine.Manager.CurrentWorld.TextureAtlas,
-				position,
-				source,
-				color,
-				rotation,
-				origin,
-				scale,
-				(SpriteEffects)effect,
-				layer);
-		}
+//
+//		/// <summary>
+//		/// Custom draw method using built in megatexture, so you need to use a textureSource from QGetContent
+//		/// </summary>
+//		/// <param name="position"></param>
+//		/// <param name="source"></param>
+//		/// <param name="color"></param>
+//		/// <param name="rotation"></param>
+//		/// <param name="origin"></param>
+//		/// <param name="scale"></param>
+//		/// <param name="effect"></param>
+//		/// <param name="layer"></param>
+//		public void Draw(QVector2 position, QRectangle source, QColor color, float rotation, QVector2 origin, QVector2 scale,
+//			QRenderEffects effect, float layer)
+//		{
+//			sb.Draw(Engine.Manager.CurrentWorld.TextureAtlas,
+//				position,
+//				source,
+//				color,
+//				rotation,
+//				origin,
+//				scale,
+//				(SpriteEffects)effect,
+//				layer);
+//		}
 
 		/// <summary>
 		/// Draw at a different location instead of the pos in transform, but uses everything else

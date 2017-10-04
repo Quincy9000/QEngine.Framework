@@ -193,7 +193,7 @@ namespace QEngine
 			{
 				((QBehavior)loader).SetName();
 				((QBehavior)loader).Parent = QEntity.GetEntity();
-				loader.OnLoad(new QLoadContent(Content));
+				loader.OnLoad(new QLoadContent(Engine, Content));
 				QEntity.FreeEntity(((QBehavior)(loader)).Parent);
 			}
 			Accumulator = new QAccumulator();

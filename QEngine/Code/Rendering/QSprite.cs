@@ -22,27 +22,41 @@
 
 		public float Height => Source.Height * Scale.Y;
 
-		internal QTextureAtlas Texture => Script.World.TextureAtlas;
+		public QTexture Texture { get; }
 
 		public QBehavior Script { get; }
-
-		public QSprite(QBehavior s, string textureName) : this(s)
-		{
-			Source = Texture[textureName];
-			Origin = Source.Center;
-		}
-
-		public QSprite(QBehavior s, QRectangle source) : this(s)
-		{
-			Source = source;
-			Origin = Source.Center;
-		}
-
+		
 		public QSprite(QBehavior script)
 		{
 			Script = script;
 			Source = QRectangle.Empty;
 			Origin = QVector2.Zero;
+			Texture = null;
+		}
+
+		public QSprite(QBehavior script, string textureName) : this(script)
+		{
+			if(Script.World.Content.Atlases.TryGetValue(textureName, out QTextureAtlas atlas))
+			{
+				Texture = atlas;
+				Source = atlas[textureName];
+			}
+		}
+
+		public QSprite(QBehavior script, QRectangle source) : this(script)
+		{
+			foreach(var atlasPair in Script.World.Content.Atlases)
+			{
+				foreach(var rects in atlasPair.Value.Rectangles)
+				{
+					if(source == rects.Value)
+					{
+						Source = source;
+						Texture = atlasPair.Value;
+						Origin = Texture.Bounds.Center;
+					}
+				}
+			}
 		}
 	}
 }

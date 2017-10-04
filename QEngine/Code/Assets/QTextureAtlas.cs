@@ -112,7 +112,45 @@ namespace QEngine
 				Texture.SaveAsPng("here.png");
 		}
 
-		internal QTextureAtlas(QEngine engine, QContentManager manager)
+		/// <summary>
+		/// Will measure if this dictionary is too big to be used on one texture atlas
+		/// returns how many textureatlases are needed
+		/// </summary>
+		int CheckDictionaryForMaxSize(QEngine engine, QContentManager manager)
+		{
+			if(QEngine.IsHighQuality)
+			{
+				int atlasCount = 1;
+				int biggestWidth = HighQualityWidth;
+				int biggestHeight = HightQualityHeight;
+				int totalHeight = 0, totalWidth = 0;
+				foreach(var texture in manager.Textures.Values)
+				{
+					totalWidth += texture.Width + 1;
+					if(texture.Height > biggestHeight)
+						biggestHeight = texture.Height;
+				}
+			}
+			else
+			{
+				int biggestWidth = LowQualityWidth;
+				int biggestHeight = LowQualityHeight;
+			}
+		}
+
+		/// <summary>
+		/// Returns atlases needed to index all the sprite sheets
+		/// </summary>
+		/// <param name="engine"></param>
+		/// <param name="manager"></param>
+		/// <returns></returns>
+		public static Dictionary<int, QTextureAtlas> CreateAtlases(QEngine engine, QContentManager manager)
+		{
+			var dict = new Dictionary<int, QTextureAtlas>();
+			
+		}
+
+		private QTextureAtlas(QEngine engine, QContentManager manager)
 		{
 			CreateAtlas(engine, manager);
 		}

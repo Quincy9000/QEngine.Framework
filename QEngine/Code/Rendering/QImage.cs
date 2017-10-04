@@ -14,10 +14,11 @@
 		public float Layer { get; set; } = 0;
 		public bool Visible { get; set; } = true;
 		public QRenderEffects Effect { get; set; } = QRenderEffects.None;
+		public QTexture Texture { get; }
 
 		public QImage(QBehavior s, string textureName) : this(s)
 		{
-			Source = s.World.TextureAtlas[textureName];
+			Source = s.World.Content.Atlases[textureName].
 			Origin = Source.Center;
 		}
 
@@ -30,6 +31,7 @@
 		public QImage(QBehavior script)
 		{
 			Script = script;
+			Texture = null;
 		}
 	}
 }
