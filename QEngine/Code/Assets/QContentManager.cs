@@ -16,6 +16,8 @@ namespace QEngine
 	public class QContentManager
 	{
 		ContentManager MonoContentManager { get; }
+
+		public static QTexture UnknownTexture { get; private set; }
 		
 		internal GraphicsDevice MonoGraphicsDevice { get; }
 
@@ -27,7 +29,7 @@ namespace QEngine
 
 		internal Dictionary<string, QFont> Fonts { get; }
 		
-		internal Dictionary<string, QTextureAtlas> Atlases { get; }
+		internal List<QTextureAtlas> Atlases { get; set; }
 
 		T Load<T>(string path)
 		{
@@ -37,7 +39,7 @@ namespace QEngine
 			}
 			catch(Exception e)
 			{
-				throw new QMissingContentException("Could not find Asset!\n" + e);
+				throw new QMissingContentException($"{path} could not find Asset!\n" + e);
 			}
 		}
 
@@ -166,11 +168,22 @@ namespace QEngine
 		{
 			MonoGraphicsDevice = engine.GraphicsDevice;
 			MonoContentManager = engine.Content;
-			Atlases = new Dictionary<string, QTextureAtlas>();
+			Atlases = new List<QTextureAtlas>();
 			Textures = new Dictionary<string, QTexture>();
 			Fonts = new Dictionary<string, QFont>();
 			Sounds = new Dictionary<string, QSound>();
 			Music = new Dictionary<string, QMusic>();
+			//setting up the unknown texture once
+			if (UnknownTexture == null)
+			{
+				var texture = new Texture2D(MonoGraphicsDevice, 2, 2);
+				var c = new QColor[]
+				{
+					QColor.White, QColor.Purple, QColor.White, QColor.Purple
+				};
+				texture.SetData(c);
+				UnknownTexture = new QTexture(this, texture);
+			}
 		}
 	}
 }

@@ -12,6 +12,24 @@
 
 		public QMusic Music(string m) => cm.GetMusic(m);
 
+		/// <summary>
+		/// returns the source area from a texture that is used on a textureatlas
+		/// </summary>
+		/// <param name="s"></param>
+		/// <returns></returns>
+		public QRectangle Source(string s)
+		{
+			foreach(var a in cm.Atlases)
+			{
+				foreach(var r in a.Rectangles)
+				{
+					if(r.Key == s)
+						return r.Value;
+				}
+			}
+			return QRectangle.Empty;
+		}
+
 		internal QGetContent(QContentManager cm)
 		{
 			this.cm = cm;

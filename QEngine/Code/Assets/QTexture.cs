@@ -8,11 +8,6 @@ namespace QEngine
 {
 	public class QTexture : IDisposable
 	{
-		/// <summary>
-		/// if no texture can be drawn we use this texture as a replacement
-		/// </summary>
-		public static QTexture UnknownTexture { get; private set; }
-		
 		readonly Texture2D _texture;
 
 		internal QContentManager Manager { get; }
@@ -66,20 +61,8 @@ namespace QEngine
 
 		internal QTexture(QContentManager manager, Texture2D t)
 		{
-			//setting up the unknown texture once
-			if(UnknownTexture == null)
-			{
-				var texture = new Texture2D(manager.MonoGraphicsDevice, 2, 2);
-				var c = new QColor[]
-				{
-					QColor.White, QColor.Purple, QColor.White, QColor.Purple
-				};
-				texture.SetData(c);
-				UnknownTexture = new QTexture(manager, texture);
-			}
 			_texture = t;
 			Manager = manager;
-			Manager.LoadCustomTexture(Name, t);
 		}
 	}
 }

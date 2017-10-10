@@ -182,6 +182,7 @@ namespace QEngine
 			int atlasCount = AtlasesNeeded(world.Content);
 			for(int i = 0; i < atlasCount; i++)
 			{
+				//TODO NEED TO add the atlases depending on the textures!
 				dict.Add(new QTextureAtlas(world.Engine, world.Content));
 			}
 			return dict;

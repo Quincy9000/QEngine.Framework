@@ -18,8 +18,14 @@
 
 		public QImage(QBehavior s, string textureName) : this(s)
 		{
-			Source = s.World.Content.Atlases[textureName].Rectangles[textureName];
-			Origin = Source.Center;
+			foreach (var atlas in Script.World.Content.Atlases)
+			{
+				if (atlas.Rectangles.TryGetValue(textureName, out QRectangle rect))
+				{
+					Texture = atlas;
+					Source = rect;
+				}
+			}
 		}
 
 		public QImage(QBehavior s, QRectangle source) : this(s)

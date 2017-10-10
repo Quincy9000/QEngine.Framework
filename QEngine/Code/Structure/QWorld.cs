@@ -111,7 +111,8 @@ namespace QEngine
 					if(o.Script is IQLoad l)
 						l.OnLoad(new QLoadContent(Engine, Content));
 				});
-				//TODO, put code to create all TextureAtlases here
+				//TODO check this
+				Content.Atlases = QTextureAtlas.CreateAtlases(this);
 				//Like if the textureAtlas is too big for one image, we create multiple atlases 
 				//and then pretend they are all on one array so the user doesnt have to worry about them
 				//OnStart can potentially set flag to true

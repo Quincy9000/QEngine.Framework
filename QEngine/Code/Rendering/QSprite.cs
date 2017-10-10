@@ -25,7 +25,7 @@
 		public QTexture Texture { get; }
 
 		public QBehavior Script { get; }
-		
+
 		public QSprite(QBehavior script)
 		{
 			Script = script;
@@ -36,23 +36,26 @@
 
 		public QSprite(QBehavior script, string textureName) : this(script)
 		{
-			if(Script.World.Content.Atlases.TryGetValue(textureName, out QTextureAtlas atlas))
+			foreach (var atlas in Script.World.Content.Atlases)
 			{
-				Texture = atlas;
-				Source = atlas[textureName];
+				if (atlas.Rectangles.TryGetValue(textureName, out QRectangle rect))
+				{
+					Texture = atlas;
+					Source = rect;
+				}
 			}
 		}
 
 		public QSprite(QBehavior script, QRectangle source) : this(script)
 		{
-			foreach(var atlasPair in Script.World.Content.Atlases)
+			foreach (var atlas in Script.World.Content.Atlases)
 			{
-				foreach(var rects in atlasPair.Value.Rectangles)
+				foreach (var rects in atlas.Rectangles)
 				{
-					if(source == rects.Value)
+					if (source == rects.Value)
 					{
 						Source = source;
-						Texture = atlasPair.Value;
+						Texture = atlas;
 						Origin = Texture.Bounds.Center;
 					}
 				}

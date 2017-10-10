@@ -20,13 +20,18 @@ namespace QEngine
 
 		internal QEngine(QAppConfig conf = null)
 		{
+			Configuration = conf;
 			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
 			MonoGraphicsDeviceManager = new GraphicsDeviceManager(this);
 			Manager = new QWorldManager();
 			MonoGraphicsDeviceManager.GraphicsProfile = IsHighQuality ? GraphicsProfile.HiDef : GraphicsProfile.Reach;
-			if(conf != null)
+		}
+
+		protected override void LoadContent()
+		{
+			if(Configuration != null)
 			{
-				Configuration = conf;
+				var conf = Configuration;
 				MonoGraphicsDeviceManager.PreferMultiSampling = conf.Multisampling;
 				MonoGraphicsDeviceManager.PreferredBackBufferHeight = conf.Height;
 				MonoGraphicsDeviceManager.PreferredBackBufferWidth = conf.Width;
@@ -40,10 +45,6 @@ namespace QEngine
 				TargetElapsedTime = TimeSpan.FromSeconds(conf.TimeStep);
 				MonoGraphicsDeviceManager.ApplyChanges();
 			}
-		}
-
-		protected override void LoadContent()
-		{
 			MonoSpriteBatch = new SpriteBatch(GraphicsDevice);
 			Manager.Init();
 		}
