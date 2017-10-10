@@ -27,7 +27,7 @@ namespace QEngine
 
 		internal Dictionary<string, QFont> Fonts { get; }
 		
-		internal Dictionary<int, QTextureAtlas> Atlases { get; }
+		internal Dictionary<string, QTextureAtlas> Atlases { get; }
 
 		T Load<T>(string path)
 		{

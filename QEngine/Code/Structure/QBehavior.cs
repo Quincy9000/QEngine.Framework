@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Emit;
 
 namespace QEngine
 {
@@ -6,15 +7,15 @@ namespace QEngine
 	{
 		/*Public*/
 
-		public string Name { get; private set; }
-
-		public QEntity Parent { get; internal set; }
+		public string Name { get; }
 
 		public Guid Id => Parent.Id;
 
-		public QWorld World => Parent.World;
+		public QEntity Parent { get; internal set; }
 
 		public QTransform Transform => Parent.Transform;
+
+		public QWorld World => Parent.World;
 
 		public QWindow Window => World.Window;
 
@@ -95,13 +96,17 @@ namespace QEngine
 
 		internal void SetName()
 		{
+
+		}
+
+		protected QBehavior(string name = "")
+		{
+			Name = name;
 			if(string.IsNullOrEmpty(Name))
 			{
-				Name = GetType().Name;
+				Name = GetType().FullName;
 				//Parent?.Scene?.Console?.WriteLine(Name);
 			}
 		}
-
-		protected QBehavior() { }
 	}
 }

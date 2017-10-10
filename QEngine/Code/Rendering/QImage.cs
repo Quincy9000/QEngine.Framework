@@ -18,7 +18,7 @@
 
 		public QImage(QBehavior s, string textureName) : this(s)
 		{
-			Source = s.World.Content.Atlases[textureName].
+			Source = s.World.Content.Atlases[textureName].Rectangles[textureName];
 			Origin = Source.Center;
 		}
 

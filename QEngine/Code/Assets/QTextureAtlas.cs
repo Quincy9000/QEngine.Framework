@@ -19,6 +19,10 @@ namespace QEngine
 		const int LowQualityWidth = 2048;
 		const int LowQualityHeight = 2048;
 
+		QEngine Engine { get; }
+
+		QContentManager ContentManager { get; }
+
 		public static implicit operator QTexture(QTextureAtlas m) => m.Texture;
 
 		public static implicit operator Texture2D(QTextureAtlas m) => m.Texture;
@@ -29,22 +33,22 @@ namespace QEngine
 
 		public QRectangle this[string index] => Rectangles[index];
 
-		void CreateAtlas(QEngine engine, QContentManager manager)
+		void CreateAtlas()
 		{
 			//if were on high def we can use 4096 as the max texture size
 			if(QEngine.IsHighQuality)
 			{
-				CreateAtlas(engine, manager, HighQualityWidth, HightQualityHeight);
+				CreateAtlas(HighQualityWidth, HightQualityHeight);
 			}
 			else
 			{
-				CreateAtlas(engine, manager, LowQualityWidth, LowQualityHeight);
+				CreateAtlas(LowQualityWidth, LowQualityHeight);
 			}
 		}
 
-		void CreateAtlas(QEngine engine, QContentManager manager, int maxWidth, int maxHeight)
+		void CreateAtlas(int maxWidth, int maxHeight)
 		{
-			Dictionary<string, QTexture> textures = manager.Textures;
+			Dictionary<string, QTexture> textures = ContentManager.Textures;
 			int totalWidth = 0;
 			int biggestHeight = 0;
 			//find totalwidth and biggest height
@@ -60,8 +64,8 @@ namespace QEngine
 			{
 				if(totalWidth == 0 || biggestHeight == 0)
 					return;
-				var target = new RenderTarget2D(engine.GraphicsDevice, totalWidth, biggestHeight);
-				RenderAtlas(engine, manager, target, biggestHeight, maxWidth);
+				var target = new RenderTarget2D(Engine.GraphicsDevice, totalWidth, biggestHeight);
+				RenderAtlas(target, biggestHeight, maxWidth);
 			}
 			//else we need to use more than one row 
 			else
@@ -69,8 +73,8 @@ namespace QEngine
 				//should give us the number of times we need to "grow the texture downwards"
 				int rowsNeeded = (int)Math.Round((double)totalWidth / maxHeight);
 				//take biggest textureHeight and mult by rows needed
-				var target = new RenderTarget2D(engine.GraphicsDevice, maxWidth, rowsNeeded * biggestHeight);
-				RenderAtlas(engine, manager, target, biggestHeight, maxWidth);
+				var target = new RenderTarget2D(Engine.GraphicsDevice, maxWidth, rowsNeeded * biggestHeight);
+				RenderAtlas(target, biggestHeight, maxWidth);
 			}
 		}
 
@@ -80,17 +84,17 @@ namespace QEngine
 		/// <param name="target"></param>
 		/// <param name="biggetsHeight"></param>
 		/// <param name="maxWidth"></param>
-		void RenderAtlas(QEngine engine, QContentManager manager, RenderTarget2D target, int biggetsHeight, int maxWidth)
+		void RenderAtlas(RenderTarget2D target, int biggetsHeight, int maxWidth)
 		{
 			//slows down code but useful for debugging
-			const bool takePictureOfAtlas = false;
+			const bool takePictureOfAtlas = true;
 			target.GraphicsDevice.SetRenderTargets(target);
-			var render = new QSpriteRenderer(engine);
+			var render = new QSpriteRenderer(Engine);
 			Rectangles = new Dictionary<string, QRectangle>();
 			var pos = QVector2.Zero;
 			render.ClearColor = QColor.Transparent;
 			render.Begin();
-			var textures = manager.Textures.ToList();
+			var textures = ContentManager.Textures.ToList();
 			for(int i = 0; i < textures.Count; i++)
 			{
 				var t = textures[i];
@@ -107,52 +111,87 @@ namespace QEngine
 			render.gd.SetRenderTarget(null);
 			if(Texture != null)
 				((Texture2D)Texture).Dispose();
-			Texture = new QTexture(manager, target);
+			Texture = new QTexture(ContentManager, target);
 			if(takePictureOfAtlas)
-				Texture.SaveAsPng("here.png");
+				Texture.SaveAsPng($"{DateTime.Now.Millisecond}.png");
 		}
-
+		
 		/// <summary>
-		/// Will measure if this dictionary is too big to be used on one texture atlas
-		/// returns how many textureatlases are needed
+		/// Measures how many atlases are needed depending on the system
 		/// </summary>
-		int CheckDictionaryForMaxSize(QEngine engine, QContentManager manager)
+		/// <param name="manager"></param>
+		/// <returns></returns>
+		static int AtlasesNeeded(QContentManager manager)
 		{
+			//number of atlases
+			int atlasCount = 0;
+			//how big the texture can get before resettting
+			int textureMaxWidth = 0;
+			//how big the texture can get before resettting
+			int textureMaxHeight = 0;
+			//the height needed for the current atlas; last one will always be the shortest
+			int biggestHeight = 0;
+			int totalWidth = 0;
+
+			//If the current system is high quality we can use bigger textures because of max limits on textures
 			if(QEngine.IsHighQuality)
 			{
-				int atlasCount = 1;
-				int biggestWidth = HighQualityWidth;
-				int biggestHeight = HightQualityHeight;
-				int totalHeight = 0, totalWidth = 0;
-				foreach(var texture in manager.Textures.Values)
-				{
-					totalWidth += texture.Width + 1;
-					if(texture.Height > biggestHeight)
-						biggestHeight = texture.Height;
-				}
+				textureMaxWidth = HighQualityWidth;
+				textureMaxHeight = HightQualityHeight;
 			}
 			else
 			{
-				int biggestWidth = LowQualityWidth;
-				int biggestHeight = LowQualityHeight;
+				textureMaxWidth = LowQualityWidth;
+				textureMaxHeight = LowQualityHeight;
 			}
+
+			//finds the width all the textures take up side by side, and finds the biggest ones height
+			foreach(var texture in manager.Textures.Values)
+			{
+				totalWidth += texture.Width;
+				if(texture.Height > biggestHeight)
+					biggestHeight = texture.Height;
+			}
+
+			int rowsNeeded = (int)Math.Round((double)totalWidth / textureMaxHeight);
+
+			int totalHeight = rowsNeeded * biggestHeight;
+
+			//gives us the sheets needed but without remainder
+			atlasCount = totalHeight / textureMaxHeight;
+			//then gives use the actual remainder
+			int remainder = totalHeight % textureMaxHeight;
+
+			//if the remainder exist then we need another texture
+			if(remainder > 0)
+			{
+				atlasCount++;
+			}
+
+			return atlasCount;
 		}
 
 		/// <summary>
-		/// Returns atlases needed to index all the sprite sheets
+		/// Returns list that may contain one or more atlases depending on the texture sizes
 		/// </summary>
-		/// <param name="engine"></param>
-		/// <param name="manager"></param>
+		/// <param name="world">uses the current world to create the atlases</param>
 		/// <returns></returns>
-		public static Dictionary<int, QTextureAtlas> CreateAtlases(QEngine engine, QContentManager manager)
+		public static List<QTextureAtlas> CreateAtlases(QWorld world)
 		{
-			var dict = new Dictionary<int, QTextureAtlas>();
-			
+			var dict = new List<QTextureAtlas>();
+			int atlasCount = AtlasesNeeded(world.Content);
+			for(int i = 0; i < atlasCount; i++)
+			{
+				dict.Add(new QTextureAtlas(world.Engine, world.Content));
+			}
+			return dict;
 		}
 
-		private QTextureAtlas(QEngine engine, QContentManager manager)
+		QTextureAtlas(QEngine engine, QContentManager contentManager)
 		{
-			CreateAtlas(engine, manager);
+			Engine = engine;
+			ContentManager = contentManager;
+			CreateAtlas();
 		}
 	}
 }
