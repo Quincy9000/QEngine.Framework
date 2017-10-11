@@ -52,11 +52,14 @@
 			{
 				foreach (var rects in atlas.Rectangles)
 				{
-					if (source == rects.Value)
+					foreach (var qRectangle in rects.Value.Split(source.Width, source.Height))
 					{
-						Source = source;
-						Texture = atlas;
-						Origin = Texture.Bounds.Center;
+						if (source == qRectangle)
+						{
+							Source = source;
+							Texture = atlas;
+							Origin = Source.Center;
+						}
 					}
 				}
 			}

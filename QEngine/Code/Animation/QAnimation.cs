@@ -170,7 +170,7 @@ namespace QEngine
 
 		public static bool operator ==(QAnimation left, QAnimation right)
 		{
-			if(left == null || right == null) return false;
+			if(!left.Equals(left) || !right.Equals(right)) return false;
 			//if they dont have the same amount of frames they are not equal
 			if(left._frames.Count == right._frames.Count)
 			{

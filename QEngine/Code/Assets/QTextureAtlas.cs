@@ -22,6 +22,8 @@ namespace QEngine
 		QEngine Engine { get; }
 
 		QContentManager ContentManager { get; }
+		
+		List<QTexture> Textures { get; }
 
 		public static implicit operator QTexture(QTextureAtlas m) => m.Texture;
 
@@ -87,25 +89,27 @@ namespace QEngine
 		void RenderAtlas(RenderTarget2D target, int biggetsHeight, int maxWidth)
 		{
 			//slows down code but useful for debugging
-			const bool takePictureOfAtlas = true;
+			const bool takePictureOfAtlas = false;
 			target.GraphicsDevice.SetRenderTargets(target);
 			var render = new QSpriteRenderer(Engine);
 			Rectangles = new Dictionary<string, QRectangle>();
 			var pos = QVector2.Zero;
 			render.ClearColor = QColor.Transparent;
 			render.Begin();
-			var textures = ContentManager.Textures.ToList();
+			//var textures = ContentManager.Textures.ToList();
+			var textures = Textures;
+			int texturesOnThisSheet = 0;
 			for(int i = 0; i < textures.Count; i++)
 			{
 				var t = textures[i];
-				if(pos.X + t.Value.Width > maxWidth)
+				if(pos.X + t.Width > maxWidth)
 				{
 					pos.Y += biggetsHeight;
 					pos.X = 0;
 				}
-				render.Draw(t.Value, pos, QColor.White);
-				Rectangles.Add(t.Key, new QRectangle(pos, t.Value.Bounds.Size));
-				pos.X += t.Value.Width + 1;
+				render.Draw(t, pos, QColor.White);
+				Rectangles.Add(t.Name.Split('/').Last(), new QRectangle(pos, t.Bounds.Size));
+				pos.X += t.Width + 1;
 			}
 			render.End();
 			render.gd.SetRenderTarget(null);
@@ -113,7 +117,7 @@ namespace QEngine
 				((Texture2D)Texture).Dispose();
 			Texture = new QTexture(ContentManager, target);
 			if(takePictureOfAtlas)
-				Texture.SaveAsPng($"{DateTime.Now.Millisecond}.png");
+				Texture.SaveAsPng($"{DateTime.Now.Minute}-{DateTime.Now.Second}.png");
 		}
 		
 		/// <summary>
@@ -121,7 +125,7 @@ namespace QEngine
 		/// </summary>
 		/// <param name="manager"></param>
 		/// <returns></returns>
-		static int AtlasesNeeded(QContentManager manager)
+		static List<List<QTexture>> AtlasesNeeded(QContentManager manager)
 		{
 			//number of atlases
 			int atlasCount = 0;
@@ -153,7 +157,7 @@ namespace QEngine
 					biggestHeight = texture.Height;
 			}
 
-			int rowsNeeded = (int)Math.Round((double)totalWidth / textureMaxHeight);
+			int rowsNeeded = (int)Math.Round((double)totalWidth / textureMaxHeight) + 1;
 
 			int totalHeight = rowsNeeded * biggestHeight;
 
@@ -168,7 +172,34 @@ namespace QEngine
 				atlasCount++;
 			}
 
-			return atlasCount;
+			var ListOfListOfTextures = new List<List<QTexture>>();
+			
+			for(int i = 0; i < atlasCount; i++)
+			{
+				ListOfListOfTextures.Add(new List<QTexture>());
+			}
+			
+			var textures = manager.Textures.ToList();
+
+			QVector2 pos = QVector2.Zero;
+			int tSheet = 0;
+			for(int i = 0; i < textures.Count; i++)
+			{
+				var t = textures[i].Value;
+				pos.X += t.Width;
+				if(pos.X > textureMaxWidth)
+				{
+					pos.X = 0;
+					pos.Y += biggestHeight;
+				}
+				if(pos.Y > textureMaxHeight)
+				{
+					tSheet++;
+				}
+				ListOfListOfTextures[tSheet].Add(t);
+			}
+
+			return ListOfListOfTextures;
 		}
 
 		/// <summary>
@@ -179,19 +210,19 @@ namespace QEngine
 		public static List<QTextureAtlas> CreateAtlases(QWorld world)
 		{
 			var dict = new List<QTextureAtlas>();
-			int atlasCount = AtlasesNeeded(world.Content);
-			for(int i = 0; i < atlasCount; i++)
+			var atlases = AtlasesNeeded(world.Content);
+			for(int i = 0; i < atlases.Count; i++)
 			{
-				//TODO NEED TO add the atlases depending on the textures!
-				dict.Add(new QTextureAtlas(world.Engine, world.Content));
+				dict.Add(new QTextureAtlas(world.Engine, world.Content, atlases[i]));
 			}
 			return dict;
 		}
 
-		QTextureAtlas(QEngine engine, QContentManager contentManager)
+		QTextureAtlas(QEngine engine, QContentManager contentManager, List<QTexture> textures)
 		{
 			Engine = engine;
 			ContentManager = contentManager;
+			Textures = textures;
 			CreateAtlas();
 		}
 	}
